@@ -592,6 +592,14 @@ move-in-fleurus/
 - Piège rencontré : un SVG inline en `width: auto` se fait rogner par le `svg { max-width: 100% }`
   global. Toujours donner une **largeur explicite** calculée depuis le ratio du `viewBox`.
 
+## Dépôt et mise en ligne
+
+Le site est publié sur **https://valvasyl.github.io/movein-fleurus-site/** à chaque push sur
+`main` (GitHub Pages, branche `main`, racine). Comptez une à deux minutes après le push.
+Vérifié au déploiement : 16 ressources, aucune en échec, 738 Ko au total, toutes les
+sections aux bonnes hauteurs. Les chemins sont tous relatifs, le site fonctionne donc dans
+son sous-dossier.
+
 ## Workflow
 
 - **Une tâche à la fois**, montrer le résultat avant de continuer.

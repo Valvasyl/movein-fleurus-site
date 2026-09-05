@@ -1,0 +1,14 @@
+# Maquettes de référence : 7 Mo de PNG, elles ne servent pas au site.
+# Elles restent dans le dossier OneDrive du projet.
+maquette/
+
+# Système / éditeurs
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/
+
+# Node (uniquement pour le petit serveur de dev, jamais commité)
+node_modules/
+package-lock.json

@@ -1,285 +1,165 @@
-/* =============================================================
-   MOVE IN FLEURUS — feuille de style unique
-   Mobile-first · fluid responsive (clamp 390px → 1440px)
-   CSS natif : variables + nesting avec &. Pas de SASS, pas de build.
-   -------------------------------------------------------------
-   Sommaire
-   00. Tokens
-   01. Reset & base
-   02. Utilitaires de mise en page (container, grid)
-   03. Rôles typographiques
-   04. Header + nav + burger + menu mobile
-   05. Bande jaune (dégradé + trame de rues)
-   06. Hero
-   07. Mobilité — les 4 cartes d’étapes
-   08. Fidélité — photo pleine largeur + 4 cartes
-   09. Commerçant — bande jaune
-   10. Piliers — Attirer / Fidéliser / Contribuer
-   11. En savoir plus — bande crème
-   12. Nos partenaires — bandeau défilant
-   13. Footer
-   14. Animations (Phase 2) — apparitions au scroll
-   99. Accessibilité / reduced-motion / dev
-   ============================================================= */
+/* Move in Fleurus — version commentée : commentaires/styles.css */
 
-
-/* ============ 00. TOKENS ============ */
 :root {
-
-  /* ---- Couleurs (charte) ---- */
-  --jaune:  #ffdd0d;                   /* couleur de marque — numéros 01-04 (relevé exact) */
+  --jaune:  #ffdd0d;
   --noir:   #2a292e;
   --creme:  #fffbf0;
   --sable:  #f7dd7e;
   --blanc:  #ffffff;
 
-  /* Jaunes relevés sur la maquette (la bande jaune n'est PAS un aplat --jaune) */
-  --degrade-a:   #ffe330;              /* bas-gauche du dégradé de la bande jaune */
-  --degrade-b:   #ffea63;              /* haut-droite */
-  --jaune-fonce: #ffd405;              /* 3e jaune de la charte : les traits de la trame de rues.
-                                          Aucune règle ne le lit — la couleur vit dans le SVG —,
-                                          il est gardé comme référence de charte. */
+  --degrade-a:   #ffe330;
+  --degrade-b:   #ffea63;
+  --jaune-fonce: #ffd405;
 
-
-  /* ---- Typographie ---- */
   --ff-text:    "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --ff-display: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
 
-  /* Échelles fluides — DEUX maquettes font désormais foi (mobile 390, desktop 1440).
-     Les valeurs sont relevées au pixel sur chacune (hauteur de capitale ÷ ratio de
-     la fonte : Inter capHeight = .7275 em, Barlow Condensed = .723 em).
+  --fs-eyebrow:    clamp(16px, 23.06px - 0.7843vw, 20px);
+  --fs-eyebrow-sm: clamp(12.8px, 25.51px - 1.4118vw, 20px);
+  --fs-lead:       16px;
+  --fs-body:       clamp(14px, 13.63px + 0.095vw, 15px);
+  --fs-nav:        clamp(12px, 13.76px - 0.1961vw, 13px);
+  --fs-scroll:     clamp(26px, 24.51px + 0.381vw, 30px);
 
-     ⚠️ Bornes d'interpolation : 390 → 900, et non 390 → 1440.
-     Au-delà de 900 le hero passe en homothétie (`--px`), donc la branche mobile ne
-     sert JAMAIS au-dessus de 899. On l'ancre sur la valeur que l'homothétie prendra
-     à 900 (= valeur 1440 × 0,625) : aucune cassure au franchissement du breakpoint.
-     Conséquence : plusieurs échelles DÉCROISSENT de 390 à 900 — c'est voulu, le
-     mobile est un poster pleine largeur, le desktop range les mêmes mots en colonne. */
-  --fs-eyebrow:    clamp(16px, 23.06px - 0.7843vw, 20px);      /* 20 → 16    « MOBILITÉ » — Inter Bold 20pt (Illustrator) */
-  --fs-eyebrow-sm: clamp(12.8px, 25.51px - 1.4118vw, 20px);    /* 20 → 12,8  « TÉLÉCHARGEZ MAINTENANT » : 20 en mobile
-                                                                     (Inter Bold 20pt comme les autres eyebrows), il remplit
-                                                                     alors la grille moins 16 de marge de chaque côté. */
-  --fs-lead:       16px;                                       /* 16 partout sous 900 : 0,80 × 20 tombe pile dessus */
-  --fs-body:       clamp(14px, 13.63px + 0.095vw, 15px);       /* 14 → 15  texte courant par défaut */
-  --fs-nav:        clamp(12px, 13.76px - 0.1961vw, 13px);      /* 13 → 12  (nav masquée sous 900) */
-  --fs-scroll:     clamp(26px, 24.51px + 0.381vw, 30px);       /* 26 → 30  « Scrollez pour découvrir » — taille conservée
-                                                                     à la demande de Sylvain (la maquette relève 15). */
-  /* Cartes — valeurs Illustrator : titre Inter ExtraBold 20pt, corps Inter 14pt,
-     note Inter 10pt. Sous 900 les cartes s'EMPILENT en pleine largeur : la typo y
-     reste à sa taille nominale à 390 puis rejoint l'homothétie à 900. */
-  --fs-card-title: clamp(16px, 23.06px - 0.7843vw, 20px);      /* 20 → 16 */
-  --fs-card-text:  clamp(12px,   15.53px - 0.3922vw, 14px);    /* 14 → 12  (plancher de lisibilité) */
-  --fs-card-note:  clamp(9px,    10.7647px - 0.1961vw, 10px);  /* 10 → 9   (plancher de lisibilité) */
-  --fs-num:        clamp(80px, 115.29px - 3.9216vw, 100px);    /* 100 → 80  numéros 01–04 */
-  --fs-display-s:  clamp(26.3px, 22.737px + 0.9137vw, 30.96px);/* 26,3 → 31  titres des piliers : cap 19 (390) · cap 28 (1440) → 38,7 */
-  --fs-display-l:  clamp(40px, 24.40px + 4.000vw, 82px);       /* 40 → 82 */
-  --fs-display-xl: clamp(62px, 61.69px + 0.0784vw, 62.4px);    /* 62 → 62,4  Bougez/Cumulez/Profitez : quasi constant */
+  --fs-card-title: clamp(16px, 23.06px - 0.7843vw, 20px);
+  --fs-card-text:  clamp(12px,   15.53px - 0.3922vw, 14px);
+  --lh-card-text:  1.1429;
+  --fs-card-note:  clamp(9px,    10.7647px - 0.1961vw, 10px);
+  --fs-num:        clamp(80px, 115.29px - 3.9216vw, 100px);
+  --fs-display-s:  clamp(26.3px, 22.737px + 0.9137vw, 30.96px);
+  --fs-display-l:  clamp(40px, 24.40px + 4.000vw, 82px);
+  --fs-display-xl: clamp(62px, 61.69px + 0.0784vw, 62.4px);
 
-  /* Largeur du titre SVG « Rejoignez le Move ». Il est à sa TAILLE NATURELLE (877)
-     à 1440, et occupe TOUTE la largeur de contenu (350) à 390 : ce n'est donc pas
-     une simple homothétie, d'où un token dédié interpolé 390 → 900. */
   --titre-w:       clamp(350px, 81.13px + 68.9412vw, 701.6px);
 
   --lh-body:  1.5;
-  --lh-lead:  1.2;                                         /* 24 / 20 relevé */
+  --lh-lead:  1.2;
   --lh-tight: 1.05;
-  --lh-xl:    .935;                                        /* 58 / 62 relevé mobile */
+  --lh-xl:    .935;
   --ls-label: .06em;
 
-  /* ---- Grille & espacements ---- */
-  --content-max: 1440px;                                   /* largeur max de page  */
-  /* « 1 pixel de maquette » : vaut 1px à partir de 1440 et rétrécit proportionnellement
-     en dessous — c'est ce qui fait du desktop une homothétie de la maquette.
-     ⚠️ PLANCHER À 0,80 (décision Sylvain, 03/09/2026). Sans lui, --px tombait à 0,625 à
-     900 px : le desktop y était une miniature à 62,5 %, et comme toute la branche mobile
-     est ancrée dessus pour éviter une marche, elle s'étranglait en approchant de 900
-     (badges à 197, chapô à 12,5). Le rendu à 1440 est inchangé — seule la zone
-     900 → 1150 cesse de rétrécir. */
-  --px: calc(clamp(1152px, 100vw, 1440px) / 1440);
-  --marge:     clamp(20px, -4.4706px + 6.2745vw, 52px);    /* 20 → 52  (52 = 0,80 × 65) */
-  --gutter:    clamp(9.6px, 20.8941px - 1.2549vw, 16px);   /* 16 → 9,6 */
-  --section-y: clamp(20px,  5.14px + 3.810vw, 60px);       /* padding vertical 20 → 60 */
-  --cols: 4;                                               /* 4 colonnes en mobile */
+  --content-max: 1440px;
 
-  /* ---- Composants ---- */
-  --logo-h:    clamp(44px, 40.9412px + 0.7843vw, 48px);    /* 44 → 48 */
-  --header-h:  clamp(72px, 29.1765px + 10.9804vw, 128px);  /* 72 → 128 */
+  --px: calc(clamp(1152px, 100vw, 1440px) / 1440);
+  --marge:     clamp(20px, -4.4706px + 6.2745vw, 52px);
+  --gutter:    clamp(9.6px, 20.8941px - 1.2549vw, 16px);
+  --section-y: clamp(20px,  5.14px + 3.810vw, 60px);
+  --cols: 4;
+
+  --logo-h:    clamp(44px, 40.9412px + 0.7843vw, 48px);
+  --header-h:  clamp(72px, 29.1765px + 10.9804vw, 128px);
+
+  --header-bar-pad: 8px;
+  --header-bar-y: min(
+      calc((var(--header-h) - var(--logo-h)) * .3),
+      calc((var(--header-h) - var(--logo-h)) / 2 - var(--header-bar-pad))
+  );
+
+  --header-bar-r: calc((var(--header-h) - 2 * var(--header-bar-y)) * .2);
   --nav-gap:   clamp(20px, 17.03px + 0.762vw, 28px);
-  --r-card: clamp(16px, 23.0588px - 0.7843vw, 20px);       /* rayon 20 (Illustrator) */
+  --r-card: clamp(16px, 23.0588px - 0.7843vw, 20px);
   --r-pill: 999px;
 
-  /* ---- Cartes mobilité ----
-     Illustrator, desktop : 318,4998 × 270, rayon 20, padding 20.
-     Les trois « gap » ne sont pas des espaces optiques : ce sont les écarts entre
-     BOÎTES DE LIGNE, la demi-interligne déjà retranchée (cf. le piège plus haut). */
-  --carte-p:         clamp(16px, 23.0588px - 0.7843vw, 20px);  /* padding gauche/droite/haut */
-  --carte-pb:        clamp(16px, 23.0588px - 0.7843vw, 20px);  /* padding bas */
-  --carte-gap-titre: clamp(26.4px, 38.0471px - 1.2941vw, 33px);/* numéro → titre  */
-  --carte-gap-texte: clamp(13.6px, 19.6px - 0.6667vw, 17px);   /* titre  → corps  */
-  --carte-gap-note:  clamp( 8.8px, 12.6824px - 0.4314vw, 11px);/* corps  → note   */
-  --mobilite-pb:     clamp(38px, 30.9647px + 1.8039vw, 47.2px);/* cartes → fin de la bande jaune (59 à 1440) */
+  --carte-p:         clamp(16px, 23.0588px - 0.7843vw, 20px);
+  --carte-gap-titre: clamp(26.4px, 38.0471px - 1.2941vw, 33px);
+  --carte-gap-texte: clamp(13.6px, 19.6px - 0.6667vw, 17px);
+  --carte-gap-note:  clamp( 8.8px, 12.6824px - 0.4314vw, 11px);
+  --mobilite-pb:     clamp(38px, 30.9647px + 1.8039vw, 47.2px);
 
-  /* ---- Hero — relevés sur LES DEUX maquettes (390 · 1440) ----
-     Même convention que la typo : la branche mobile interpole 390 → 900 et
-     atterrit sur la valeur de l'homothétie à 900, donc rien ne saute.
-     Exception : les écarts verticaux propres à l'empilement mobile (--dl-mt,
-     --mots-mt, --intro-mt) restent CONSTANTS de 390 à 900 — sous 900 la typo
-     rétrécit quand la fenêtre s'élargit, faire grandir les blancs en même temps
-     casserait le rythme. */
-  --hero-pt:    clamp(52px, 50.1647px + 0.4706vw, 54.4px); /* header → titre : 52 (390) · 68 (1440) */
-  --hero-pb:    clamp(48px, 25.9765px + 5.6471vw, 76.8px); /* hero → cartes  : 48 (390) · 96 (1440) */
-  --phone-w:    clamp(124px, 49.9765px + 18.9804vw, 220.8px); /* largeur du <img> : 124 (390) · 276 (1440) */
-  --phone-mt:   clamp(-45.6px, -21.6px - 2.6667vw, -32px); /* le mockup remonte SOUS le titre */
+  --hero-pt:    clamp(52px, 50.1647px + 0.4706vw, 54.4px);
+  --hero-pb:    clamp(48px, 25.9765px + 5.6471vw, 76.8px);
+  --phone-w:    clamp(124px, 49.9765px + 18.9804vw, 220.8px);
+  --phone-mt:   clamp(-45.6px, -21.6px - 2.6667vw, -32px);
 
-  /* Écarts de l'empilement (mobile) — voir plus haut : constants sous 900 */
   --gauche-mt:  0px;
-  --dl-mt:      64px;                                      /* mockup → « Téléchargez maintenant » */
-  --mots-mt:    68px;                                      /* badges → Bougez/Cumulez/Profitez */
-  --intro-mt:   59px;                                      /* mots   → « Mobilité » */
-  --intro-gap:  clamp(47px, 41.9529px + 1.2941vw, 53.6px); /* « Mobilité » → chapô : 47 (390) · 67 (1440) */
+  --dl-mt:      64px;
+  --mots-mt:    68px;
+  --intro-mt:   59px;
+  --intro-gap:  clamp(47px, 41.9529px + 1.2941vw, 53.6px);
 
-  /* Bouton « Télécharger l'appli ». Il prend sa taille au CONTENU : la largeur
-     n'a donc pas à être interpolée, elle suit la typo (--fs-eyebrow-sm) et les
-     paddings — le franchissement du breakpoint reste invisible.
-     Paddings : 18 / 32 à 390, 12 / 25,6 à 900 (= 15 / 32 × 0,80, le plancher de --px). */
   --btn-dl-py: clamp(12px, 22.5882px - 1.1765vw, 18px);
   --btn-dl-px: clamp(25.6px, 36.8941px - 1.2549vw, 32px);
 
-  /* ---- Fidélité ----
-     Relevés au pixel : la bande photo va de y=1640 à y=2772 sur la maquette 1440,
-     soit 1440 × 1133 ; de y=1405 à y=2501 sur la maquette 390 (390 × 1097).
-     Les écarts propres à l'empilement mobile (--fid-texte-mt, --fid-cartes-mt)
-     sont CONSTANTS de 390 à 900, cf. la règle générale plus haut. */
-  --fid-pt:        clamp(39.3px, 11.08px + 7.2353vw, 76.2px);   /* haut de la photo → boîte de l'eyebrow : 39,3 (390) · 76,2 (900) */
-  --fid-pb:        clamp(40px, 33.88px + 1.5686vw, 48px);       /* bas des cartes → bas de la photo : 40 (390) · 48 (900) */
-  --fid-titre-mt:  clamp(54.6px, 54.08px + 0.1333vw, 55.3px);   /* eyebrow → titre : quasi constant */
-  --fid-texte-mt:  53.8px;                                      /* titre → paragraphe (mobile seulement) */
-  --fid-cartes-mt: 440px;                                       /* paragraphe → cartes : la « vitrine » où l'on voit les téléphones */
-  /* Titre de section — PARTAGÉ par Fidélité et Commerçant (mêmes relevés au pixel
-     sur les deux maquettes) : cap 27 (390) · cap 56 (1440) → 37,3 · 78. */
-  --fs-titre-section:  clamp(37.3px, 18.106px + 4.9216vw, 62.4px);
+  --fid-pt:        clamp(39.3px, 11.08px + 7.2353vw, 76.2px);
+  --fid-pb:        clamp(40px, 33.88px + 1.5686vw, 48px);
+  --fid-titre-mt:  clamp(54.6px, 54.08px + 0.1333vw, 55.3px);
+  --fid-cartes-mt: 440px;
 
-  /* ---- Commerçant ----
-     Bande jaune PLEINE : y=2773 → 3543 sur la maquette 1440 (771 de haut),
-     y=2502 → 3025 sur la 390 (524 de haut). Tout est relevé à la capitale, la
-     demi-interligne déjà retranchée — ce sont donc des écarts entre BOÎTES.
-     Comme partout, la branche mobile interpole 390 → 900 et atterrit sur la
-     valeur de l'homothétie à 900 (= valeur 1440 × 0,80). */
-  --com-pt:       clamp(37.3px, 27.894px + 2.4118vw, 49.6px);    /* haut de bande → boîte de l'eyebrow : 37,3 (390) · 62 (1440) */
-  --com-titre-mt: clamp(49.6px, 45.318px + 1.098vw, 55.2px);     /* eyebrow → titre : 49,6 (390) · 69 (1440) */
-  --com-texte-mt: clamp(50.64px, 58.863px - 0.9137vw, 55.3px);   /* titre → paragraphe : 55,3 (390) · 63,3 (1440) */
-  --com-dl-mt:    clamp(37.68px, 144.657px - 11.8863vw, 98.3px); /* paragraphe → bouton : 98,3 (390) · 47,1 (1440) */
-  --com-pb:       clamp(51.7px, 27.6275vw - 56.05px, 192.6px);   /* bouton → fin de bande : 51,7 (390) · 240,8 (1440) */
+  --fs-titre-section: clamp(37.3px, 18.106px + 4.9216vw, 62.4px);
+  --titre-texte-mt:   clamp(50.64px, 58.863px - 0.9137vw, 55.3px);
 
-  /* ---- Piliers ----
-     Bande BLANCHE : y=3544 → 3753 sur la maquette 1440 (210 de haut), y=3027 → 3438
-     sur la 390. Trois colonnes égales en desktop, empilées en mobile. */
-  --pil-pt:       clamp(32px, 37.294px - 0.5882vw, 35px);       /* haut → boîte du titre : 35 (390) · 40 (1440) */
-  --pil-pb:       clamp(38.5px, 25.806px + 3.2549vw, 55.1px);   /* texte → bas de bande : 38,5 (390) · 68,9 (1440) */
-  --pil-picto:    clamp(28px, 24.941px + 0.7843vw, 32px);       /* 28 (390) · 40 (1440), carré */
-  --pil-gap:      clamp(12px, 10.777px + 0.3137vw, 13.6px);     /* picto → titre : 12 (390) · 17 (1440) */
-  --pil-texte-mt: clamp(14.8px, 7.52px + 1.8667vw, 24.32px);    /* titre → texte : 14,8 (390) · 30,4 (1440) */
-  --pil-sep-e:    clamp(1px, 0.5411px + 0.11765vw, 1.6px);      /* épaisseur du trait : 1 (390) · 2 (1440) */
-  --pil-sep-l:    clamp(48px, 69.176px - 2.3529vw, 60px);       /* longueur du trait horizontal (mobile) */
-  /* Écarts propres à l'empilement mobile → CONSTANTS de 390 à 900 (cf. règle générale) :
-     36,5 sous le texte + le trait + 37 au-dessus du picto suivant. */
+  --com-pt:       clamp(37.3px, 27.894px + 2.4118vw, 49.6px);
+  --com-titre-mt: clamp(49.6px, 45.318px + 1.098vw, 55.2px);
+  --com-dl-mt:    clamp(37.68px, 144.657px - 11.8863vw, 98.3px);
+  --com-pb:       clamp(51.7px, 27.6275vw - 56.05px, 192.6px);
+
+  --pil-pt:       clamp(32px, 37.294px - 0.5882vw, 35px);
+  --pil-pb:       clamp(38.5px, 25.806px + 3.2549vw, 55.1px);
+  --pil-picto:    clamp(28px, 24.941px + 0.7843vw, 32px);
+  --pil-gap:      clamp(12px, 10.777px + 0.3137vw, 13.6px);
+  --pil-texte-mt: clamp(14.8px, 7.52px + 1.8667vw, 24.32px);
+  --pil-sep-e:    clamp(1px, 0.5411px + 0.11765vw, 1.6px);
+  --pil-sep-l:    clamp(48px, 69.176px - 2.3529vw, 60px);
+
   --pil-stack:    74.5px;
-  --pil-sep-mt:   37px;                                          /* trait → picto suivant */
+  --pil-sep-mt:   37px;
 
-  /* ---- En savoir plus ----
-     Bande CRÈME : y=3754 → 4648 sur la maquette 1440, y=3439 → ? sur la 390 ; tout
-     est centré. La hauteur de la bande est surtout celle de l'illustration skyline
-     qui vient dessous (section 8), pas celle du texte. */
-  --esp-pt:       clamp(72.8px, 51.39px + 5.4902vw, 100.8px);    /* haut → boîte du titre : 72,8 (390) · 126 (1440) */
-  --esp-texte-mt: clamp(35.32px, 44.108px - 0.9765vw, 40.3px);   /* titre → paragraphe : 40,3 (390) · 44,15 (1440) */
-  --esp-cta-mt:   clamp(19.8px, 49.62px - 3.3137vw, 36.7px);     /* paragraphe → bouton : 36,7 (390) · 24,75 (1440) */
-  --mobilite-air: 160px;                                         /* air au-dessus du mot « Mobilité » quand on y saute : 200 à 1440 */
-  --illu-mt:      clamp(136px, 160.706px - 2.7451vw, 150px);     /* bouton → HAUT DU VIEWBOX de l’illustration : 150 (390) · 170 (1440) */
-  --fs-esp-titre: clamp(33.2px, 11.9373vw - 13.36px, 94.08px);   /* cap 24 (390) · cap 85 (1440) → 33,2 · 117,6 */
-  --fs-esp-texte: clamp(16px, 11.412px + 1.1765vw, 22px);        /* cap 12 (390) · cap 20 (1440) → 16 · 27,5 */
-  --lh-esp-texte: clamp(19px, 14.871px + 1.0588vw, 24.4px);      /* interligne EN PX : 19 (390) · 30,5 (1440) */
+  --esp-pt:       clamp(72.8px, 51.39px + 5.4902vw, 100.8px);
+  --esp-texte-mt: clamp(35.32px, 44.108px - 0.9765vw, 40.3px);
+  --esp-cta-mt:   clamp(19.8px, 49.62px - 3.3137vw, 36.7px);
+  --mobilite-air: 160px;
+  --illu-mt:      clamp(136px, 160.706px - 2.7451vw, 150px);
+  --fs-esp-titre: clamp(33.2px, 11.9373vw - 13.36px, 94.08px);
+  --fs-esp-texte: clamp(16px, 11.412px + 1.1765vw, 22px);
+  --lh-esp-texte: clamp(19px, 14.871px + 1.0588vw, 24.4px);
 
-  /* Pastille « fleurus.be » : même composant que le bouton de téléchargement
-     (.btn-dl), en jaune et plus petite — 168 × 34 à 390, 180 × 38 à 1440. */
-  --fs-esp-btn:   clamp(14.4px, 18.106px - 0.4118vw, 16.5px);    /* cap 12 (390) · cap 13 (1440) → 16,5 · 18 */
+  --fs-esp-btn:   clamp(14.4px, 18.106px - 0.4118vw, 16.5px);
   --btn-esp-py:   clamp(5.84px, 6.652px - 0.0902vw, 6.3px);
   --btn-esp-px:   clamp(29.6px, 40.894px - 1.2549vw, 36px);
 
-  /* ---- Nos partenaires (bandeau défilant) ----
-     200 de haut à 1440 (valeur donnée par Sylvain), 160 sous 900 — soit 0,80 × 200,
-     la constante rejoint donc l’homothétie pile au breakpoint.
-     Les logos sont à leur TAILLE NATURELLE à 1440 (boîte de 51,6 pour Ville de
-     Fleurus, Wallonie et Shop In ; 39,01 pour digitalwallonia) et à 0,63 × à 390. */
-  --part-h:           240px;                                      /* 300 à 1440 */
-  --part-gap:         48px;                                       /* eyebrow → logos : 60 à 1440 */
-  --part-logo-h:      clamp(63px, 50px + 3.3333vw, 80px);         /* 100 à 1440 */
-  --part-logo-dw:     clamp(47.6px, 37.78px + 2.5185vw, 60.5px);  /* 75,6 à 1440 (même ratio) */
-  --part-logo-gap:    clamp(31px, 22.282px + 2.2353vw, 42.4px);   /* écart mini entre logos */
-  /* Repli seulement : le JS recalcule la durée à chaque largeur pour que la vitesse
-     du bandeau soit la MÊME sur tous les écrans (50 px/s). Sans JS, on garde 28 s. */
+  --part-h:           240px;
+  --part-gap:         48px;
+  --part-logo-h:      clamp(63px, 50px + 3.3333vw, 80px);
+  --part-logo-dw:     clamp(47.6px, 37.78px + 2.5185vw, 60.5px);
+  --part-logo-gap:    clamp(31px, 22.282px + 2.2353vw, 42.4px);
+
   --part-duree:       28s;
 
-  /* ---- Footer ----
-     Noir, 227 de haut sur LES DEUX maquettes (desktop 1440 : y=4655 → 4882 ;
-     mobile : 3913 → 4140). ⚠️ Ses marges latérales sont de **120**, pas les 65 du
-     reste du site : les logos comme les mentions s'alignent sur 120 / 1320. */
-  --foot-marge:       clamp(20px, 14.902vw - 38.12px, 96px);      /* 20 (390) · 120 (1440) */
-  --foot-logo-move:   clamp(44px, 37.71px + 1.6118vw, 52px);      /* logo Move in : 44 (390) · 65 (1440) */
-  --foot-haut-gap:    28px;   /* logo → bulles quand la rangée s'empile (mobile) */
-  --foot-pt:          clamp(14.6px, 0.682px + 3.5686vw, 32.8px);  /* haut → 1re rangée : 14,6 (390) · 41 (1440) */
-  --foot-pb:          clamp(36.8px, 33.252px + 0.9098vw, 41.44px);/* mentions → bas : 36,8 (390) · 51,8 (1440) */
-  --foot-mentions-mt: clamp(51.52px, 54.308px - 0.3098vw, 53.1px);/* logos → mentions : 53,1 (390) · 64,4 (1440) */
-  /* Bulles — valeurs ILLUSTRATOR (Sylvain, 05/09/2026) : pastille 36, icône 20.
-     Elles retombent sur le relevé au pixel : 3 × 36 + 2 × 12 = 132 = le bloc
-     1188 → 1320.
-     ⚠️ EN MOBILE LES BULLES SONT DOUBLÉES par rapport au relevé — 40 au lieu des 20
-     mesurés à 390 (demande Sylvain, 05/09/2026 : à 20 px elles étaient minuscules au
-     pouce). Tout le groupe est doublé — pastille, icône ET écart —, la proportion
-     20/36 de la maquette est donc conservée. Les trois échelles redescendent ensuite
-     vers la valeur de l'homothétie à 900 (28,8 / 16 / 9,6) : rien ne saute au
-     franchissement du breakpoint. */
-  --bulle-d:          clamp(28.8px, 48.565px - 2.1961vw, 40px);   /* 40 (390) · 36 (1440) */
-  --bulle-gap:        clamp(9.6px, 17.365px - 0.8627vw, 14px);    /* 14 (390) · 12 (1440) */
-  --bulle-icone:      clamp(16px, 26.941px - 1.2157vw, 22.2px);   /* 22,2 (390) · 20 (1440) */
-  /* Mentions : 14 à 1440 (cap 10). La maquette mobile descend à 9 px — refusé, on
-     garde 12, quitte à ce que la ligne se replie en deux (cf. section 12). */
-  --fs-foot:          12px;
-  --foot-legal-gap:   clamp(16px, 12.902px + 0.7941vw, 22.5px);   /* écart entre les deux liens : 25 à 1440 */
+  --foot-marge:       clamp(20px, 14.902vw - 38.12px, 96px);
+  --foot-logo-move:   clamp(44px, 37.71px + 1.6118vw, 52px);
+  --foot-haut-gap:    28px;
+  --foot-pt:          clamp(14.6px, 0.682px + 3.5686vw, 32.8px);
+  --foot-pb:          clamp(36.8px, 33.252px + 0.9098vw, 41.44px);
+  --foot-mentions-mt: clamp(51.52px, 54.308px - 0.3098vw, 53.1px);
 
-  /* Trame de rues — largeur RÉELLE en px (et non plus en pixels de maquette).
-     3500 est l'échelle validée en desktop ; on la garde telle quelle en mobile pour que
-     les routes aient la même taille apparente, quitte à ce que la carte déborde largement
-     de l'écran — c'est le rendu voulu. La valeur redescend ensuite vers 2187,5 à 900 pour
-     rejoindre l'homothétie sans cassure. Seul chiffre à toucher pour régler le zoom. */
+  --bulle-d:          clamp(28.8px, 48.565px - 2.1961vw, 40px);
+  --bulle-gap:        clamp(9.6px, 17.365px - 0.8627vw, 14px);
+  --bulle-icone:      clamp(16px, 26.941px - 1.2157vw, 22.2px);
+
+  --fs-foot:          12px;
+  --foot-legal-gap:   clamp(16px, 12.902px + 0.7941vw, 22.5px);
+
   --trame-w: clamp(2800px, 4035.29px - 137.2549vw, 3500px);
 
-
-  /* Courbe des apparitions au scroll (section 13) : départ franc, arrivée posée. */
   --t-reveal: cubic-bezier(.22, 1, .36, 1);
 
   --t-fast: 160ms ease;
-  --t-header: 300ms ease-in-out;            /* escamotage du header */
-  --t-link: 200ms ease-in-out;                             /* soulignement de nav */
-  --t-cue:  1.5s;                                          /* boucle du scroll cue */
-  --t-menu: 620ms cubic-bezier(.77, 0, .18, 1);            /* rideau du menu mobile */
+  --t-header: 300ms ease-in-out;
+  --t-link: 200ms ease-in-out;
+  --t-cue:  1.5s;
+  --t-menu: 620ms cubic-bezier(.77, 0, .18, 1);
 }
 
-/* Bascule de grille : le seul breakpoint dur du projet */
 @media (min-width: 900px) {
   :root { --cols: 12; }
 }
 
-
-/* ============ 01. RESET & BASE ============ */
 *, *::before, *::after { box-sizing: border-box; }
 
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
-  /* ⚠️ ZÉRO, et non la hauteur du header (demande Sylvain, 05/09/2026) : les liens
-     de la nav doivent caler le HAUT DE LA SECTION sur le haut du viewport. Le header
-     n'étant pas sticky, rien ne vient recouvrir le contenu — la réserve n'a plus lieu
-     d'être. */
+
   scroll-padding-top: 0;
 }
 
@@ -292,11 +172,7 @@ body {
   line-height: var(--lh-body);
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
-  /* ⚠️ `clip` et NON `hidden` : `overflow-x: hidden` transforme le body en conteneur
-     de défilement, ce qui casse `position: sticky` ET les animations de scroll de la
-     section 13 (leur timeline se résout alors sur un conteneur qui ne défile pas, et
-     l'animation reste figée sur son premier état). `clip` recadre sans créer de
-     conteneur. Garde-fou seulement : le balayage 320 → 1920 ne montre aucun débordement. */
+
   overflow-x: clip;
 
   &.is-locked { overflow: hidden; }
@@ -325,20 +201,11 @@ button {
   border-radius: 2px;
 }
 
-
-/* ============ 02. MISE EN PAGE ============ */
-
-/* Conteneur : marges latérales fluides, plafonné à --content-max */
 .container {
   width: min(100% - (var(--marge) * 2), calc(var(--content-max) - var(--marge) * 2));
   margin-inline: auto;
 }
 
-
-/* ============ 03. RÔLES TYPOGRAPHIQUES ============
-   La police suit le RÔLE, pas la balise. */
-
-/* Barlow Condensed — gros titres display */
 .display {
   font-family: var(--ff-display);
   font-weight: 800;
@@ -348,18 +215,13 @@ button {
   letter-spacing: .005em;
 }
 
-/* Barlow Condensed, petit (piliers) */
 .display--s { font-size: var(--fs-display-s); }
 
-/* Titre de section, Barlow Condensed 800 DROIT (Achetez local…, Fidéliser vos
-   clients) : 78 / interligne 70 à 1440, 37,3 / 33,5 à 390 — le seul rôle display
-   qui ne suit pas --fs-display-xl. Le .897 est le même ratio aux deux bouts. */
 .titre-section {
   font-size: var(--fs-titre-section);
   line-height: .897;
 }
 
-/* Inter — label / eyebrow */
 .eyebrow {
   font-family: var(--ff-text);
   font-weight: 700;
@@ -369,18 +231,11 @@ button {
   letter-spacing: .04em;
 }
 
-/* Inter — chapô du hero */
 .lead {
   font-size: var(--fs-lead);
   line-height: var(--lh-lead);
 }
 
-/* Soulignement qui se déploie au survol — rôle PARTAGÉ : liens de la nav du header
-   et liens légaux du footer (demande Sylvain, 05/09/2026).
-   Fermé  : ancré à droite, largeur 0
-   Ouvert : ancré à gauche, largeur 100 %  →  il se déploie de gauche à droite et se
-   rétracte vers la droite. Le trait est en `::after` absolu : il ne prend aucune
-   place, la hauteur de ligne du parent n'est donc pas modifiée. */
 .souligne {
   position: relative;
   display: inline-block;
@@ -389,7 +244,7 @@ button {
     content: '';
     position: absolute;
     right: 0;
-    bottom: 0;
+    bottom: var(--souligne-bottom, 0);
     width: 0;
     height: .1rem;
     background-color: currentColor;
@@ -403,10 +258,6 @@ button {
   }
 }
 
-
-/* ============ 04. HEADER ============ */
-
-/* Le sprite SVG (le <symbol> du logo) ne doit rien occuper */
 .sprite {
   position: absolute;
   width: 0;
@@ -414,10 +265,6 @@ button {
   overflow: hidden;
 }
 
-/* Logo inline — recolorable via `color`, comme le prévoit CLAUDE.md.
-   Largeur calculée explicitement (ratio du viewBox 51.96/43.32 = 1.19945) :
-   avec `width: auto` le navigateur dimensionne le <a> avant de connaître la
-   largeur du SVG, et `max-width: 100%` rognait alors le « e ». */
 .logo {
   height: var(--logo-h);
   width: calc(var(--logo-h) * 1.19945);
@@ -428,50 +275,47 @@ button {
   transition: color var(--t-link);
 }
 
-/* Fond TRANSPARENT : c'est `.bande-jaune` qui remonte sous le header, pour que le
-   dégradé et la trame de rues soient continus depuis le haut de page (comme la maquette). */
-/* ⚠️ HEADER STICKY QUI SE DÉROBE — remplace le `position: relative` d'origine
-   (demande Sylvain, 05/09/2026, d'après klarna.com). Il descend avec la page, se
-   RETIRE quand on scrolle vers le bas et REVIENT dès qu'on remonte un peu.
-
-   `sticky` et non `fixed` : l'élément GARDE SA PLACE dans le flux, donc le
-   `margin-top` négatif du hero (qui le fait remonter sous le header) continue de
-   fonctionner tel quel — en `fixed` toute la page se serait décalée de 160 px.
-
-   Trois états, posés par script.js (bloc 5) :
-   · rien           — en haut de page : transparent, le dégradé du hero passe dessous ;
-   · `--pose`      — dès qu'on a quitté le haut : fond jaune, sinon les liens noirs
-                      passeraient sur les sections claires sans rien pour les porter ;
-   · `--cache`     — escamoté vers le haut. */
 .header {
   position: sticky;
   top: 0;
   z-index: 100;
-  background-color: transparent;
-  transition: translate var(--t-header), background-color var(--t-header);
+  transition: translate var(--t-header);
 
-  &.header--pose  { background-color: var(--jaune); }
-  &.header--cache { translate: 0 -100%; }
+  &::before {
+    content: "";
+    position: absolute;
+    inset-block: var(--header-bar-y);
+    inset-inline: calc(var(--marge) / 2);
+    max-width: calc(var(--content-max) - var(--marge));
+    margin-inline: auto;
+    z-index: -1;
+    border-radius: var(--header-bar-r);
+    background-color: transparent;
+    transition: background-color var(--t-header);
+  }
+
+  &.header--pose::before { background-color: var(--jaune); }
+  &.header--cache        { translate: 0 -100%; }
 }
 
-.header__inner {
+:is(.header__inner, .menu__top) {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--gutter);
-  height: var(--header-h);          /* plafonnée à 160px */
+  height: var(--header-h);
 }
 
 .header__logo {
   flex: none;
   display: block;
 
-  /* Survol : le logo passe de blanc à noir */
+  & .logo { color: var(--noir); }
+
   &:hover .logo,
-  &:focus-visible .logo { color: var(--noir); }
+  &:focus-visible .logo { color: var(--blanc); }
 }
 
-/* ---- Nav desktop ---- */
 .nav { display: none; }
 
 @media (min-width: 900px) {
@@ -484,8 +328,6 @@ button {
   gap: var(--nav-gap);
 }
 
-/* Typo de la nav. Le soulignement, lui, vient du rôle `.souligne` (section 03),
-   partagé avec les liens légaux du footer. */
 .nav-link {
   font-weight: 700;
   font-size: var(--fs-nav);
@@ -496,7 +338,6 @@ button {
   padding-block: 4px;
 }
 
-/* ---- Burger (mobile uniquement) ---- */
 .burger {
   flex: none;
   display: grid;
@@ -520,10 +361,6 @@ button {
   .burger { display: none; }
 }
 
-
-/* ---- Menu mobile plein écran ----
-   Ouverture en rideau : le panneau se déroule du haut vers le bas,
-   puis les liens montent en cascade. 100% CSS, le JS ne pose qu'une classe. */
 .menu {
   position: fixed;
   inset: 0;
@@ -533,14 +370,12 @@ button {
   background: var(--noir);
   color: var(--blanc);
 
-  /* État fermé */
   visibility: hidden;
   clip-path: inset(0 0 100% 0);
   transition:
     clip-path var(--t-menu),
     visibility 0s linear var(--t-menu-out, 620ms);
 
-  /* Le logo du menu est blanc et passe au jaune au survol */
   & .menu__logo:hover .logo,
   & .menu__logo:focus-visible .logo { color: var(--jaune); }
 
@@ -549,16 +384,6 @@ button {
     clip-path: inset(0 0 0 0);
     transition: clip-path var(--t-menu), visibility 0s;
   }
-}
-
-/* Bandeau haut du menu : même hauteur et mêmes marges que le header,
-   pour que le logo reste exactement à sa place à l'ouverture. */
-.menu__top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--gutter);
-  height: var(--header-h);
 }
 
 .menu__logo {
@@ -587,7 +412,6 @@ button {
   &:hover { color: var(--jaune); }
 }
 
-/* Liens alignés à gauche */
 .menu__nav {
   display: flex;
   align-items: center;
@@ -600,22 +424,16 @@ button {
   text-align: left;
   width: 100%;
 
-  /* Cascade : chaque ligne monte et s'éclaircit avec un léger décalage */
   & li {
     overflow: hidden;
   }
 
   & a {
-    display: inline-block;
-    position: relative;
-    font-family: var(--ff-display);
-    font-weight: 800;
+    --souligne-bottom: .06em;
     font-size: clamp(38px, 12vw, 68px);
     line-height: 1.12;
-    text-transform: uppercase;
     color: var(--blanc);
 
-    /* état fermé */
     opacity: 0;
     transform: translateY(105%);
     transition:
@@ -623,25 +441,7 @@ button {
       transform 620ms cubic-bezier(.22, 1, .36, 1),
       color var(--t-link);
 
-    /* même soulignement que la nav desktop */
-    &::after {
-      content: '';
-      position: absolute;
-      right: 0;
-      bottom: .06em;
-      width: 0;
-      height: .1rem;
-      background-color: currentColor;
-      transition: width var(--t-link);
-    }
-
     &:hover { color: var(--jaune); }
-
-    &:hover::after,
-    &:focus-visible::after {
-      left: 0;
-      width: 100%;
-    }
   }
 }
 
@@ -655,12 +455,6 @@ button {
 .menu.is-open .menu__list li:nth-child(3) a { transition-delay: 420ms, 420ms, 0s; }
 .menu.is-open .menu__list li:nth-child(4) a { transition-delay: 500ms, 500ms, 0s; }
 
-
-/* ============ 05. BANDE JAUNE (hero + cartes mobilité) ============
-   Elle remonte sous le header transparent : le dégradé et la trame de rues
-   partent donc de y=0, exactement comme sur la maquette.
-   Le fond n'est PAS l'aplat --jaune : c'est un dégradé diagonal relevé sur la
-   maquette (#ffe330 en bas-gauche → #ffea63 en haut-droite). */
 .bande-jaune {
   position: relative;
   margin-top: calc(-1 * var(--header-h));
@@ -670,28 +464,17 @@ button {
     linear-gradient(to top right, var(--degrade-a), var(--degrade-b));
   background-repeat: no-repeat, no-repeat;
   background-position: center 60%, center top;
-  /* ⚠️ On dimensionne par la HAUTEUR, pas par la largeur.
-     Le SVG est en portrait (125 × 150, donc hauteur = largeur × 1,2). Piloté par la
-     largeur il devenait plus COURT que la bande en mobile — où celle-ci fait le double
-     de haut, les 4 cartes étant empilées — et le `60%` le repoussait vers le bas : tout
-     le haut du hero se retrouvait sans carte. Le `max(100%, …)` garantit qu'il couvre
-     toujours la bande ; au-delà, --trame-w reprend la main et reste le seul chiffre à
-     toucher pour régler le zoom. */
+
   background-size:
     auto max(100%, calc(var(--trame-w) * 1.2)),
     100% 100%;
 }
 
-
-/* ============ 06. HERO ============ */
 .hero {
   padding-top: var(--hero-pt);
   padding-bottom: var(--hero-pb);
 }
 
-/* ---- Titre « Rejoignez le Move » (SVG vectorisé, largeur naturelle 876,57) ----
-   Il n'est PAS homothétique : pleine largeur de contenu à 390, taille naturelle
-   à 1440. Voir --titre-w. */
 .hero__titre {
   & img {
     width: min(100%, var(--titre-w));
@@ -700,22 +483,16 @@ button {
   }
 }
 
-/* ---- Grille des blocs ---- */
 .hero__grille {
   display: grid;
   grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
   column-gap: var(--gutter);
-  row-gap: 0;                           /* le rythme vertical est porté par les margin-top */
+  row-gap: 0;
 
-  /* Mobile : tout en pleine largeur, empilé */
   & > *,
   & > .hero__gauche > * { grid-column: 1 / -1; }
 }
 
-/* Sous 900px la colonne de gauche du desktop n'existe pas : `display: contents`
-   la dissout et ses trois blocs redeviennent des cases de la grille, ce qui permet
-   aux mots de venir s'intercaler entre les badges et le chapô — l'ordre de la
-   maquette mobile : mockup → badges → Bougez/Cumulez/Profitez → Mobilité. */
 .hero__gauche { display: contents; }
 
 .hero__phone  { order: 1; }
@@ -723,23 +500,21 @@ button {
 .hero__mots   { order: 3; margin-top: var(--mots-mt); }
 .hero__intro  { order: 4; margin-top: var(--intro-mt); }
 
-/* ---- Mockup iPhone ---- */
 .hero__phone {
-  margin-top: var(--phone-mt);          /* négatif : il remonte sous le titre */
+  margin-top: var(--phone-mt);
   display: grid;
   justify-items: center;
 
   & img {
     width: var(--phone-w);
     height: auto;
-    /* L'ombre n'est pas dans le PNG : elle est ajoutée ici (lumière en haut à gauche) */
+
     filter: drop-shadow(-20px 20px 30px rgba(224, 175, 14, 0.7));
   }
 }
 
-/* ---- « Scrollez pour découvrir » : piste fixe + barre animée ---- */
 .scroll-cue {
-  display: none;                        /* affordance desktop uniquement */
+  display: none;
   gap: 16px;
   align-items: flex-start;
 
@@ -748,20 +523,15 @@ button {
   --piste-c: rgb(255 255 255 / .4);
 }
 
-/* La piste : fine ligne repère, fixe. La barre blanche est plus large et se superpose. */
 .scroll-cue__piste {
   position: relative;
   flex: none;
   width: 3px;
   height: var(--piste-h);
-  overflow: hidden;                     /* garde-fou : la barre etiree ne deborde jamais */
+  overflow: hidden;
   background: linear-gradient(var(--piste-c), var(--piste-c)) center / 2px 100% no-repeat;
 }
-/* Trois animations indépendantes sur le même élément, chacune avec sa propre courbe.
-   C'est possible parce qu'on anime "translate" et "scale" (propriétés distinctes)
-   plutôt qu'un "transform" unique : la descente peut être en ease-out marqué pendant
-   que l'étirement suit un ease-in-out, sans que l'une écrase l'autre.
-   Le fondu part de 0 et revient à 0 : le retour en haut est donc invisible. */
+
 .scroll-cue__barre {
   position: absolute;
   inset-block-start: 0;
@@ -770,27 +540,18 @@ button {
   height: var(--barre-h);
   background: var(--blanc);
   border-radius: 2px;
-  /* Origine au CENTRE, et non en haut : la barre se déforme autour d'elle-même
-     (squash & stretch) au lieu de s'allonger depuis un bord fixe — sans quoi le
-     mouvement lu est « une barre qui grandit », comme le soulignement de la nav. */
+
   transform-origin: center;
   animation:
     scroll-cue-descente  var(--t-cue) cubic-bezier(.25, .65, .3, 1) infinite,
     scroll-cue-etirement var(--t-cue) cubic-bezier(.4, 0, .2, 1)    infinite;
 }
 
-/* Descente : la barre TRAVERSE la piste. Elle part entièrement au-dessus du repère
-   et finit entièrement en dessous — l'`overflow: hidden` de la piste la masque aux
-   deux extrémités, donc le retour en boucle est invisible sans recourir à l'opacité.
-   Courbe très ease-out : entre vite, ressort lentement. */
 @keyframes scroll-cue-descente {
   from { translate: 0 calc(-1 * var(--barre-h)); }
   to   { translate: 0 var(--piste-h); }
 }
 
-/* Étirement : la barre est déjà à sa taille pleine au départ. Elle s'allonge
-   pendant la phase rapide puis se retasse en fin de course — c'est une déformation
-   due à la vitesse, pas une apparition. */
 @keyframes scroll-cue-etirement {
   0%   { scale: 1 1;    }
   32%  { scale: 1 1.30; }
@@ -807,27 +568,15 @@ button {
   display: grid;
   gap: var(--intro-gap);
 
-  /* C’est la cible de l’ancre #mobilite (le lien « Mobilité » de la nav).
-     ⚠️ 200 px de RÉSERVE AU-DESSUS du mot « Mobilité » — demande Sylvain,
-     05/09/2026 : sans elle le mot se collait au bord haut de l’écran.
-     160 sous 900 (= 0,80 × 200), pour ne pas manger un petit écran. */
   scroll-margin-top: var(--mobilite-air);
 }
 
-/* Mobile : le bloc de téléchargement est CENTRÉ sur la maquette (il redevient
-   aligné à gauche dans la colonne du desktop, cf. le bloc ≥900px). */
 .hero__dl {
   display: grid;
   justify-items: center;
   text-align: center;
 }
 
-/* ---- Bouton « Télécharger l'appli » ----
-   Un seul CTA depuis le 05/09/2026 : plus de label ni de badges stores.
-   Repos : pastille BLANCHE, texte NOIR. Au survol le noir remonte du bas vers le
-   haut (scaleY depuis transform-origin: bottom, même mécanique que les anciens
-   badges) et le texte passe au blanc. Pas d'ombre, pas de déplacement.
-   Le store visé est choisi par le JS de fin de page selon l'appareil. */
 .btn-dl {
   position: relative;
   isolation: isolate;
@@ -844,9 +593,7 @@ button {
   line-height: 1.3;
   text-transform: uppercase;
   letter-spacing: var(--ls-label);
-  /* Recentre : le tracking ajoute un blanc APRÈS la dernière lettre. On décale donc
-     de la MOITIÉ de ce blanc, pas de sa totalité — l'ancienne valeur (le tracking
-     entier) sur-corrigeait et poussait le texte 1,1 px trop à droite (mesuré). */
+
   text-indent: calc(var(--ls-label) / 2);
   text-align: center;
   color: var(--noir);
@@ -871,23 +618,16 @@ button {
   }
 }
 
-/* Variante « fleurus.be » de la section En savoir plus : même mécanique de survol,
-   mais la pastille est JAUNE au repos et plus petite (180 × 38 à 1440). */
 .btn-dl--jaune {
   padding: var(--btn-esp-py) var(--btn-esp-px);
   background: var(--jaune);
   font-size: var(--fs-esp-btn);
 }
 
-/* ---- Bougez / Cumulez / Profitez ---- */
 .hero__mots {
   height: fit-content;
-  font-family: var(--ff-display);
-  font-weight: 800;
   font-size: var(--fs-display-xl);
   line-height: var(--lh-xl);
-  text-transform: uppercase;
-  letter-spacing: .005em;
   display: grid;
   justify-items: start;
 }
@@ -895,50 +635,34 @@ button {
 .hero__mot--blanc { color: var(--blanc); }
 .hero__mot--noir  { color: var(--noir); }
 
-
-/* ---- DESKTOP : le hero est une HOMOTHÉTIE de la maquette ----
-   Au lieu d'interpoler chaque valeur indépendamment, tout est exprimé en
-   « pixels de maquette » : `--px` vaut 1px à 1440 et rétrécit proportionnellement
-   en dessous. Les proportions relevées sur la maquette sont donc conservées à
-   l'identique de 900px à 1440px, puis figées au-delà. */
 @media (min-width: 900px) {
-
   :root {
-    /* Grille et header : mêmes proportions que la maquette */
     --marge:    calc( 65 * var(--px));
     --gutter:   calc( 12 * var(--px));
     --header-h: calc(160 * var(--px));
     --logo-h:   calc( 60 * var(--px));
     --nav-gap:  calc( 28 * var(--px));
 
-    /* Typo du hero, aux valeurs relevées à 1440 sur la maquette desktop.
-       `max(12px, …)` : seule entorse à l'homothétie, un plancher de lisibilité
-       sur les deux plus petits labels. */
-    --fs-nav:        max(12px, calc( 14   * var(--px)));   /* cap 10 relevé */
-    --fs-eyebrow-sm: max(12px, calc( 16   * var(--px)));   /* cap 12 relevé → 16 arrondi */
-    --fs-eyebrow:              calc( 20   * var(--px));    /* Inter Bold 20pt */
-    --fs-lead:                 calc( 20   * var(--px));    /* interligne 24 */
-    --fs-display-xl:           calc( 78   * var(--px));    /* cap 56, interligne 70 */
-    --lh-xl:                   .897;                       /* 70 / 78 relevé desktop */
+    --fs-nav:        max(12px, calc( 14   * var(--px)));
+    --fs-eyebrow-sm: max(12px, calc( 16   * var(--px)));
+    --fs-eyebrow:              calc( 20   * var(--px));
+    --fs-lead:                 calc( 20   * var(--px));
+    --fs-display-xl:           calc( 78   * var(--px));
+    --lh-xl:                   .897;
 
-    --titre-w:                 calc(877  * var(--px));     /* taille naturelle du SVG */
+    --titre-w:                 calc(877  * var(--px));
 
-    /* Homothétie : 3500 à 1440, 2187,5 à 900 — exactement là où la branche mobile arrive. */
     --trame-w:                 calc(3500 * var(--px));
-  }
 
-  :root {
-    --phone-w:   calc(276 * var(--px));   /* 254 px visibles + les marges transparentes du PNG */
-    --phone-mt:  calc(-57 * var(--px));   /* haut du mockup relevé à y = 509, sous le titre */
-    --gauche-mt: calc( 29 * var(--px));   /* haut de la piste du cue relevé à y = 580 */
-    /* Relevé = 121. La piste du cue reste à 150 (au lieu des 93 de la maquette) :
-       on retranche les 57 px de trop pour que les badges retombent à leur y relevé. */
+    --phone-w:   calc(276 * var(--px));
+    --phone-mt:  calc(-57 * var(--px));
+    --gauche-mt: calc( 29 * var(--px));
+
     --dl-mt:     calc( 64 * var(--px));
-    --intro-mt:  calc(169 * var(--px));   /* badges (fin y = 879) → « Mobilité » (y = 1054) */
-    --mots-mt:   calc(182 * var(--px));   /* « Bougez » : capitale relevée à y = 744 */
+    --intro-mt:  calc(169 * var(--px));
+    --mots-mt:   calc(182 * var(--px));
     --intro-gap: calc( 67 * var(--px));
 
-    /* Pastille de 50 de haut, comme les anciens badges : 16 × 1,3 + 2 × 15 ≈ 50. */
     --btn-dl-py:    calc(15 * var(--px));
     --btn-dl-px:    calc(32 * var(--px));
   }
@@ -950,11 +674,8 @@ button {
 
   .hero__grille { column-gap: calc(12 * var(--px)); }
   .hero__grille > *,
-  .hero__grille > .hero__gauche > * { grid-column: auto; }   /* annule le 1 / -1 mobile */
+  .hero__grille > .hero__gauche > * { grid-column: auto; }
 
-  /* La colonne de gauche redevient un vrai bloc : cue, badges puis chapô empilés.
-     Elle déborde sur la colonne 5 (le chapô fait 500 px de large sur la maquette),
-     mais le mockup est centré dans 5/9 et ne commence qu'à x = 592 : rien ne se touche. */
   .hero__gauche {
     display: grid;
     align-content: start;
@@ -972,26 +693,15 @@ button {
   .scroll-cue {
     display: flex;
     gap: calc(13 * var(--px));
-    --piste-h: calc(150 * var(--px));   /* conservée : la maquette relève 93 */
+    --piste-h: calc(150 * var(--px));
     --barre-h: calc( 34 * var(--px));
   }
-
 }
 
-
-/* ============ 07. MOBILITÉ — les 4 cartes d’étapes ============
-   Illustrator (desktop) : 318,4998 × 270, rayon 20, padding 20, fond crème
-   #fffbf0 — soit 4 cartes de 3 colonnes sur 12 avec la gouttière de 12.
-   Relevés maquette : cartes de y=1310 à 1579, bande jaune close 59 px plus bas.
-   Sous 900 px les cartes s'EMPILENT en pleine largeur (décision Sylvain) : la
-   maquette mobile les met 2 par rangée, ce qui tombait à 8 px de corps. */
 .mobilite {
   padding-bottom: var(--mobilite-pb);
 }
 
-/* Sous 900 px la grille des cartes est INTRINSÈQUE, pas calée sur les 4 colonnes :
-   `auto-fit` fait passer les cartes de 1 par rangée (téléphone) à 2 × 2 (~680 px et
-   au-delà) sans le moindre breakpoint, puis le bloc ≥900 reprend les 4 de front. */
 .cartes {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
@@ -1004,15 +714,9 @@ button {
   align-items: flex-start;
   background: var(--creme);
   border-radius: var(--r-card);
-  padding: var(--carte-p) var(--carte-p) var(--carte-pb);
+  padding: var(--carte-p);
 }
 
-/* Numéro 01–04.
-   ⚠ Piège de la demi-interligne : en `line-height: 1`, la boîte de Barlow
-   Condensed dépasse de ~18 % au-dessus des chiffres (ascender hhea 1,00 em contre
-   une capHeight de 0,72 em). Le margin négatif annule exactement le padding haut :
-   la boîte démarre au bord de la carte et les chiffres retombent 18 px plus bas,
-   à l'y relevé sur la maquette. */
 .carte__num {
   font-family: var(--ff-display);
   font-weight: 800;
@@ -1022,20 +726,19 @@ button {
   margin-top: calc(-1 * var(--carte-p));
 }
 
-/* Inter, même en <h3> : la police suit le rôle, pas la balise. */
 .carte__titre {
   margin-top: var(--carte-gap-titre);
   font-family: var(--ff-text);
-  font-weight: 800;                     /* Inter ExtraBold (Illustrator) */
+  font-weight: 800;
   font-size: var(--fs-card-title);
-  line-height: 1.1;                     /* 22 / 20 relevé */
+  line-height: 1.1;
   color: var(--noir);
 }
 
 .carte__texte {
   margin-top: var(--carte-gap-texte);
   font-size: var(--fs-card-text);
-  line-height: 1.1429;                  /* 16 / 14 relevé */
+  line-height: var(--lh-card-text);
   color: var(--noir);
 
   & strong { font-weight: 700; }
@@ -1048,28 +751,20 @@ button {
   color: var(--noir);
 }
 
-/* Coupure de ligne des titres 03 et 04 : elle n'existe que sur la grille desktop,
-   où la carte ne fait que 3 colonnes. */
 .br-lg { display: none; }
 
 @media (min-width: 900px) {
-
   :root {
-    /* Homothétie : toutes les valeurs telles que relevées sur la maquette. */
     --carte-p:         calc(20 * var(--px));
-    --carte-pb:        calc(20 * var(--px));
     --r-card:          calc(20 * var(--px));
     --mobilite-pb:     calc(59 * var(--px));
 
     --fs-num:          calc(100 * var(--px));
-    --fs-card-title:   calc( 20 * var(--px));   /* Inter ExtraBold 20pt */
-    /* Entorse assumée, comme --fs-nav : sans plancher le corps de carte tomberait
-       à 8,75 px à 900. Le plancher n'agit qu'en dessous de ~1235 px. */
-    --fs-card-text:    max(12px, calc(14 * var(--px)));
-    --fs-card-note:    max( 9px, calc(10 * var(--px)));   /* Inter 10pt */
+    --fs-card-title:   calc( 20 * var(--px));
 
-    /* Écarts entre boîtes de ligne, demi-interligne déjà retranchée.
-       33 + 17 + 11 font retomber la carte sur ses 270 px d'Illustrator. */
+    --fs-card-text:    max(12px, calc(14 * var(--px)));
+    --fs-card-note:    max( 9px, calc(10 * var(--px)));
+
     --carte-gap-titre: calc(33 * var(--px));
     --carte-gap-texte: calc(17 * var(--px));
     --carte-gap-note:  calc(11 * var(--px));
@@ -1079,44 +774,26 @@ button {
     grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
     gap: calc(12 * var(--px));
   }
-  .carte { grid-column: span 3; }        /* 4 cartes de 3 colonnes sur 12 */
+  .carte { grid-column: span 3; }
 
   .br-lg { display: inline; }
 }
 
-
-/* ============ 08. FIDÉLITÉ — photo pleine largeur + 4 cartes ============
-   Relevés (maquette 1440) : bande photo y=1640 → 2772 (1133 de haut) ; eyebrow
-   « FIDÉLITÉ » cap à y=1741 ; titre 78 / interligne 70, 3 lignes à partir de
-   y=1841 ; paragraphe colonnes 9-12 (Inter 20/24) à partir de y=2287 ; cartes
-   318,5 × 220 de y=2493 à 2712, puis 60 de photo sous elles.
-   ⚠️ Le paragraphe de droite est NOIR en desktop (il tombe sur la table, très
-   claire) et BLANC sous 900 (il tombe sur le mur, sombre) : c'est la maquette. */
 .fidelite {
   position: relative;
   isolation: isolate;
-  overflow: clip;                       /* la photo déborde en `cover` — `clip` : cf. body */
+  overflow: clip;
   padding-top: var(--fid-pt);
   padding-bottom: var(--fid-pb);
-  background: var(--noir);              /* fond de repli le temps du chargement */
+  background: var(--noir);
   color: var(--blanc);
 
-  /* Cartes de CETTE section : mêmes rôles que Mobilité, mais 2 par rangée dès 390
-     comme sur la maquette mobile — les empiler doublerait la hauteur de la bande
-     et `cover` rognerait la photo à outrance. La typo est donc réduite d'autant,
-     tout en restant lisible : 14 px de titre (la maquette descend à 9,6).
-     Ces overrides sont annulés dans le bloc ≥900, où l'homothétie reprend. */
   --carte-p:         clamp(12px, 8.94px + 0.7843vw, 16px);
-  --carte-pb:        clamp(12px, 8.94px + 0.7843vw, 16px);
   --carte-gap-titre: clamp(18px, 11.58px + 1.6471vw, 26.4px);
   --fs-num:          clamp(56px, 37.65px + 4.7059vw, 80px);
   --fs-card-title:   clamp(14px, 12.47px + 0.3922vw, 16px);
 }
 
-/* La photo reste un <img> (alt + lazy) mais se comporte en fond de section.
-   ⚠️ 74 % : cadrage vertical relevé sur la maquette desktop. Sous 900 la bande est
-   bien plus haute que large — `cover` y montre TOUTE la hauteur et rogne les côtés,
-   exactement comme la maquette mobile —, le décalage vertical n'y joue donc plus. */
 .fidelite__photo {
   position: absolute;
   inset: 0;
@@ -1128,13 +805,12 @@ button {
 }
 
 .fidelite__titre {
-  margin-top: var(--fid-titre-mt);      /* la taille vient du rôle .titre-section */
+  margin-top: var(--fid-titre-mt);
 }
 
 .fidelite__texte {
-  margin-top: var(--fid-texte-mt);
+  margin-top: var(--titre-texte-mt);
 
-  /* Les deux paragraphes sont séparés d'une ligne vide sur les deux maquettes. */
   & p + p { margin-top: calc(var(--lh-lead) * 1em); }
 }
 
@@ -1144,43 +820,25 @@ button {
 }
 
 @media (min-width: 900px) {
-
   :root {
-    --fid-pt:       calc(95 * var(--px));   /* cap de l'eyebrow relevée à y=1741, demi-interligne retranchée */
+    --fid-pt:       calc(95 * var(--px));
     --fid-pb:       calc(60 * var(--px));
     --fid-titre-mt: calc(69 * var(--px));
-    --fs-titre-section: calc(78 * var(--px));
 
-    /* ⚠️ AU-DELÀ DE 1440 LA BANDE GRANDIT, elle ne reste PAS à 1133.
-       C'est la seule hauteur du site qui n'est pas figée à 1440, et c'est voulu :
-       la photo est posée en `cover` et son ratio (0,7115) est bien plus étroit que
-       celui de la bande, donc `cover` la cale sur la LARGEUR et rogne la hauteur.
-       Bande figée à 1133 + largeur qui grandit = zoom pur : à 2560 on ne voyait
-       plus que 31 % de la hauteur de la photo (56 % sur la maquette), les deux
-       téléphones débordaient de leur place et le titre blanc atterrissait sur
-       l'écran QR — illisible (signalé par Sylvain, 05/09/2026, écran 2560 × 1440).
-       En laissant la hauteur suivre la largeur (1133/1440), le cadrage redevient
-       une HOMOTHÉTIE EXACTE de la maquette à n'importe quelle largeur : les
-       téléphones gardent leur place, le titre retombe sur le fond flou.
-       `--fid-rab` = ce supplément de hauteur, nul jusqu'à 1440. Il est ajouté à la
-       1re rangée et au paragraphe : le bloc du bas (paragraphe + cartes) reste
-       collé au bas de la bande, le titre reste en haut. */
+    --fs-titre-section: calc( 78   * var(--px));
+    --titre-texte-mt:   calc( 63.3 * var(--px));
+    --lead-w:           calc(539   * var(--px));
+
     --fid-rab: max(0px, calc(100vw * 1133 / 1440 - 1133px));
   }
 
-  /* L'homothétie reprend la main sur les cartes : valeurs identiques à Mobilité. */
   .fidelite {
     --carte-p:         calc( 20 * var(--px));
-    --carte-pb:        calc( 20 * var(--px));
     --carte-gap-titre: calc( 33 * var(--px));
     --fs-num:          calc(100 * var(--px));
     --fs-card-title:   calc( 20 * var(--px));
   }
 
-  /* Deux rangées : le bloc titre + le paragraphe côte à côte, puis les cartes.
-     La hauteur de la 1re rangée est FIGÉE à 643 (relevé) plutôt que laissée au
-     contenu : si le paragraphe passait à trois lignes, les cartes ne bougeraient
-     pas d'un pixel — elles doivent retomber sur leur y=2493. */
   .fidelite__grille {
     display: grid;
     grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
@@ -1191,13 +849,7 @@ button {
 
   .fidelite__intro { grid-column: 1 / 7;  grid-row: 1; }
 
-  .fidelite__texte {
-    grid-column: 9 / 13;                /* colonnes 9-12, comme le relevé */
-    grid-row: 1;
-    /* boîte de la 1re ligne à y=2282 ; + le rab pour rester à 206 au-dessus des cartes */
-    margin-top: calc(547 * var(--px) + var(--fid-rab));
-    color: var(--noir);
-  }
+  .fidelite__texte { max-width: var(--lead-w); }
 
   .fidelite__cartes {
     grid-column: 1 / -1;
@@ -1207,19 +859,6 @@ button {
   }
 }
 
-
-/* ============ 09. COMMERÇANT — bande jaune ============
-   ⚠️ Ici le jaune est un APLAT `--jaune` #ffdd0d (relevé au pixel aux quatre coins),
-   pas le dégradé du hero, et il n'y a NI trame de rues NI voile : la bande est nue.
-   Relevés — desktop 1440 : bande y=2773 → 3543 (771 de haut), eyebrow cap y=68,
-   titre cap y=168 (2 lignes, interligne 70), paragraphe cap y=365 (3 lignes de 24),
-   label cap y=484 puis badges y=514 → 564. Mobile 390 : bande y=2502 → 3025
-   (524 de haut), eyebrow 43, titre 118, paragraphe 239 (4 lignes de 19,2).
-   ⚠️ La MOITIÉ DROITE EST VIDE sur les deux maquettes — vérifié, zéro pixel non
-   jaune au-delà de x=800 — et il reste 240 de jaune sous le bouton en desktop.
-   C'est le rendu de la maquette, pas un oubli de code (question posée à Sylvain).
-   Comme dans le hero, le label « Téléchargez maintenant » et les deux badges sont
-   remplacés par le bouton unique, qui DÉMARRE OÙ LE LABEL DÉMARRAIT. */
 .commercants {
   padding-top: var(--com-pt);
   padding-bottom: var(--com-pb);
@@ -1230,14 +869,10 @@ button {
 .commercants__titre { margin-top: var(--com-titre-mt); }
 
 .commercants__texte {
-  margin-top: var(--com-texte-mt);
-  color: var(--noir);                   /* relevé #2a292e, comme le chapô du hero */
+  margin-top: var(--titre-texte-mt);
+  color: var(--noir);
 }
 
-/* Sous 900 le bloc de téléchargement est CENTRÉ, comme dans le hero mobile.
-   `flex` et non `text-align` : le bouton est un inline-block, il s'asseyait sinon
-   sur la ligne de base et sa boîte prenait 6,4 px de plus que le bouton — la
-   bande finissait à 777 au lieu des 771 relevés. */
 .commercants__dl {
   display: flex;
   justify-content: center;
@@ -1245,38 +880,18 @@ button {
 }
 
 @media (min-width: 900px) {
-
   :root {
     --com-pt:       calc( 62   * var(--px));
     --com-titre-mt: calc( 69   * var(--px));
-    --com-texte-mt: calc( 63.3 * var(--px));
     --com-dl-mt:    calc( 47.1 * var(--px));
     --com-pb:       calc(240.8 * var(--px));
   }
 
-  /* Le paragraphe tient dans les colonnes 1-5 : 5 × 98,17 + 4 × 12 = 539.
-     (Relevé : la ligne la plus longue fait 499, la suivante ne rentrerait plus.) */
-  .commercants__texte { max-width: calc(539 * var(--px)); }
+  .commercants__texte { max-width: var(--lead-w); }
 
   .commercants__dl { justify-content: flex-start; }
 }
 
-
-/* ============ 10. PILIERS — Attirer / Fidéliser / Contribuer ============
-   Bande BLANCHE (#ffffff relevé, pas le crème) : y=3544 → 3753 en desktop (210 de
-   haut), y=3027 → 3438 en mobile. Trois piliers = picto sable 40 + titre sable +
-   deux lignes de texte NOIR (#2a292e relevé — l'ancienne note « texte gris » était
-   fausse), le tout centré.
-   ⚠️ **Le titre seul est centré, le picto DÉBORDE à sa gauche.** Vérifié au pixel :
-   les trois titres ont leur milieu exactement sur le tiers de page (240 · 720 · 1200)
-   alors que le groupe picto+titre, lui, est décalé de 28,5 = (40 + 17) / 2. D'où le
-   picto en `position: absolute` sur `right: 100%` plutôt qu'un flex centré.
-   ⚠️ Les colonnes sont les TIERS DE LA PAGE (480 à 1440), pas des colonnes de la
-   grille de 12 : les deux traits verticaux tombent pile sur x=480 et x=960. Le bloc
-   est donc plafonné à 1440 et centré, sans les marges de 65 du `.container`.
-   ⚠️ Le texte reprend le rôle du corps de carte (Inter 14 / 16) et son plancher de
-   lisibilité à 12 : la maquette mobile descend à 9,6 px, refusé — même arbitrage que
-   pour les cartes. La bande mobile mesure donc ~442 au lieu des 412 relevés. */
 .piliers {
   padding-top: var(--pil-pt);
   padding-bottom: var(--pil-pb);
@@ -1290,9 +905,6 @@ button {
   margin-inline: auto;
 }
 
-/* Colonne flex plutôt qu'un bloc en `text-align: center` : le titre est un
-   inline-block, il s'asseyait sinon sur la ligne de base et le texte descendait de
-   1,8 px de plus que le relevé (même piège que le bouton de la section Commerçant). */
 .pilier {
   position: relative;
   display: flex;
@@ -1300,7 +912,6 @@ button {
   align-items: center;
   text-align: center;
 
-  /* Empilés en mobile, séparés par un trait horizontal centré. */
   & + & {
     margin-top: var(--pil-stack);
 
@@ -1317,8 +928,6 @@ button {
   }
 }
 
-/* `inline-block` : c'est LUI qui est centré par le text-align du parent, et le picto
-   se raccroche à son bord gauche. `line-height: 1` cale la boîte sur la police. */
 .pilier__titre {
   position: relative;
   display: inline-block;
@@ -1328,7 +937,7 @@ button {
 
 .pilier__picto {
   position: absolute;
-  right: 100%;                          /* juste à gauche de la boîte du titre */
+  right: 100%;
   top: 50%;
   transform: translateY(-50%);
   margin-right: var(--pil-gap);
@@ -1338,28 +947,26 @@ button {
 
 .pilier__texte {
   margin-top: var(--pil-texte-mt);
-  font-size: var(--fs-card-text);       /* même rôle que le corps de carte */
-  line-height: 1.1429;                  /* 16 / 14 relevé */
+  font-size: var(--fs-card-text);
+  line-height: var(--lh-card-text);
   color: var(--noir);
 }
 
 @media (min-width: 900px) {
-
   :root {
     --pil-pt:       calc(40   * var(--px));
     --pil-pb:       calc(68.9 * var(--px));
     --pil-picto:    calc(40   * var(--px));
     --pil-gap:      calc(17   * var(--px));
     --pil-texte-mt: calc(30.4 * var(--px));
-    --pil-sep-e:    calc( 2   * var(--px));   /* trait de 2 px de large */
-    --pil-sep-h:    calc(60   * var(--px));   /* … et de 60 de haut */
-    --pil-sep-top:  calc(35   * var(--px));   /* depuis le haut du pilier (y=3619) */
-    --fs-display-s: calc(38.7 * var(--px));   /* cap 28 relevé */
+    --pil-sep-e:    calc( 2   * var(--px));
+    --pil-sep-h:    calc(60   * var(--px));
+    --pil-sep-top:  calc(35   * var(--px));
+    --fs-display-s: calc(38.7 * var(--px));
   }
 
   .piliers__grille { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
-  /* Le trait passe à la VERTICALE, posé à cheval sur la limite de colonne. */
   .pilier + .pilier {
     margin-top: 0;
 
@@ -1373,39 +980,16 @@ button {
   }
 }
 
-
-/* ============ 11. EN SAVOIR PLUS — bande crème ============
-   Relevés — desktop 1440 : bande y=3754 → 4648 (crème #fffbf0), titre cap y=148
-   (cap 85 → 117,6), paragraphe cap y=293 (3 lignes, interligne 30,5), pastille
-   y=404, 180 × 38. Mobile 390 : bande à partir de y=3439, titre cap 79 (cap 24 →
-   33,2), paragraphe cap 150 (4 lignes de 19), pastille 259, 168 × 34.
-   Tout est centré, sur la page comme sur la colonne.
-   ⚠️ La bande n'a pas de `padding-bottom` : c'est l'illustration skyline qui la
-   termine, et c'est elle qui fixe le bas de la crème (cf. `.savoir-plus__illu`). */
 .savoir-plus {
   padding-top: var(--esp-pt);
   background: var(--creme);
   text-align: center;
 }
 
-/* ---- Illustration skyline + route ----
-   Le SVG fait 859,11 × 355,11 : les **217,81 premières unités** sont la colline
-   (masque interne du fichier), le reste est un APLAT NOIR `#2a292e` — c'est-à-dire
-   le footer, déjà dessiné dans l'illustration. On ne garde donc que le masque :
-   `aspect-ratio` sur l'enveloppe + `overflow: hidden`, et le vrai footer prend le
-   relais exactement là où l'aplat commençait. Les deux noirs étant identiques, la
-   couture est invisible.
-   ⚠️ L'illustration est PLEINE LARGEUR (100 %) et le reste au-delà de 1440 : c'est
-   ce qui fait que l'arc de la colline touche toujours les deux coins. Vérifié sur
-   les deux maquettes : à 1440 le haut du viewBox tombe à y=4290 (pointe du clocher
-   à 4314, aplat noir à 4655, footer à 4652) ; à 390, viewBox 3814,5, clocher 3821,
-   aplat 3913 (footer 3911).
-   `aspect-ratio` plutôt qu'une hauteur en vw : la barre de défilement fausserait vw. */
 .savoir-plus__illu {
   overflow: clip;
   margin-top: var(--illu-mt);
-  /* Le footer recouvre la dernière rangée de pixels : le recadrage tombe rarement
-     sur un pixel entier et laissait sinon un filet plus clair sur toute la largeur. */
+
   margin-bottom: -1px;
   aspect-ratio: 859.11 / 217.81;
 
@@ -1422,7 +1006,6 @@ button {
   color: var(--jaune);
 }
 
-/* 6 colonnes sur 12 (649) : c'est la largeur qui redonne les 3 lignes du relevé. */
 .savoir-plus__texte {
   margin-top: var(--esp-texte-mt);
   margin-inline: auto;
@@ -1438,7 +1021,6 @@ button {
 }
 
 @media (min-width: 900px) {
-
   :root {
     --esp-pt:       calc(126   * var(--px));
     --esp-texte-mt: calc( 44.15 * var(--px));
@@ -1456,33 +1038,13 @@ button {
   .savoir-plus__texte { max-width: calc(649 * var(--px)); }
 }
 
-
-/* ============ 12. NOS PARTENAIRES — bandeau défilant ============
-   Demandé par Sylvain le 05/09/2026, d'après la bande « slice » de maneuver.be.
-   200 de haut à 1440, défilement doux de la GAUCHE VERS LA DROITE, en boucle.
-
-   ⚠️ Fond CRÈME et logos NOIRS depuis le 05/09/2026 (2e passe Sylvain). Les assets
-   livrés n'existaient qu'en blanc : les variantes `logo-*-noir.svg` ont été
-   fabriquées à partir des blanches en remplaçant #fff par #2a292e. Si un logo est
-   redonné par un partenaire, refaire la variante de la même façon.
-
-   ⚠️ MÉCANIQUE : deux pistes IDENTIQUES côte à côte, chacune en min-width 100 %.
-   On translate l'ensemble de -100 % (= exactement une piste) : quand la première
-   sort à droite, la seconde est pile à sa place, la boucle est invisible. C'est ce
-   qui rend le bandeau indépendant de la largeur de l'écran — une seule piste
-   dupliquée à 50 % laisserait des trous sur un écran large.
-   La seconde piste est en aria-hidden : un lecteur d'écran ne doit pas lire deux fois
-   les mêmes partenaires. */
 .partenaires {
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: var(--part-gap);
   min-height: var(--part-h);
-  /* Pas de padding : la hauteur est fixée par --part-h et le contenu (eyebrow +
-     écart + logos) est simplement centré dedans. À 1440 : 26 + 60 + 100 = 186 dans
-     300, soit 57 de chaque côté — c'est cet air-là que Sylvain a demandé au-dessus
-     du titre (05/09/2026). */
+
   background: var(--creme);
   color: var(--sable);
   text-align: center;
@@ -1490,7 +1052,7 @@ button {
 
 .marquee {
   display: flex;
-  overflow: clip;                       /* clip et non hidden : cf. section 00 */
+  overflow: clip;
 }
 
 .marquee__piste {
@@ -1512,18 +1074,14 @@ button {
     width: auto;
   }
 
-  /* digitalwallonia n'a pas la même boîte que les trois autres (39,01 et non 51,6) */
   & .partenaires__dw img { height: var(--part-logo-dw); }
 }
 
-/* Le défilement se met en pause au survol ET au focus clavier : c'est le minimum
-   exigé par WCAG 2.2.2 pour un contenu qui bouge tout seul plus de 5 secondes.
-   ⚠️ Un bouton pause explicite serait plus strict — question posée à Sylvain. */
 .marquee:hover .marquee__piste,
 .marquee:focus-within .marquee__piste { animation-play-state: paused; }
 
 @keyframes defile {
-  from { translate: 0 0; }              /* de la droite vers la gauche */
+  from { translate: 0 0; }
   to   { translate: -100% 0; }
 }
 
@@ -1537,15 +1095,6 @@ button {
   }
 }
 
-
-/* ============ 13. FOOTER ============
-   Noir #2a292e — le MÊME que l'aplat du bas de l'illustration skyline, d'où une
-   couture invisible : le footer prend le relais exactement là où l'illustration
-   est coupée. 227 de haut sur les deux maquettes.
-   ⚠️ Marges latérales de **120** (et non les 65 du reste du site) : logos et
-   mentions s'alignent sur x=120 et x=1320, relevé aux deux bouts.
-   Desktop : logos à gauche, bulles à droite, sur une même rangée. Mobile : les
-   BULLES PASSENT AU-DESSUS des logos (`order: -1`), tout est centré. */
 .footer {
   padding-top: var(--foot-pt);
   padding-bottom: var(--foot-pb);
@@ -1558,10 +1107,6 @@ button {
   margin-inline: auto;
 }
 
-/* ⚠️ Les logos des PARTENAIRES ne sont plus ici : ils sont partis dans le bandeau
-   défilant (section 12). À leur place, à gauche, le logo Move in — demande Sylvain
-   du 05/09/2026. Les bulles restent à droite. Sous 900 la rangée s'empile et se
-   centre : logo au-dessus, bulles en dessous. */
 .footer__haut {
   display: flex;
   flex-direction: column;
@@ -1569,25 +1114,13 @@ button {
   gap: var(--foot-haut-gap);
 }
 
-/* ⚠️ LARGEUR EXPLICITE, jamais `auto` : un SVG inline en largeur auto se fait rogner
-   par le `svg { max-width: 100% }` global — le logo était coupé au « e » de Move
-   (signalé par Sylvain). 1,19945 = 51,96 / 43,32, le ratio du viewBox. */
-.footer__logo {
-  height: var(--foot-logo-move);
-  width: calc(var(--foot-logo-move) * 1.19945);
-  max-width: none;
-  color: var(--blanc);
-  fill: currentColor;
-}
+.footer__logo { --logo-h: var(--foot-logo-move); }
 
 .footer__reseaux {
   display: flex;
   gap: var(--bulle-gap);
 }
 
-/* Survol : fond blanc → JAUNE, icône noire → BLANCHE. Rien d'autre ne bouge —
-   ni déplacement, ni ombre (consigne Sylvain, 03/09/2026). C'est cet état que
-   montre la bulle Facebook de la maquette, dessinée en survol. */
 .bulle {
   display: grid;
   place-items: center;
@@ -1613,7 +1146,7 @@ button {
 
 .footer__mentions {
   display: flex;
-  flex-wrap: wrap;                      /* en mobile la ligne se replie en deux */
+  flex-wrap: wrap;
   justify-content: center;
   gap: 8px var(--foot-legal-gap);
   margin-top: var(--foot-mentions-mt);
@@ -1624,14 +1157,12 @@ button {
   letter-spacing: .04em;
 }
 
-/* Les deux liens portent `.souligne` : même soulignement animé que la nav. */
 .footer__legal {
   display: flex;
   gap: var(--foot-legal-gap);
 }
 
 @media (min-width: 900px) {
-
   :root {
     --foot-marge:       calc(120  * var(--px));
     --foot-logo-move:   calc( 65  * var(--px));
@@ -1643,7 +1174,7 @@ button {
     --bulle-gap:        calc( 12    * var(--px));
     --bulle-icone:      calc( 20    * var(--px));
     --foot-legal-gap:   calc( 25  * var(--px));
-    --fs-foot:          max(12px, calc(14 * var(--px)));   /* cap 10 relevé */
+    --fs-foot:          max(12px, calc(14 * var(--px)));
   }
 
   .footer__haut {
@@ -1658,34 +1189,13 @@ button {
   }
 }
 
-
-/* ============ 14. ANIMATIONS (PHASE 2) ============
-   ⚠️ CHANGEMENT DE MÉCANIQUE le 05/09/2026. La 1re version était pilotée par le
-   scroll (`animation-timeline: view()`) : l'animation avançait au rythme exact de
-   la molette, donc saccadée dès qu'on scrollait par à-coups. Sylvain a demandé
-   « l'effet où les éléments apparaissent tout seuls comme sur les autres sites ».
-
-   Désormais : un IntersectionObserver (dans script.js) pose la classe
-   `.est-visible` quand l'élément entre dans le champ, et c'est une TRANSITION
-   normale de 800 ms qui joue — indépendante du scroll, donc toujours fluide, et
-   déclenchée une seule fois.
-
-   ⚠️ L'état de départ n'est appliqué QUE sous `.js-anim`, classe posée par le JS
-   lui-même : si le JS ne tourne pas (erreur, script bloqué), rien n'est masqué et
-   la page reste lisible. C'est le même garde-fou que l'ancien `@supports`.
-
-   ⚠️ Le JS ne pose PAS `.js-anim` si l'utilisateur a demandé moins d'animations :
-   rien ne se cache, rien ne bouge. */
 @media (prefers-reduced-motion: no-preference) {
-
   .js-anim :is(.apparait, .carte) {
     opacity: 0;
     translate: 0 48px;
     transition: opacity 800ms var(--t-reveal), translate 800ms var(--t-reveal);
   }
 
-  /* Les lignes de titre montent de derrière leur masque : pas de fondu, c'est le
-     recadrage qui fait tout le travail (cf. `.lignes` plus bas). */
   .js-anim .lignes > span > span {
     translate: 0 110%;
     transition: translate 800ms var(--t-reveal);
@@ -1696,7 +1206,6 @@ button {
     translate: 0 0;
   }
 
-  /* Décalages : les cartes d'une rangée et les lignes d'un titre se succèdent. */
   .js-anim .carte:nth-child(2) { transition-delay: 120ms; }
   .js-anim .carte:nth-child(3) { transition-delay: 240ms; }
   .js-anim .carte:nth-child(4) { transition-delay: 360ms; }
@@ -1704,12 +1213,6 @@ button {
   .js-anim .lignes > span:nth-child(3) > span { transition-delay: 240ms; }
 }
 
-/* Le masque des lignes de titre, lui, existe toujours (il ne dépend pas du JS).
-   ⚠️ `overflow-clip-margin` et NON un padding compensé par une marge négative :
-   l'interligne des titres (0,897) est plus serré que la police, les accents des
-   capitales (le É de FIDÉLISER) dépassent de la boîte de ligne et seraient rognés
-   par un `clip` nu. `overflow-clip-margin` élargit la zone de recadrage SANS
-   toucher à la mise en page — un padding décalait le titre de 11 px. */
 .lignes > span {
   display: block;
   overflow: clip;
@@ -1718,10 +1221,6 @@ button {
 
 .lignes > span > span { display: block; }
 
-
-/* ============ 99. A11Y / DIVERS ============ */
-
-/* Titre de section réservé aux lecteurs d'écran */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -1751,7 +1250,6 @@ button {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 
-  /* La barre du scroll-cue s'immobilise en haut de sa piste, bien visible. */
   .scroll-cue__barre {
     animation: none !important;
     translate: none;

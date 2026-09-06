@@ -31,12 +31,23 @@ Objectif du site : présenter le concept et pousser au **téléchargement** des 
     faible : le chapô et Bougez/Cumulez/Profitez sont désormais quasi constants.
   - Les écarts verticaux propres à l'empilement mobile restent **constants** de 390 à 900 :
     la typo y rétrécit quand la fenêtre s'élargit, faire grandir les blancs casserait le rythme.
-- ⚠️ **`index.html` ne contient AUCUN commentaire** (retirés à la demande de Sylvain le
-  05/09/2026 : 27 commentaires, 5,1 Ko). Les repères de section (`<!-- 1. HEADER -->`) et
-  les avertissements qui y vivaient ont disparu avec eux : **ce fichier-ci est désormais la
-  seule source du « pourquoi »** côté HTML. Ne pas en réintroduire sans le demander — mais
-  consigner ici tout ce qui aurait mérité un commentaire. La feuille de style et le JS, eux,
-  gardent les leurs.
+- 🚨 **LES TROIS FICHIERS DÉPLOYÉS N'ONT PLUS AUCUN COMMENTAIRE** (décision Sylvain,
+  06/09/2026). `index.html` l'était déjà depuis le 05/09 (27 commentaires, 5,1 Ko) ;
+  **`styles.css` et `script.js` l'ont rejoint** — 265 commentaires retirés de la feuille
+  de style, qui passe de 75,8 à **29,4 Ko** (7,4 Ko compressée), et le JS de 8,0 à 4,3 Ko.
+  - ⚠️ **La version commentée vit dans `commentaires/`**, et elle NE SE RÉGÉNÈRE PAS TOUTE
+    SEULE : il n'y a pas de build. **Toute modification de fond doit être reportée dans
+    `commentaires/`**, sinon la documentation ment. Chaque fichier déployé porte en tête
+    une ligne de rappel vers sa version commentée — c'est le seul commentaire qui reste,
+    et il est là exprès.
+  - ⚠️ **Ce fichier-ci et `commentaires/` sont désormais les DEUX seules sources du
+    « pourquoi ».** Ne pas réintroduire de commentaires dans les fichiers de la racine
+    sans le demander — mais consigner ici, ou dans la copie, tout ce qui aurait mérité
+    un commentaire.
+  - Méthode de travail conseillée : **éditer la copie commentée, puis en dépouiller les
+    commentaires vers la racine** (`perl -0pe 's{/*.*?*/}{}gs'` pour le CSS, à la main
+    pour le JS à cause des `//` dans les URL). L'inverse — éditer la racine puis recommenter —
+    fait perdre le raisonnement à chaque passe.
 - **Trois fichiers** : `index.html` + **`styles.css`** + **`script.js`**, tous liés
   (le JS était inline en fin de `<body>` jusqu'au 05/09/2026, Sylvain l'a voulu à part).
   `script.js` est appelé **en `defer` depuis le `<head>`** : il s'exécute une fois le DOM
@@ -98,8 +109,13 @@ self-hoster (Lufga abandonnée) :
 **Règle : la police suit le RÔLE, pas la balise HTML.** Un gros titre reste en Barlow
 Condensed même si c'est un `<h2>` ; un titre de carte reste en Inter même si c'est un `<h3>`.
 
-- Titres « poster » (Rejoignez le Move, Fidéliser vos clients) : Barlow Condensed **italique**
-  800, majuscules, légèrement penchés.
+- ⚠️ **L'ITALIQUE N'EST PLUS UTILISÉ NULLE PART** (constaté et retiré le 06/09/2026).
+  La règle d'origine mettait les titres « poster » (Rejoignez le Move, Fidéliser vos
+  clients) en Barlow Condensed **italique** 800 penché. Or « Rejoignez le Move » est
+  devenu un **SVG vectorisé** et « Fidéliser vos clients » est **droit** : plus une seule
+  déclaration `italic` dans le CSS, le HTML ou le JS. La graisse italique a donc été
+  **retirée du lien Google Fonts**. Pour réintroduire un titre penché il faudra la
+  remettre dans l'URL (`Barlow+Condensed:ital,wght@1,800`).
 - Titres display upright (Bougez/Cumulez/Profitez, En savoir plus, piliers) : Barlow Condensed
   800, majuscules.
 - Numéros de carte (01–04) : Barlow Condensed 800, jaune plein.
@@ -183,6 +199,11 @@ jamais sur la chasse**.
 | « Scrollez pour découvrir » | masqué | **30** | choix Sylvain (la maquette relève 15) |
 
 ⚠️ Inter **800 (ExtraBold)** est chargé dans le lien Google Fonts — ne pas l'enlever.
+⚠️ **Le lien a été dégraissé le 06/09/2026** : il chargeait **7 fichiers de police, dont 3
+  morts** — Inter **500** et **600** (jamais déclarés : le site n'utilise que 400, 700 et
+  800) et **Barlow Condensed italique** (plus aucun italique, cf. plus haut). L'URL est
+  maintenant `family=Barlow+Condensed:wght@800&family=Inter:wght@400;700;800`. Avant
+  d'ajouter une graisse dans le CSS, l'ajouter dans l'URL — et l'inverse aussi.
 Planchers de lisibilité (seule entorse à l'homothétie) : 12 px sur `--fs-nav`,
 `--fs-eyebrow-sm` et `--fs-card-text`, 9 px sur `--fs-card-note`.
 
@@ -197,14 +218,53 @@ Planchers de lisibilité (seule entorse à l'homothétie) : 12 px sur `--fs-nav`
    - ⚠️ **`sticky` et surtout pas `fixed`** : l'élément garde sa place dans le flux, donc
      le `margin-top` négatif du hero (qui le fait remonter sous le header) continue de
      fonctionner tel quel. En `fixed`, toute la page se serait décalée de 160 px.
-   - Trois classes posées par `script.js` (bloc 5) : rien / `.header--pose` (fond jaune) /
-     `.header--cache` (escamoté). Le CSS fait toute l'animation (`--t-header`, 300 ms).
+   - Trois classes posées par `script.js` (bloc 5) : rien / `.header--pose` / `.header--cache`
+     (escamoté). Le CSS fait toute l'animation (`--t-header`, 300 ms).
+   - ⚠️ **`--pose` n'est PLUS une bande jaune pleine largeur : c'est une BARRE ARRONDIE
+     EN RETRAIT** (maquette Sylvain, 06/09/2026). Relevé au pixel sur une planche
+     1440 × 160 : barre de **x=32,5 à 1407,5** (1375 de large) et de **y=30 à 130**
+     (100 de haut), **rayon 20**.
+     - Retrait horizontal = **`--marge / 2`**. Les 32,5 relevés sont exactement la moitié
+       de la marge de 65, et la formule tient aussi sous 900 (marge 20 → retrait 10) :
+       rien à interpoler, aucune cassure au breakpoint.
+     - Retrait vertical = **`--header-bar-y`**. ⚠️ Ce n'est PAS une interpolation de plus,
+       c'est **l'air laissée autour du logo** : `(--header-h − --logo-h) × 0,3`, borné par
+       un minimum de `--header-bar-pad` (8) entre le logo et le bord. La formule vaut à
+       toutes les largeurs — **rien à redéfinir dans le bloc ≥900** — et retombe pile sur
+       le relevé : 30 à 1440, 24 à 900. En dessous : 14,6 à 594, 6 à 390.
+       ⚠️ **Le minimum de 8 ne mord qu'en dessous de ~508 px**, mais il est indispensable :
+       le header mobile (72 à 390) est bien plus serré autour du logo (44) que la maquette
+       desktop (160/60), et la 1re branche seule ne laissait plus que **0,5 px** — le logo
+       touchait le bord de la barre (signalé par Sylvain, fenêtre de 594, 06/09/2026).
+       Air obtenue : 20 à 1440, 16 à 900, 11,9 à 700, 9,8 à 594, 8 de 508 à 320.
+     - Rayon = **`--header-bar-r`**, un **ratio** : `20 % de la hauteur de la barre`
+       (demande Sylvain — l'alternative proposée était un 10 px en dur). Il retombe sur
+       **20 à 1440** et **16 à 900**, soit exactement l'ancien `--r-card` aux deux bornes,
+       mais il continue de **descendre** en dessous (13 à 594, 12 à 390) au lieu de
+       remonter à 20 : la barre n'a plus l'air d'une pilule quand elle ne fait que 60 de
+       haut. Pour repasser à une valeur fixe, une seule ligne à changer.
+     - ⚠️ **Plafonnée à 1375 au-delà de 1440** (`max-width: --content-max - --marge` +
+       `margin-inline: auto`). Sans ça la barre aurait suivi la fenêtre (2495 à 2560)
+       alors que le logo et les liens sont plafonnés par `.container` à 1310 centrés.
+     - ⚠️ **Le logo et les liens NE BOUGENT PAS** (demande Sylvain) : ils restent portés
+       par `.header__inner.container`, calés sur la marge de 65 ; la barre passe derrière.
+       C'est un `::before` en `z-index: -1` — il ne prend aucune place, et `.header` étant
+       un contexte d'empilement (sticky + `z-index: 100`) le -1 reste enfermé dedans.
    - Garde-fous : jamais escamoté dans les 1,5 premières hauteurs de header (sinon il
      clignote près du haut), jamais non plus quand le menu mobile est ouvert, et une marge
-     morte de 6 px de scroll pour ne pas trembler au trackpad. Hauteur 160 px max. Logo Move in **blanc** à gauche (il passe au
-   **noir** au survol) ; liens Mobilité · Fidélité · Commerçant · En savoir plus à droite (4 liens depuis le 03/09), soulignement
-   qui se déploie au survol — rôle **`.souligne`**, partagé depuis le 05/09 avec les liens
-   légaux du footer. **Sous 900 px : burger** → menu **plein écran** noir :
+     morte de 6 px de scroll pour ne pas trembler au trackpad. Hauteur 160 px max.
+   - ⚠️ **LOGO INVERSÉ le 06/09/2026 (demande du client) : NOIR au repos, BLANC au survol.**
+     C'était l'inverse depuis le début. La surcharge est portée par **`.header__logo`** et
+     surtout pas par le rôle `.logo` : celui-ci sert aussi au menu mobile et au footer, tous
+     deux sur fond noir, où le logo doit rester blanc (vérifié : les deux sont bien restés
+     blancs). Spécificité (0,2,0) contre (0,1,0), l'ordre dans le fichier n'entre pas en jeu.
+     Effet de bord bienvenu : sur le jaune le logo passe de **1,3:1 à ≈11:1** et s'aligne
+     enfin sur les liens de nav, déjà en `--noir`. ⚠️ En revanche le **survol** devient du
+     blanc sur jaune (1,3:1) : le logo s'efface presque le temps du survol — conséquence
+     assumée de l'inversion, pas un bug.
+   - Liens Mobilité · Fidélité · Commerçant · En savoir plus à droite (4 liens depuis le
+     03/09), soulignement qui se déploie au survol — rôle **`.souligne`**, partagé depuis le
+     05/09 avec les liens légaux du footer et, depuis le 06/09, avec le menu mobile. **Sous 900 px : burger** → menu **plein écran** noir :
    - le panneau se déroule **en rideau du haut vers le bas** (`clip-path`, 620 ms) ;
    - les 3 titres sont **alignés à gauche** et **remontent en cascade** ;
    - le **logo est repris dans le menu**, à la même place qu'au header (même `--header-h`) ;
@@ -279,14 +339,19 @@ Planchers de lisibilité (seule entorse à l'homothétie) : 12 px sur `--fs-nav`
    - Contenu : eyebrow « FIDÉLITÉ » (blanc) → titre **« Achetez local / et cumulez / des
      points »** en 3 lignes (Barlow Condensed 800 DROIT, 78/70 à 1440, 37,3/33,5 à 390 —
      le seul rôle display qui ne suit pas `--fs-display-xl`, d'où `--fs-fid-titre`) →
-     paragraphe `.lead` (colonnes 9-12 en desktop) → **4 cartes crème** 318,5 × **220**
+     paragraphe `.lead` **sous le titre, à gauche** → **4 cartes crème** 318,5 × **220**
      (numéro + titre seulement, ni corps ni note).
    - **Aucun voile sombre** : la comparaison au pixel entre la maquette et la photo source
      montre un écart de ±10/255, c'est-à-dire rien. Ce que l'ancienne note prenait pour un
      voile est l'éclairage de la photo elle-même.
-   - ⚠️ **Le paragraphe change de couleur au breakpoint** : **noir** en desktop (il tombe sur
-     la table, très claire) et **blanc** sous 900 (il tombe sur le mur, sombre). C'est la
-     maquette, pas un oubli.
+   - ⚠️ **LE PARAGRAPHE A ÉTÉ DÉPLACÉ le 06/09/2026** (demande Sylvain, capture annotée) :
+     la maquette le pose dans les **colonnes 9-12**, en bas à droite de la bande ; il est
+     désormais **sous le h2, dans la colonne de gauche** (1-6, largeur plafonnée à 539 comme
+     celui de Commerçant), avec **l'écart titre → paragraphe de la section Commerçant**
+     (`--fid-texte-mt` = `--com-texte-mt` : 63,3 en desktop, 55,3 à 390).
+     Conséquence : il est **blanc aux deux tailles**. L'ancienne règle « noir en desktop,
+     blanc sous 900 » ne vaut plus — il ne tombe plus sur la table claire mais sur la photo,
+     comme le titre. En mobile rien ne bouge : il suivait déjà le titre.
    - **Photo** : `assets/images/photo-commercants.webp` (4232 × 5948, 539 Ko), posée en
      `<img>` absolu + `object-fit: cover`, `object-position: center 74%` (cadrage relevé).
      Sous 900 la bande est bien plus haute que large : `cover` y montre **toute la hauteur**
@@ -298,7 +363,7 @@ Planchers de lisibilité (seule entorse à l'homothétie) : 12 px sur `--fs-nav`
      des overrides de tokens portés par `.fidelite`, **annulés dans le bloc ≥900**. Elle
      reste lisible — la maquette, elle, descend à 9,6 px de titre.
    - La 1re rangée de la grille desktop a une **hauteur figée** (`643 * var(--px)`) : si le
-     paragraphe passait à trois lignes, les cartes ne bougeraient pas de leur y=2493.
+     paragraphe gagnait une ligne, les cartes ne bougeraient pas de leur y=2493.
    - ⚠️ **AU-DELÀ DE 1440 CETTE BANDE GRANDIT — c'est la seule hauteur du site qui ne se
      fige pas, et c'est voulu** (05/09/2026, écran 2560 × 1440 de Sylvain). La photo est en
      `cover` et son ratio (0,7115) est bien plus étroit que celui de la bande : `cover` la
@@ -309,9 +374,8 @@ Planchers de lisibilité (seule entorse à l'homothétie) : 12 px sur `--fs-nav`
      (**1133/1440**), donc le cadrage est une **homothétie exacte de la maquette à toute
      largeur**. Le supplément de hauteur est le token **`--fid-rab`**
      (`max(0px, calc(100vw * 1133 / 1440 - 1133px))`, **nul jusqu'à 1440**, donc rien ne
-     change de 900 à 1440) ; il est ajouté à la **1re rangée** et au **`margin-top` du
-     paragraphe**, si bien que le bas (paragraphe + cartes) reste collé au bas de la bande
-     et le titre en haut. Le blanc supplémentaire tombe au milieu, sur la photo.
+     change de 900 à 1440) ; il est ajouté à la **1re rangée**, si bien que les cartes restent
+     collées au bas de la bande et le bloc titre + paragraphe en haut. Le blanc supplémentaire tombe au milieu, sur la photo.
      La typo, elle, **reste figée** à 1440 : le titre devient simplement plus petit par
      rapport à la photo, et il retombe sur le fond flou (plantes / étagère).
 5. **Commerçant** — ✅ FAIT (05/09/2026). Bande jaune de **y=2773 à 3543** (1440 × **771**)
@@ -560,6 +624,7 @@ move-in-fleurus/
 ├── index.html
 ├── styles.css
 ├── script.js     (burger + routage des stores — chargé en `defer`)
+├── commentaires/ (copie de référence des 3 fichiers, cf. « Copie commentée » plus bas)
 ├── CLAUDE.md
 ├── maquette/     (Maquette desktop 1440.png — 1440 × 3908, seule référence)
 └── assets/
@@ -573,9 +638,10 @@ move-in-fleurus/
   Repères : `logo-move-in-blanc.svg` · `badge-app-store-noir.svg` · `badge-google-play-blanc.svg` ·
   `picto-{trajet,magasin,cadeau}-sable.svg` · `carte-fleurus-jaune.svg` ·
   `titre-rejoignez-le-move.svg` · `mockup-iphone-hero.png` · `photo-commercants.webp` ·
-  `illustration-skyline.svg`. (`mockup-iphone-hd.png` existe mais n'est pas utilisé.)
-  ⚠️ Reste à renommer : **`Mockup iPhone - Mobilité - 02.webp`** (espaces + accent), pas
-  encore utilisé — sans doute le mockup de la section Commerçant.
+  `illustration-skyline.svg`.
+  ✅ **Plus rien à renommer** : `Mockup iPhone - Mobilité - 02.webp`, le dernier fichier
+  hors convention, a été **supprimé par Sylvain** le 06/09/2026. `assets/images/` ne
+  contient plus que des fichiers utilisés, tous en kebab-case, pour **816 Ko au total**.
 - ✅ **Le poids des photos est réglé.** Les deux JPG pleine définition (18,5 et 20,3 Mo)
   ont disparu du dossier ; Sylvain a livré des **WebP** à leur place. `Mockup Iphone -
   Commercant.webp` (539 Ko) a été **renommé `photo-commercants.webp`** le 05/09/2026 pour
@@ -591,6 +657,81 @@ move-in-fleurus/
   entre eux. (Concerné notamment : `illustration-skyline.svg`.)
 - Piège rencontré : un SVG inline en `width: auto` se fait rogner par le `svg { max-width: 100% }`
   global. Toujours donner une **largeur explicite** calculée depuis le ratio du `viewBox`.
+
+## Rôles partagés et tokens communs (passe DRY du 06/09/2026)
+
+La feuille de style avait plusieurs fois la même valeur à deux endroits. Rien n'a bougé
+à l'écran (vérifié : **54 repères mesurés dans le navigateur, un seul écart, volontaire**,
+cf. le dernier point). Ce qui a changé, c'est **où vit la valeur** :
+
+- **`.logo` est le seul endroit où le logo Move in est dimensionné.** Le SVG du footer
+  porte maintenant `class="logo footer__logo"` et `.footer__logo` ne fait plus qu'une
+  chose : `--logo-h: var(--foot-logo-move)`. ⚠️ Ce n'est pas cosmétique — la largeur
+  explicite et le ratio **1,19945** qui empêchent le « e » de Move d'être rogné n'existent
+  plus qu'à UN seul endroit. Deux copies, c'étaient deux occasions de perdre le garde-fou.
+- **`:is(.header__inner, .menu__top)`** — une seule règle pour le bandeau du header et
+  celui du menu mobile. C'est elle qui garantit que le logo ne bouge pas d'un pixel à
+  l'ouverture du menu ; s'ils doivent diverger un jour, les redissocier ici plutôt que
+  d'ajouter une surcharge ailleurs.
+- **`.souligne` est réglable** : `bottom: var(--souligne-bottom, 0)`. Le menu mobile avait
+  sa propre copie du `::after`, identique au pixel sauf ce `bottom` ; il porte maintenant
+  la classe et pose `--souligne-bottom: .06em`. Le rôle sert donc à **trois** endroits :
+  nav desktop, liens légaux du footer, liens du menu.
+- **`.display` est porté dans le HTML** par « Bougez / Cumulez / Profitez » et par les
+  liens du menu, au lieu d'être recopié. ⚠️ Les surcharges de `.hero__mots`
+  (`--fs-display-xl` / `--lh-xl` au lieu de `--fs-display-l` / `--lh-tight`) ne tiennent
+  que parce que la règle est **plus bas dans le fichier** : même spécificité, c'est
+  l'ordre qui tranche. Ne pas remonter `.hero__mots` au-dessus de `.display`.
+- **`--carte-pb` supprimé** : il valait toujours `--carte-p`, aux quatre endroits où il
+  était défini. `.carte` est en `padding: var(--carte-p)` tout court. Si le bas doit un
+  jour différer, le recréer.
+- **`--lh-card-text` (1,1429)** : l'interligne du corps de carte, partagée avec le texte
+  des piliers — les deux valeurs de ce rôle (`--fs-card-text` + celle-ci) ont maintenant
+  une source unique, ce que le fichier disait déjà en prose sans le faire en code.
+- **`--titre-texte-mt` et `--lead-w`** remplacent `--fid-texte-mt` / `--com-texte-mt`
+  (qui étaient devenus le même nombre) et les deux `max-width: calc(539 * var(--px))`.
+  Fidélité et Commerçant ont exactement les mêmes relevés : même titre
+  (`--fs-titre-section`), même écart titre → paragraphe, même largeur de paragraphe.
+  Les trois tokens sont groupés dans le `:root` desktop de Fidélité.
+- **Les deux `:root` consécutifs** du `@media` du hero sont fusionnés.
+- ⚠️ **Le seul changement visible, assumé** : les liens du menu mobile gagnent le
+  `letter-spacing: .005em` du rôle `.display`, qu'ils n'avaient pas — **0,34 px par
+  lettre** à 68 px, soit 2,7 px sur « Mobilité ». C'est la valeur du rôle et ce sont bien
+  des titres display. Pour l'annuler : `letter-spacing: normal` sur `.menu__list a`.
+
+**Ce qui n'a PAS été touché**, et pourquoi : les **11 blocs `@media (min-width: 900px)`**
+séparés. C'est l'organisation par section — chaque section garde ses tokens à côté de ses
+règles — et le navigateur les fusionne de toute façon. Les regrouper coûterait en
+lisibilité pour zéro gain.
+
+## Copie commentée (`commentaires/`)
+
+`commentaires/` contient une copie de `index.html`, `styles.css` et `script.js` **tels
+qu'ils sont écrits**, avec tous leurs commentaires, plus un `LISEZ-MOI.md`. Demandée par
+Sylvain le 06/09/2026, avant la passe d'optimisation.
+
+⚠️ **Cette copie ne se met pas à jour toute seule et il n'y a pas de build pour la
+régénérer.** Elle a été resynchronisée après la passe DRY ; à refaire à chaque
+modification de fond, sinon elle ment. C'est Git qui tient l'historique, pas ce dossier.
+
+✅ **Décision prise le 06/09/2026 : les commentaires ont été retirés des fichiers déployés.**
+Mesures avant / après :
+
+| | brut | gzip (ce que GitHub Pages envoie) |
+|---|---|---|
+| `styles.css` commenté (→ `commentaires/`) | 75,8 Ko | ~25 Ko |
+| `styles.css` déployé | **29,4 Ko** | **7,4 Ko** |
+| `script.js` commenté (→ `commentaires/`) | 8,0 Ko | — |
+| `script.js` déployé | **4,3 Ko** | **1,5 Ko** |
+
+Les commentaires faisaient **57 % de la feuille de style**, soit ~17 Ko sur le fil à chaque
+première visite. Le code déployé pèse maintenant **55 Ko au total, 9 Ko compressé**.
+
+⚠️ **Vérifié, pas supposé** : les 54 repères de rendu ont été remesurés dans le navigateur
+en basculant la feuille de style entre les deux versions — **strictement identiques**,
+hauteur de page comprise. Le JS a été retranscrit à la main (les `//` dans les URL rendent
+un dépouillement automatique dangereux) puis comparé ligne à ligne, commentaires neutralisés :
+**111 lignes de code identiques des deux côtés**.
 
 ## Dépôt et mise en ligne
 
@@ -700,11 +841,10 @@ réserve qui n'a pas lieu d'être puisque le header n'est pas sticky et ne recou
   rasterisant l'avant/après à l'échelle réelle d'affichage (3500 px) : 2,5 % de pixels
   diffèrent, uniquement de l'antialiasing de bord, invisible à l'œil sur un motif jaune sur
   jaune. L'original reste récupérable dans l'historique OneDrive.
-- ⚠️ **Trois fichiers lourds INUTILISÉS traînent dans `assets/images/`** — ils ne sont pas
-  chargés par la page mais partiraient tels quels sur le serveur :
-  `mockup-iphone-hd.png` (8,2 Mo), `mockup-iphone-hero.png` (2,72 Mo, remplacé par le WebP),
-  `Mockup iPhone - Mobilité - 02.webp` (687 Ko). **À supprimer ou à exclure du déploiement —
-  attendre l'accord de Sylvain.**
+- ✅ **RÉGLÉ le 06/09/2026 : plus aucun fichier lourd inutilisé.** Les deux PNG
+  (`mockup-iphone-hd.png` 8,2 Mo et `mockup-iphone-hero.png` 2,72 Mo) avaient déjà disparu ;
+  `Mockup iPhone - Mobilité - 02.webp` (687 Ko) a été **supprimé par Sylvain** le même jour.
+  `assets/images/` fait désormais **816 Ko**, tout est utilisé.
 - Piste restante : `photo-commercants.webp` (551 Ko, 4232 × 5948) est deux fois plus grande
   que nécessaire (2560 de large suffirait). Chargement différé, donc moins critique.
 
@@ -782,9 +922,10 @@ Un seul fichier à remplacer par variante, rien à changer dans le code.
    écrit « **achats** ». À confirmer.
 11. **Moitié droite vide de la section Commerçant** : sur les deux maquettes le contenu tient
    dans les colonnes 1-5 et il reste **240 px de jaune sous le bouton** en desktop (52 en
-   mobile). Repris tel quel. Est-ce qu'un **mockup** devait y aller — celui qui reste inutilisé,
-   `Mockup iPhone - Mobilité - 02.webp` ? Si oui, il suffit de le poser à droite ; la hauteur
-   de bande (771) est déjà la bonne.
+   mobile). Repris tel quel. Est-ce qu'un **mockup** devait y aller ? Si oui, il suffit de le
+   poser à droite ; la hauteur de bande (771) est déjà la bonne.
+   ⚠️ **Le candidat évident n'existe plus** : `Mockup iPhone - Mobilité - 02.webp` a été
+   supprimé par Sylvain le 06/09/2026. Il faudra donc un nouvel asset si la réponse est oui.
 12. ✅ **Réglé (05/09/2026)** — le paragraphe de la section Commerçant reprenait mot pour mot
    le chapô du hero sur les deux maquettes (un copier-coller : il parlait de trajets, pas de
    commerce). **Texte fourni par Sylvain le 05/09/2026** : « Devenez partenaire de Move in et
@@ -817,8 +958,10 @@ Un seul fichier à remplacer par variante, rien à changer dans le code.
    et pour cause : la section non plus.)
 19. **Versions foncées des logos partenaires** : Ville de Fleurus, Wallonie et Shop In
    n'existent qu'en blanc. Tant qu'il en est ainsi, le bandeau doit rester sur fond sombre.
-17. **Trois fichiers lourds inutilisés** dans `assets/images/` (8,2 Mo + 2,72 Mo + 687 Ko) :
-   je les supprime, ou tu préfères les garder hors du dossier déployé ?
+17. ✅ **Résolu (06/09/2026)** — les trois fichiers lourds inutilisés ont disparu, le dernier
+   (`Mockup iPhone - Mobilité - 02.webp`, 687 Ko) supprimé par Sylvain lui-même.
+   `assets/images/` fait 816 Ko et ne contient plus que des fichiers servis. ⚠️ Voir la
+   question 11 : ce fichier était le candidat pour la moitié droite vide de Commerçant.
 15. **Les logos du footer sont-ils des liens ?** Aujourd'hui non (de simples `<img>`).
    S'ils doivent l'être : fleurus.be, wallonie.be, digitalwallonia.be… à confirmer.
 10. ✅ **Résolu (05/09/2026)** — cadrage de la photo au-delà de 1440. Sur l'écran 2560 × 1440

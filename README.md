@@ -8,74 +8,304 @@
 
 [![Voir le site](https://img.shields.io/badge/%E2%86%92_VOIR_LE_SITE-ffdd0d?style=for-the-badge&labelColor=2a292e)](https://valvasyl.github.io/movein-fleurus-site/)
 
+`HTML` · `CSS natif` · `JavaScript vanilla` · zéro dépendance · zéro build
+
 </div>
 
 ---
 
 ## À propos
 
-- **Auteur** : Sylvain Valvassori
-- **Client** : Ville de Fleurus
-- **En ligne** : 👉 [valvasyl.github.io/movein-fleurus-site](https://valvasyl.github.io/movein-fleurus-site/) 👈
-- **Maquettes** : Illustrator, deux planches — 390 px et 1440 px
+Move in Fleurus récompense les déplacements durables. Chaque kilomètre parcouru à pied, à
+vélo ou en trottinette rapporte des points ; **100 km = un chèque de 10 €** à dépenser chez
+les commerçants partenaires de la ville. Deux applications coexistent — une pour les
+**citoyens**, une pour les **commerçants**.
 
-**Contexte** : Move in Fleurus récompense les déplacements durables. Chaque kilomètre
-parcouru à pied, à vélo ou en trottinette rapporte des points ; **100 km = un chèque de
-10 €** à dépenser chez les commerçants partenaires. Il existe deux applications, une pour
-les citoyens et une pour les commerçants. Ce site présente le concept et pousse à leur
-téléchargement.
-
-## Objectifs
-
-- Reproduire les deux maquettes **au pixel** — chaque valeur est relevée, pas estimée
-- Mobile-first, puis desktop
-- **Fluid responsive** : tout en `clamp()`, aucune cassure entre les tailles d'écran
-- **Un seul point de bascule** dans tout le projet : `@media (min-width: 900px)`
-- Au-delà de 1440 px, le desktop devient une **homothétie exacte** de la maquette
-- CSS moderne : variables natives et nesting avec `&`, **sans SASS**
-- Accessible : contrastes, `alt`, navigation clavier, `prefers-reduced-motion`
-- Animations d'apparition au scroll, **sans dépendance**
-
-## Ce qu'il y a dans le dépôt
+Ce dépôt contient le **site vitrine one-page** qui présente le dispositif et oriente le
+visiteur vers le téléchargement de l'application qui le concerne.
 
 | | |
 |---|---|
-| `index.html` | la page, entière |
-| `styles.css` | toute la mise en forme, en 14 sections numérotées |
-| `script.js` | menu burger, choix du store, apparitions au scroll, header escamotable |
-| `assets/` | images, logos et icônes |
-| `CLAUDE.md` | le carnet de bord : relevés, décisions, pièges rencontrés |
+| **Client** | Ville de Fleurus |
+| **Type** | Site vitrine one-page, statique |
+| **En ligne** | [valvasyl.github.io/movein-fleurus-site](https://valvasyl.github.io/movein-fleurus-site/) |
+| **Hébergement** | GitHub Pages — publication automatique à chaque push sur `main` |
+| **Source de vérité** | Deux maquettes Illustrator, **390 px** et **1440 px** |
+| **Poids du code** | 55 Ko (21 + 29 + 4) · **9 Ko une fois compressé** |
+| **Poids des médias** | 1,1 Mo, tout est utilisé |
+| **Dépendances** | aucune |
 
-**Aucun framework, aucun build, aucune dépendance.** Les deux seules ressources externes
-sont les polices Google — Inter et Barlow Condensed.
+---
 
-## Le lancer en local
+## En un coup d'œil
+
+- **Trois fichiers, pas un de plus** : `index.html`, `styles.css`, `script.js`. Pas de
+  framework, pas de préprocesseur, pas d'étape de compilation. Le dépôt se déploie tel quel.
+- **Mobile-first et fluide** : tout est en `clamp()`. **Un seul breakpoint dur dans tout le
+  projet** — `@media (min-width: 900px)` — et il ne sert qu'à deux choses : passer la grille
+  de 4 à 12 colonnes, et remplacer le burger par la navigation desktop.
+- **CSS moderne natif** : variables CSS, nesting avec `&`, `:is()`, `clamp()`, `aspect-ratio`,
+  `overflow: clip`, `inert`. Aucun SASS.
+- **Fidélité au pixel** : chaque valeur du site est **relevée sur la maquette**, jamais
+  estimée à l'œil. Le relevé s'est fait par scripts (recadrage, pipette, bounding box,
+  différence entre planches) plutôt qu'à la souris.
+
+---
+
+## Architecture
+
+```
+move-in-fleurus/
+├── index.html          Structure — 10 sections, un seul <h1>
+├── styles.css          Toute la mise en forme, organisée en 16 sections numérotées
+├── script.js           5 blocs autonomes, chacun en IIFE
+├── CLAUDE.md           Mémoire technique du projet (voir « Documentation »)
+├── README.md
+├── robots.txt
+├── commentaires/       Copie intégralement commentée des 3 fichiers ci-dessus
+├── maquette/           Planches Illustrator de référence (non déployées)
+└── assets/
+    ├── logos/          Move in (4 variantes), Ville de Fleurus, Wallonie, Shop In, DigitalWallonia
+    ├── icons/          Réseaux sociaux, pictogrammes des piliers
+    └── images/         Mockup, photo, trame de rues, titre vectorisé, illustration skyline
+```
+
+Les chemins sont **tous relatifs** : le site fonctionne à la racine d'un domaine comme dans
+un sous-dossier.
+
+---
+
+## Partis pris techniques
+
+Ce sont les décisions qui expliquent la forme du code. Chacune est documentée en détail dans
+`CLAUDE.md` et commentée dans `commentaires/styles.css`.
+
+### Le desktop est une homothétie de la maquette
+
+C'est **la** décision structurante. Plutôt que d'interpoler chaque valeur indépendamment —
+ce qui fait dériver les éléments les uns par rapport aux autres — toutes les dimensions sont
+exprimées en « pixels de maquette » :
+
+```css
+--px: calc(clamp(1152px, 100vw, 1440px) / 1440);
+```
+
+Une valeur relevée s'écrit alors telle quelle : `margin-top: calc(160 * var(--px))`. **De
+900 px à 1440 px, le rendu est un zoom exact de la maquette** ; au-delà, tout se fige.
+
+Le plancher de `0,80` est essentiel : sans lui, `--px` tomberait à `0,625` à 900 px et le
+desktop y serait une miniature. Toute la branche mobile est **ancrée sur cette valeur**, si
+bien que le franchissement du breakpoint est invisible — vérifié à 899 px et à 901 px.
+
+### Une charte relevée au pixel
+
+La maquette contient **trois jaunes**, pas un :
+
+| Rôle | Valeur |
+|---|---|
+| Couleur de marque (numéros de carte, bande Commerçant) | `#ffdd0d` |
+| Fond du hero — **un dégradé diagonal**, pas un aplat | `#ffe330` → `#ffea63` |
+| Trame de rues, pastille App Store | `#ffd405` |
+
+Deux polices, toutes deux via Google Fonts : **Inter** pour tout le texte lisible,
+**Barlow Condensed** pour les gros titres display et les numéros de carte. **La police suit
+le rôle, pas la balise** : un titre de carte reste en Inter même si c'est un `<h3>`.
+
+Le lien Google Fonts ne charge que les graisses réellement déclarées — 400, 700 et 800 pour
+Inter, 800 droit pour Barlow Condensed. Avant d'utiliser une nouvelle graisse dans le CSS,
+il faut l'ajouter à l'URL.
+
+### Header sticky escamotable
+
+Transparent en haut de page, il **s'efface vers le haut quand on descend et revient dès
+qu'on remonte**. Le JavaScript ne pose que des classes, toute l'animation est en CSS.
+
+Il est en `position: sticky` et **surtout pas `fixed`** : l'élément garde sa place dans le
+flux, ce qui permet au hero de remonter sous lui via une marge négative et de faire courir le
+dégradé depuis `y = 0`. En `fixed`, toute la page se serait décalée.
+
+Une fois la page quittée du haut, le fond apparaît sous la forme d'une **barre arrondie en
+retrait** — 32,5 px sur les côtés, 30 px en haut et en bas, rayon 20 à 1440. Ces trois
+valeurs sont dérivées, pas interpolées : le retrait horizontal vaut la **moitié de la marge
+de page**, le retrait vertical **30 % de l'air disponible autour du logo** (avec un minimum
+garanti), et le rayon **20 % de la hauteur de la barre**.
+
+### Une trame de rues dimensionnée par la hauteur
+
+Le fond du hero superpose un SVG de plan de ville au dégradé. Il est piloté par la
+**hauteur**, non par la largeur :
+
+```css
+background-size: auto max(100%, calc(var(--trame-w) * 1.2));
+```
+
+Piloté par la largeur, il devenait plus court que la bande en mobile — où celle-ci fait le
+double de haut — et le haut du hero se retrouvait sans dessin.
+
+### Un bandeau partenaires à vitesse constante
+
+Le défilement infini repose sur **deux pistes identiques côte à côte**, chacune en
+`min-width: 100%`, translatées de `-100 %` : quand la première sort à droite, la seconde est
+exactement à sa place, quelle que soit la largeur de l'écran.
+
+La vitesse est **constante à 50 px/s sur tous les écrans**. C'est impossible en CSS pur — il
+n'existe aucune conversion longueur → temps — donc `script.js` calcule `durée = largeur ÷ 50`
+et la réécrit à chaque redimensionnement via un `ResizeObserver`. La valeur CSS reste le repli
+si le script ne s'exécute pas. Le défilement se met en pause au survol et au focus clavier.
+
+### Routage vers le bon magasin d'applications
+
+Les boutons de téléchargement portent leurs deux URL en `data-store-ios` /
+`data-store-android`. Le script réécrit le `href` **au chargement, pas au clic** : le lien
+reste un vrai lien — clic milieu, « copier l'adresse », navigation clavier — et il est déjà
+correct avant la première interaction. Le `href` du HTML sert de repli sur les plateformes
+sans magasin évident. iPadOS 13+ se déclarant « Macintosh », il est démasqué par
+`maxTouchPoints`.
+
+### Apparitions au scroll
+
+Un `IntersectionObserver` pose une classe à l'entrée dans le champ, puis **oublie l'élément** :
+l'effet ne se rejoue pas au scroll inverse. Toute l'animation est ensuite une transition CSS,
+donc fluide quel que soit le rythme de la molette — contrairement aux animations pilotées par
+le scroll, qui avancent par à-coups.
+
+La classe qui active l'état initial (opacité 0) est **posée par le script, pas écrite dans le
+HTML** : si le JavaScript ne s'exécute pas, rien n'est masqué. Elle n'est pas posée du tout
+lorsque `prefers-reduced-motion` est demandé.
+
+---
+
+## Accessibilité
+
+Un site d'administration publique wallonne relève de la directive **UE 2016/2102**
+(WCAG 2.1 niveau AA).
+
+**En place** : un seul `<h1>`, hiérarchie de titres cohérente (avec des `<h2>` en lecteur
+d'écran pour les sections sans titre visible), `lang="fr"`, textes alternatifs sur toutes les
+images utiles, aucun lien sans nom accessible, focus systématiquement visible, lien
+d'évitement, menu mobile `inert` quand il est fermé et fermable au clavier,
+`prefers-reduced-motion` respecté partout.
+
+**Écarts connus, à trancher** : cinq combinaisons de couleurs héritées de la maquette
+descendent à ~1,3:1 là où 3:1 ou 4,5:1 sont exigés — du blanc et du sable posés sur des fonds
+clairs (voir *Étapes à suivre*). Le texte courant, lui, est entre 10:1 et 14:1.
+
+---
+
+## Développement local
+
+Aucune installation n'est nécessaire, mais le fichier ne doit pas être ouvert directement
+depuis le disque (`file://`) : les polices et le SVG de fond ne se chargeraient pas.
 
 ```bash
 npx http-server -p 8000 -c-1
 ```
 
-Puis <http://localhost:8000>. Le `-c-1` coupe le cache du navigateur : sans lui, on croit
-que ses modifications ne sont pas prises en compte.
+> **`-c-1` n'est pas optionnel.** Il envoie `no-cache, no-store, must-revalidate`. Sans
+> en-tête de cache, le navigateur conserve l'ancienne feuille de style et des corrections
+> pourtant bien en place semblent ne pas fonctionner.
 
-## Ce qui reste à trancher
+Le site est ensuite servi sur `http://localhost:8000`.
 
-- Les URL **Facebook**, **Instagram**, **politique de vie privée** et **conditions
-  générales** — aujourd'hui en `href="#"`
-- **Cinq contrastes** hérités de la maquette sont sous le seuil WCAG (titres blancs ou
-  sable sur fond clair) — enjeu réglementaire pour un site public
-- Le **logo Move in** est à réexporter : le « e » est tronqué dans le fichier source
-- `robots.txt` bloque l'indexation tant que le site est en test — **à supprimer à la mise
-  en ligne**
+---
 
-## Fait avec
+## Déploiement
 
-![HTML5](https://img.shields.io/badge/HTML5-2a292e?style=for-the-badge&logo=html5&logoColor=ffdd0d)
-![CSS3](https://img.shields.io/badge/CSS3-2a292e?style=for-the-badge&logo=css3&logoColor=ffdd0d)
-![JavaScript](https://img.shields.io/badge/JAVASCRIPT-2a292e?style=for-the-badge&logo=javascript&logoColor=ffdd0d)
+GitHub Pages, branche `main`, racine du dépôt. **Un push suffit** ; la mise en ligne prend
+une à deux minutes.
+
+```bash
+git add -A
+git commit -m "…"
+git push
+```
+
+Aucune étape de compilation, aucun artefact à générer : ce qui est dans le dépôt est ce qui
+est servi.
+
+---
+
+## Documentation
+
+Le projet suit une discipline documentaire inhabituelle, née de sa contrainte principale :
+**chaque valeur du CSS est un relevé**, et un nombre sans son relevé est un nombre qu'on ne
+peut plus vérifier ni reprendre.
+
+### `CLAUDE.md` — la mémoire du projet
+
+Ce site a été développé avec **[Claude Code](https://claude.com/claude-code)**, l'agent de
+développement en ligne de commande d'Anthropic. `CLAUDE.md` est le fichier de contexte qu'il
+lit au début de chaque session : contraintes non négociables, charte, grille, relevés
+maquette, décisions prises et **pourquoi**, pièges rencontrés, questions en attente d'arbitrage.
+
+Il est utile bien au-delà de l'outil qui l'a produit : c'est le seul endroit où l'on trouve
+la raison d'être de chaque nombre. **À tenir à jour à chaque modification de fond.**
+
+### `commentaires/` — la version commentée du code
+
+Les fichiers déployés sont **volontairement dépourvus de commentaires** : ceux-ci
+représentaient 57 % de la feuille de style, soit environ 17 Ko supplémentaires à télécharger à
+chaque première visite.
+
+`commentaires/` contient une copie intégralement commentée des trois fichiers — le
+raisonnement derrière chaque valeur, les pièges, les décisions.
+
+> ⚠️ **Cette copie ne se régénère pas toute seule** : il n'y a pas d'étape de compilation.
+> Toute modification de fond doit être reportée dans `commentaires/`, faute de quoi la
+> documentation ment. Chaque fichier déployé porte en tête un rappel vers sa version commentée.
+
+---
+
+## Étapes à suivre
+
+### 1. Avant toute communication publique
+
+- [ ] **Renseigner deux URL manquantes** — « Politique vie privée » et « Conditions
+      générales » sont en `href="#"` dans le pied de page.
+- [ ] **Arbitrer les cinq écarts de contraste** hérités de la maquette. Trois options,
+      à trancher globalement plutôt qu'au cas par cas :
+      *(a)* les assumer et publier une déclaration d'accessibilité qui les liste,
+      *(b)* foncer les couleurs concernées — ce qui modifie l'identité visuelle,
+      *(c)* ne corriger que le texte non décoratif et assumer les grands titres.
+- [ ] **Réexporter le logo Move in.** Les quatre variantes SVG contiennent le même tracé
+      tronqué : le « e » de *Move* est coupé net **dans les fichiers eux-mêmes**, pas dans le
+      code. Le plan de travail Illustrator était trop étroit à l'export. Le diagnostic complet
+      est dans `CLAUDE.md` ; il suffit de remplacer les quatre fichiers, rien à changer dans le code.
+
+### 2. Performance
+
+- [ ] **Redimensionner `photo-commercants.webp`** — 552 Ko en 4232 × 5948 px, alors que
+      2560 px de large suffisent. Chargée en différé, donc non bloquante, mais c'est le
+      dernier poste lourd du site.
+
+### 3. Contenu et finition
+
+- [ ] **Moitié droite de la section Commerçant** : elle est vide sur les deux maquettes.
+      Vérifier s'il s'agit d'un choix ou d'un mockup manquant — la hauteur de bande est déjà
+      dimensionnée pour l'accueillir.
+- [ ] **Bandeau partenaires** : le défilement se met en pause au survol et au focus, ce qui
+      couvre l'essentiel de WCAG 2.2.2. La lettre de la norme demande un moyen d'arrêt
+      explicite pour tout contenu animé de plus de 5 secondes — un bouton pause reste à arbitrer.
+- [ ] **Phase 2 — animations** : les apparitions au scroll sont en place. Restent le point qui
+      parcourt la route de l'illustration finale et un léger mouvement du mockup à l'entrée.
+      **CSS de préférence, JavaScript en dernier recours, `prefers-reduced-motion` toujours respecté.**
+
+---
+
+## Conventions
+
+- **Aucun accent dans les identifiants** — `id`, classes, variables CSS : `#mobilite`,
+  `.fidelite`, `--mobilite-pb`. Les accents ne vivent que dans le texte visible.
+- **Assets en minuscules kebab-case**, sans espace ni accent.
+- **SVG inline uniquement s'il doit être recoloré par CSS**, sinon `<img>`. Le logo Move in
+  est déclaré une seule fois en `<symbol>` puis appelé par `<use>`.
+- **Un SVG inline reçoit toujours une largeur explicite** calculée depuis le ratio de son
+  `viewBox` : en `width: auto`, il se fait rogner par la règle globale `svg { max-width: 100% }`.
+
+---
 
 <div align="center">
 
-☝️ [Retour en haut](#haut)
+**Ville de Fleurus** · Développé avec [Claude Code](https://claude.com/claude-code)
 
 </div>

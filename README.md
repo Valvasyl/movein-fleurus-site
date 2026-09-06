@@ -267,10 +267,6 @@ raisonnement derrière chaque valeur, les pièges, les décisions.
       *(a)* les assumer et publier une déclaration d'accessibilité qui les liste,
       *(b)* foncer les couleurs concernées — ce qui modifie l'identité visuelle,
       *(c)* ne corriger que le texte non décoratif et assumer les grands titres.
-- [ ] **Réexporter le logo Move in.** Les quatre variantes SVG contiennent le même tracé
-      tronqué : le « e » de *Move* est coupé net **dans les fichiers eux-mêmes**, pas dans le
-      code. Le plan de travail Illustrator était trop étroit à l'export. Le diagnostic complet
-      est dans `CLAUDE.md` ; il suffit de remplacer les quatre fichiers, rien à changer dans le code.
 
 ### 2. Performance
 

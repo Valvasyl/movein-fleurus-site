@@ -874,29 +874,44 @@ irréprochable (10:1 à 14:1) ; ce sont les jeux blanc/sable/jaune sur fond clai
 wallonne est soumis à la directive UE 2016/2102 (WCAG 2.1 AA). **Décision Sylvain requise**,
 cf. questions 1, 8, 13 et 16.
 
-## ⚠️ LE FICHIER DU LOGO MOVE IN EST AMPUTÉ (05/09/2026)
+## ✅ LE LOGO N'EST PAS AMPUTÉ — diagnostic ERRONÉ, corrigé le 06/09/2026
 
-**Le « e » de Move est coupé net dans les assets eux-mêmes**, pas dans le code. Diagnostic
-mené jusqu'au bout, à ne pas refaire :
+⚠️ **Cette section disait exactement le contraire jusqu'au 06/09/2026.** Elle affirmait que
+le « e » de Move était coupé net dans les quatre `logo-move-in-*.svg` et demandait de les
+réexporter. **C'était faux.** Sylvain a rouvert les fichiers, ils sont intacts. Vérifié
+ensuite de mon côté, deux fois :
 
-- Les **quatre** `logo-move-in-*.svg` (blanc, noir, jaune, jaune-noir) contiennent le
-  **même tracé tronqué** — 14 chemins identiques, le « e » fait 540 caractères dans les
-  quatre. Le viewBox est `0 0 51,96 43,32` et `getBBox()` rend 51,95 : le dessin s'arrête
-  **pile au bord de la planche**, signature d'un export dont le plan de travail était trop
-  étroit. Le tracé lui-même est coupé, ce n'est pas un recadrage d'affichage.
-- **La maquette porte le même défaut** : le logo du header y mesure 72 × 60, soit un
-  ratio de **1,2000** — identique aux **1,1994** du fichier. La maquette a donc été
-  composée avec l'asset déjà abîmé.
-- **Le logo intact existe dans le mockup de l'appli** (`mockup-iphone-hero.webp`, écran
-  d'accueil) : le « e » y est **entier**, avec une panse fermée et arrondie à droite.
-- Vérifié qu'aucune piste CSS ne pouvait être en cause : largeur explicite, attributs
-  `width`/`height`, `max-width: none`, `overflow: visible` sur le SVG — le rendu est
-  identique dans tous les cas, et `sharp` (hors navigateur) le coupe pareil.
+- **Rendu du fichier seul** (`logo-move-in-noir.svg` affiché à 300 px de haut, cadre du
+  viewBox tracé en rouge) : le « e » est **entier**, panse fermée, terminaison arrondie qui
+  revient vers l'intérieur. Rien ne manque.
+- **Bounding box des 14 tracés recopiés dans un viewBox élargi** — le seul test qui prouve
+  qu'aucune encre ne déborde : `x -0,000 → 223,670` pour un viewBox de `0 0 223,66 186,48`.
+  Soit **0,01 unité de dépassement, du pur arrondi**. Le dessin est **jointif au plan de
+  travail**, ce qui est le résultat normal d'un export « ajusté à l'illustration ».
 
-**➡️ Il faut RÉEXPORTER les quatre variantes depuis l'Illustrator source**, plan de travail
-ajusté au dessin. Tant que ce n'est pas fait, le logo est coupé partout où il apparaît :
-header, menu mobile et footer (ils partagent tous le `<symbol id="logo-move-in">`).
-Un seul fichier à remplacer par variante, rien à changer dans le code.
+**D'où venait l'erreur.** Le logo A ÉTÉ visiblement coupé sur le site à un moment — mais la
+cause était le **CSS**, pas l'asset : un SVG inline en `width: auto` se fait rogner par la
+règle globale `svg { max-width: 100% }`. C'est le piège consigné dans « Organisation des
+fichiers », et il est corrigé depuis (largeur explicite calculée sur le ratio du viewBox).
+En cherchant ensuite dans le fichier, j'ai lu `getBBox() ≈ largeur du viewBox` comme la
+preuve d'un tracé tronqué. **C'est une lecture fausse : un recadrage serré n'est pas une
+troncature.** Une bbox égale au viewBox est ce qu'on attend d'un export propre.
+
+⚠️ **Rien à réexporter, rien à changer dans le code.** Et surtout, ne pas relancer ce
+diagnostic : le « logo intact » que je croyais voir dans `mockup-iphone-hero.webp` est le
+même logo, simplement plus grand.
+
+**Le dessin est jointif au plan de travail — c'est voulu, et il faut le garder ainsi** :
+
+- La boîte du SVG **est** le logo. Il se cale donc exactement sur la marge de 65, sans
+  compensation. Avec une marge intérieure dans l'asset, le bord visible du logo ne serait
+  plus sur la colonne et il faudrait la rattraper en CSS.
+- Le ratio **1,19945** de `.logo` est dérivé du viewBox. Ajouter de la marge dans l'export
+  oblige à le recalculer.
+- Seule contrepartie, cosmétique : la colonne de pixels extérieure tombe pile sur la limite
+  du viewport SVG, donc un moteur de rendu peut raboter un cheveu d'antialiasing à certaines
+  tailles. Si on voulait vraiment s'en prémunir, ~0,5 % de marge dans le plan de travail
+  suffirait — **mais il faudrait alors reprendre le 1,19945**. Non nécessaire.
 
 ## Questions en attente de Sylvain
 

@@ -272,21 +272,16 @@
          chargé en <img> est un document séparé que le CSS de la page n'atteint pas.
          ⚠️ Les href sont des PLACEHOLDERS « # » — Sylvain fournit les vraies URL.
          Le nom accessible est porté par aria-label (il n'y a plus d'alt à porter).
-         La 2e piste est décorative (aria-hidden) : ses liens sont en tabindex="-1" pour ne
-         pas doubler l'ordre de tabulation, mais restent cliquables et survolables — sinon
-         la moitié des logos qui défilent seraient inertes. -->
+         ⚠️ IL N'Y A QU'UNE SEULE PISTE ICI. Le défilement infini en demande deux, mais
+         la seconde est CLONÉE PAR script.js (bloc 4) — pas recopiée à la main. C'est
+         une source unique : on ne renseigne les URL qu'une fois, et une piste ne peut
+         plus diverger de l'autre. Le clone reçoit aria-hidden + tabindex="-1". -->
     <div class="marquee">
       <ul class="marquee__piste">
         <li><a class="marquee__logo marquee__logo--fleurus" href="#" aria-label="Ville de Fleurus"></a></li>
         <li><a class="marquee__logo marquee__logo--wallonie" href="#" aria-label="Wallonie"></a></li>
         <li><a class="marquee__logo marquee__logo--shop-in" href="#" aria-label="Fleurus Shop In"></a></li>
         <li class="partenaires__dw"><a class="marquee__logo marquee__logo--dw" href="#" aria-label="Digital Wallonia"></a></li>
-      </ul>
-      <ul class="marquee__piste" aria-hidden="true">
-        <li><a class="marquee__logo marquee__logo--fleurus" href="#" tabindex="-1"></a></li>
-        <li><a class="marquee__logo marquee__logo--wallonie" href="#" tabindex="-1"></a></li>
-        <li><a class="marquee__logo marquee__logo--shop-in" href="#" tabindex="-1"></a></li>
-        <li class="partenaires__dw"><a class="marquee__logo marquee__logo--dw" href="#" tabindex="-1"></a></li>
       </ul>
     </div>
 

@@ -92,10 +92,17 @@
 
 (() => {
   const marquee = document.querySelector('.marquee');
-  const piste = document.querySelector('.marquee__piste');
+  const piste = marquee && marquee.querySelector('.marquee__piste');
   if (!marquee || !piste) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const VITESSE = 50;
+
+  const doublon = piste.cloneNode(true);
+  doublon.setAttribute('aria-hidden', 'true');
+  doublon.querySelectorAll('a').forEach(a => { a.tabIndex = -1; });
+  marquee.append(doublon);
+  marquee.classList.add('marquee--anime');
 
   const regler = () => {
     const distance = piste.getBoundingClientRect().width;

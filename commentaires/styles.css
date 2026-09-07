@@ -1663,12 +1663,18 @@ button {
   min-width: 100%;
   padding-inline: calc(var(--part-logo-gap) / 2);
 
-  animation-name: defile;
   animation-duration: var(--part-duree);
   animation-timing-function: linear;
   animation-iteration-count: infinite;
-
 }
+
+/* ⚠️ Le NOM de l'animation est posé par une classe que script.js ajoute une fois la
+   seconde piste clonée — c'est le garde-fou du clonage en JS. Sans JS il n'y a qu'une
+   piste : la faire défiler laisserait un trou béant la moitié du temps. Là, les logos
+   restent simplement immobiles et bien répartis, ce qui est un repli propre (et plus
+   conforme à WCAG 2.2.2 que le défilement). NE PAS remettre `animation-name` dans
+   `.marquee__piste`. */
+.marquee--anime .marquee__piste { animation-name: defile; }
 
 /* ---- Les logos partenaires : des LIENS recolorables (07/09/2026) ----
    Sylvain les veut cliquables, et JAUNES au survol.

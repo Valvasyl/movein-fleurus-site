@@ -547,6 +547,24 @@ Planchers de lisibilité (seule entorse à l'homothétie) : 12 px sur `--fs-nav`
      indépendant de la largeur de l'écran — une piste unique translatée de −50 % laisserait
      des trous dès que l'écran dépasse la moitié de la piste. La seconde piste est en
      `aria-hidden` : les partenaires ne doivent pas être lus deux fois.
+   - ⚠️ **LA SECONDE PISTE EST CLONÉE PAR `script.js` (bloc 4) DEPUIS LE 07/09/2026** — elle
+     n'est plus recopiée dans le HTML (question de Sylvain, et il avait raison). Deux copies
+     à la main, c'étaient **deux sources à maintenir** : huit URL de partenaires à renseigner
+     au lieu de quatre, et deux pistes qui pouvaient diverger sans que rien ne le signale.
+     Le clone reçoit `aria-hidden` et `tabindex="-1"` sur ses liens — qui restent
+     **cliquables et survolables**, sinon la moitié des logos qui défilent seraient inertes.
+     - ⚠️ **Le clonage est le garde-fou de l'animation** : `animation-name: defile` n'est plus
+       sur `.marquee__piste` mais sur **`.marquee--anime .marquee__piste`**, et cette classe
+       n'est posée qu'**après** le clonage. Sans JS il n'y a donc qu'une piste ET pas
+       d'animation : des logos immobiles et bien répartis, au lieu d'un trou qui traverserait
+       le bandeau la moitié du temps. **Ne pas remettre `animation-name` dans `.marquee__piste`.**
+     - C'est un repli meilleur qu'avant : le repli JS-absent ne défile plus du tout, ce qui
+       est aussi plus conforme à WCAG 2.2.2 (cf. question 18).
+     - ⚠️ Sous `prefers-reduced-motion` **on ne clone rien** : l'animation étant de toute
+       façon neutralisée par la règle universelle du bas de la feuille, un doublon inerte
+       n'aurait fait qu'encombrer le DOM et le lecteur d'écran.
+     - Vérifié après bascule : **2 pistes dans le DOM, 4 liens focusables**, vitesse toujours
+       **50 px/s exactement** à 390, 1440 et 2560, hauteurs de bandeau inchangées (240 / 300).
    - ⚠️ **La VITESSE est constante sur tous les écrans : 50 px/s** (demande Sylvain,
      05/09/2026). Impossible en CSS pur — aucune conversion longueur → temps — donc
      `script.js` (bloc 4) calcule `durée = largeur ÷ 50` et la réécrit à chaque
@@ -555,15 +573,32 @@ Planchers de lisibilité (seule entorse à l'homothétie) : 12 px sur `--fs-nav`
      que de repli si le JS ne tourne pas.
    - ⚠️ **LES LOGOS SONT DES LIENS DEPUIS LE 07/09/2026, ET JAUNES AU SURVOL** (Sylvain).
      Ce ne sont plus des `<img>` mais des **`<a>` vides recolorés par `mask` CSS**.
-     - **Pourquoi pas `fill`** (la question de Sylvain) : un SVG chargé via `<img src>` est
-       un **document séparé**, le CSS de la page ne le traverse pas — `fill` n'a aucun effet.
-       Il faudrait inliner les quatre logos, ou les passer en sprite `<symbol>`/`<use>` comme
-       le logo Move in. Écarté ici pour deux raisons concrètes : ~**37 Ko de tracés** iraient
-       dans `index.html` (22,6 Ko aujourd'hui) à chaque chargement au lieu de quatre fichiers
-       cachés séparément, et **trois des quatre SVG ont des classes internes `.cls-1`…**,
-       exactement la collision signalée plus haut, à préfixer à la main dans chaque fichier.
-       Les logos étant **strictement monochromes `#2a292e`** (vérifié dans les quatre
-       fichiers), le masque donne le même rendu sans toucher aux assets.
+     - **Pourquoi pas `fill`** (question de Sylvain, posée deux fois — la réponse est ici) :
+       un SVG chargé via `<img src>` est un **document séparé**, le CSS de la page ne le
+       traverse pas, `fill` n'a donc aucun effet. Pour l'utiliser il faudrait inliner les
+       quatre logos, ou les passer en sprite `<symbol>`/`<use>` comme le logo Move in.
+       **Mesuré, pas supposé** — c'est ce qui a tranché :
+
+       | | brut | gzip (ce que GitHub Pages envoie) |
+       |---|---|---|
+       | `index.html` seul | 22,9 Ko | **6,6 Ko** |
+       | `index.html` + les 4 SVG inlinés | 60,0 Ko | **19,0 Ko** |
+       | les 4 SVG en fichiers séparés | 37,1 Ko | 13,3 Ko |
+
+       Le sprite **triplerait le HTML** (+12,4 Ko compressés), et le HTML est revalidé à
+       chaque visite et re-téléchargé à chaque déploiement — alors que les quatre SVG sont
+       des fichiers immuables, mis en cache une fois pour toutes. Faire entrer 12 Ko de
+       géométrie qui ne change jamais dans le document qui change le plus souvent est le
+       mauvais sens. S'ajoute le fait que **trois des quatre SVG ont des classes internes
+       `.cls-1`…** (la collision signalée plus haut) : il faudrait les préfixer à la main,
+       et retirer leurs `fill` en dur, dans chaque fichier.
+     - **Vérification de correction du masque** : un masque n'utilise que l'**alpha**, donc
+       il aplatit tout ce qui est semi-transparent. Contrôlé dans les quatre fichiers —
+       **zéro `opacity`, zéro `stroke`, zéro `fill="none"`**, ce ne sont que des tracés
+       pleins `#2a292e`. Le rendu est donc identique à celui des anciens `<img>`.
+       ⚠️ **C'est aussi la limite de la technique** : elle ne vaut que pour du monochrome.
+       Si un partenaire livre un jour un logo en plusieurs couleurs, le masque le réduirait
+       à une silhouette — il faudrait alors basculer CE logo-là en SVG inline.
      - La forme vient du SVG (`mask`), la couleur de `background-color: currentColor`. Un
        seul token de couleur à changer, et le contour de focus suit.
      - ⚠️ **Contrepartie** : on perd le `loading="lazy"` — une image de masque est chargée
@@ -1105,8 +1140,9 @@ images, puis la **Phase 2 — animations**. Les mentions légales sont renseign�
 reste plus un seul `TODO` dans le HTML (cf. la question 14, résolue).
 ⚠️ **Il reste des `href="#"`, et il faut savoir lesquels sont des trous** : les **2 liens du
 logo** (header et menu) pointent volontairement vers le haut de page — ce ne sont pas des
-trous ; les **8 liens des logos partenaires** (4 logos × 2 pistes), eux, **attendent leurs
-vraies URL** (question 15).
+trous ; les **4 liens des logos partenaires**, eux, **attendent leurs vraies URL**
+(question 15). Ils sont bien **4 et non 8** : la seconde piste du bandeau est clonée par
+`script.js`, plus recopiée dans le HTML.
 
 ## Relevés déjà faits pour les sections suivantes
 
@@ -1294,9 +1330,9 @@ même logo, simplement plus grand.
    question 11 : ce fichier était le candidat pour la moitié droite vide de Commerçant.
 15. ⏳ **Les logos partenaires SONT des liens depuis le 07/09/2026** (demande Sylvain) —
    mais les quatre `href` sont encore des **placeholders `#`**. Sylvain fournit les vraies
-   URL. **C'est le seul trou restant dans le HTML** : les quatre `<a class="marquee__logo">`
-   de `index.html` (deux pistes, donc **8 occurrences** — ne pas oublier la piste
-   dupliquée `aria-hidden`, sinon la moitié des logos qui défilent pointent dans le vide).
+   URL. **C'est le seul trou restant dans le HTML** : les **4** `<a class="marquee__logo">`
+   de `index.html` — et il n'y en a bien que 4 depuis que la seconde piste est clonée par
+   `script.js` au lieu d'être recopiée.
    Pistes évoquées : fleurus.be, wallonie.be, digitalwallonia.be, et Shop In à confirmer.
 10. ✅ **Résolu (05/09/2026)** — cadrage de la photo au-delà de 1440. Sur l'écran 2560 × 1440
    de Sylvain les téléphones montaient sur le titre : la bande gardait ses 1133 de haut

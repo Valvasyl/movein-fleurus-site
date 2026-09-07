@@ -136,12 +136,31 @@
    une durée à partir d'une largeur en CSS (aucune conversion longueur → temps).
    D'où ce calcul en JS : durée = distance ÷ vitesse, recalculée au redimensionnement.
    ⚠️ La valeur CSS de --part-duree reste le repli si ce script ne tourne pas. */
+/* ⚠️ C'est aussi ici qu'est CLONÉE la seconde piste (07/09/2026). Le HTML n'en contient
+   plus qu'une : le défilement infini en demande deux identiques côte à côte, mais les
+   recopier à la main faisait deux sources à maintenir — huit URL de partenaires à
+   renseigner au lieu de quatre, et deux pistes qui pouvaient diverger sans que rien
+   ne le signale. Le clone reçoit aria-hidden (les partenaires ne doivent pas être lus
+   deux fois) et tabindex="-1" sur ses liens, qui restent cliquables et survolables.
+   ⚠️ Le clonage est le garde-fou de l'animation : la classe `marquee--anime` n'est
+   posée qu'après, et c'est elle qui porte `animation-name` en CSS. Si ce script ne
+   tourne pas, il n'y a qu'une piste ET pas d'animation — des logos immobiles, plutôt
+   qu'un trou qui traverse le bandeau.
+   ⚠️ Sous `prefers-reduced-motion` on ne clone rien du tout : l'animation étant de
+   toute façon neutralisée, un doublon inerte n'aurait fait qu'encombrer le DOM. */
 (() => {
   const marquee = document.querySelector('.marquee');
-  const piste = document.querySelector('.marquee__piste');
+  const piste = marquee && marquee.querySelector('.marquee__piste');
   if (!marquee || !piste) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const VITESSE = 50;   // pixels par seconde, quelle que soit la largeur d'écran
+
+  const doublon = piste.cloneNode(true);
+  doublon.setAttribute('aria-hidden', 'true');
+  doublon.querySelectorAll('a').forEach(a => { a.tabIndex = -1; });
+  marquee.append(doublon);
+  marquee.classList.add('marquee--anime');
 
   const regler = () => {
     const distance = piste.getBoundingClientRect().width;

@@ -1108,12 +1108,12 @@ button {
   min-width: 100%;
   padding-inline: calc(var(--part-logo-gap) / 2);
 
-  animation-name: defile;
   animation-duration: var(--part-duree);
   animation-timing-function: linear;
   animation-iteration-count: infinite;
-
 }
+
+.marquee--anime .marquee__piste { animation-name: defile; }
 
 .marquee__logo {
   display: block;

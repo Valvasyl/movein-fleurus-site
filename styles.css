@@ -1197,7 +1197,7 @@ button {
   }
 
   .js-anim .lignes > span > span {
-    translate: 0 110%;
+    translate: 0 calc(100% + .2em);
     transition: translate 800ms var(--t-reveal);
   }
 
@@ -1215,10 +1215,16 @@ button {
   .js-anim .lignes > span:nth-child(3) > span { transition-delay: 240ms; }
 }
 
+.lignes {
+  display: flex;
+  flex-direction: column;
+}
+
 .lignes > span {
   display: block;
   overflow: clip;
-  overflow-clip-margin: .18em;
+  padding-block: .1em;
+  margin-block: -.1em;
 }
 
 .lignes > span > span { display: block; }

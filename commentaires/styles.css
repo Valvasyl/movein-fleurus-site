@@ -1741,7 +1741,7 @@ button {
   /* Les lignes de titre montent de derrière leur masque : pas de fondu, c'est le
      recadrage qui fait tout le travail (cf. `.lignes` plus bas). */
   .js-anim .lignes > span > span {
-    translate: 0 110%;
+    translate: 0 calc(100% + .2em);
     transition: translate 800ms var(--t-reveal);
   }
 
@@ -1766,15 +1766,39 @@ button {
 }
 
 /* Le masque des lignes de titre, lui, existe toujours (il ne dépend pas du JS).
-   ⚠️ `overflow-clip-margin` et NON un padding compensé par une marge négative :
-   l'interligne des titres (0,897) est plus serré que la police, les accents des
-   capitales (le É de FIDÉLISER) dépassent de la boîte de ligne et seraient rognés
-   par un `clip` nu. `overflow-clip-margin` élargit la zone de recadrage SANS
-   toucher à la mise en page — un padding décalait le titre de 11 px. */
+   Le problème qu'il règle : l'interligne des titres (0,897) est plus serré que la
+   police, donc l'accent des capitales dépasse de la boîte de ligne et un `clip` nu
+   le rogne. Mesuré au canvas (`actualBoundingBoxAscent`) : sur les six lignes du
+   site, **une seule** dépasse, FIDÉLISER, et de **0,039 em** par le haut. Tout le
+   reste tient largement dans sa boîte.
+
+   ⚠️ `overflow-clip-margin` FAISAIT le travail — mais **Safari ne le supporte
+   pas**, et l'accent était donc coupé sur iPhone (signalé par Sylvain, 07/09/2026).
+   On élargit désormais la boîte de recadrage elle-même : `padding-block: .1em`
+   (2,5 × le dépassement mesuré) repris par `margin-block: -.1em`.
+
+   ⚠️ ET C'EST POURQUOI `.lignes` EST EN `display: flex`. Une tentative précédente
+   de padding compensé avait été abandonnée — elle décalait le titre de 11 px — parce
+   qu'en flux normal les marges des masques adjacents **se fusionnent** : deux marges
+   de −.1em n'en font qu'une, et chaque interligne gagnait .1em. **Dans un conteneur
+   flex les marges ne fusionnent jamais**, la compensation est donc exacte : hauteur
+   du titre = n × interligne, au centième de pixel près (vérifié dans le navigateur,
+   209,86 / 139,91 / 117,59 avant comme après).
+
+   ⚠️ Conséquence à ne pas oublier : la boîte de recadrage étant plus haute de .2em,
+   110 % ne suffisaient plus à cacher la ligne au repos (l'excédent n'est que .09em à
+   cet interligne). Le départ est passé à `calc(100% + .2em)` plus haut dans le
+   fichier — les deux valeurs vont ensemble. */
+.lignes {
+  display: flex;
+  flex-direction: column;
+}
+
 .lignes > span {
   display: block;
   overflow: clip;
-  overflow-clip-margin: .18em;
+  padding-block: .1em;
+  margin-block: -.1em;
 }
 
 .lignes > span > span { display: block; }

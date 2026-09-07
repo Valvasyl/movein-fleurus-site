@@ -1185,13 +1185,41 @@ recours, `prefers-reduced-motion` respecté.
     et Chrome n'y délivre aucune notification d'intersection ni ne fait progresser les
     transitions — ne pas confondre cet artefact avec un bug du site). **C'est l'iPhone de
     Sylvain qui tranche.**
-  - ⚠️ Reste à surveiller sur iOS : `overflow-clip-margin: .18em` — la marge qui empêche le
-    masque de rogner accents et jambages — **n'est pas supportée par Safari**. Le masque y
-    coupe donc pile à la boîte de ligne, et `.titre-section` est en `line-height: .897`.
-    Si des accents ou des jambages apparaissent rognés sur iPhone une fois les titres
-    revenus, c'est de là que ça vient. Remède : `padding` + `margin` négatif sur
-    `.lignes > span` — mais les marges négatives se fusionnent entre lignes adjacentes,
-    donc il faudrait recalculer le rythme vertical des titres.
+  - ✅ **C'est exactement ce qui s'est produit** — voir le 2e bug iOS ci-dessous, corrigé
+    le jour même.
+- 🩹 **2e BUG iOS, 07/09/2026 : `overflow-clip-margin` n'existe pas dans Safari.** Une fois
+  les titres revenus, Sylvain a vu que **l'accent du É de FIDÉLISER était rogné** sur iPhone
+  (Safari comme Chrome iOS — même moteur). C'est le masque qui coupait.
+  - Mesuré au canvas (`actualBoundingBoxAscent`, texte pris **en capitales** comme il est
+    rendu, pas tel qu'il est écrit dans le HTML) : sur les **six** lignes du site, **une
+    seule dépasse sa boîte de ligne** — FIDÉLISER, de **0,039 em** par le haut. Toutes les
+    autres tiennent largement dedans, jambages compris. Le diagnostic de Sylvain était donc
+    exact au caractère près.
+  - Cause : l'interligne des titres (`line-height: .897`) est plus serré que la police, donc
+    l'accent sort de la boîte. `overflow-clip-margin: .18em` élargissait la zone de
+    recadrage sans toucher à la mise en page — mais **Safari ne l'implémente pas**, et le
+    `clip` y coupait donc pile à la boîte.
+  - Correctif : on élargit la **boîte de recadrage elle-même** —
+    `padding-block: .1em` (2,5 × le dépassement mesuré) repris par `margin-block: -.1em`.
+  - ⚠️ **Et c'est pour ça que `.lignes` est passé en `display: flex; flex-direction: column`.**
+    Un padding compensé avait déjà été essayé puis abandonné parce qu'il « décalait le titre
+    de 11 px » : en flux normal, les marges des masques adjacents **se fusionnent** — deux
+    marges de −.1em n'en font qu'une, et chaque interligne gagnait .1em. **Dans un conteneur
+    flex les marges ne fusionnent jamais**, la compensation est donc exacte. Vérifié dans le
+    navigateur : hauteurs de titre **209,9 / 139,93 / 117,6** avant comme après, et les
+    lignes retombent sur **0 / 69,97 / 139,93**, soit la grille d'interligne au centième de
+    pixel. **Ne pas repasser `.lignes` en bloc** sans refaire ce calcul.
+  - ⚠️ Le départ de l'animation est passé de `110%` à **`calc(100% + .2em)`** : la boîte de
+    recadrage étant plus haute de .2em, 110 % ne cachaient plus la ligne au repos (à cet
+    interligne l'excédent ne vaut que .09em). **Les deux valeurs vont ensemble** — toucher
+    au padding oblige à revoir le translate.
+  - `overflow-clip-margin` a été **retiré** : le padding fait le travail sur tous les
+    moteurs, le garder aurait fait recadrer Chrome .18em plus large que Safari.
+- ⚠️ **Le chapô du hero a reçu `.apparait` le 07/09/2026** (demande Sylvain) : c'était le
+  seul texte de son bloc à ne pas l'avoir, l'eyebrow « Mobilité » juste au-dessus l'avait
+  déjà, et l'écart se voyait. **Reste sans animation : `.hero__dl`**, le bloc du bouton de
+  téléchargement — alors que son équivalent de la section Commerçant (`.commercants__dl`)
+  l'a. À trancher : soit on l'ajoute pour que le hero soit homogène, soit on l'assume.
 
 Pistes restantes (à compléter / valider avec Sylvain) :
 - ~~Apparition en douceur des cartes d'étapes au scroll~~ ✅ fait.

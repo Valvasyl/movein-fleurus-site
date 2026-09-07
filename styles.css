@@ -91,7 +91,12 @@
   --com-pt:       clamp(37.3px, 27.894px + 2.4118vw, 49.6px);
   --com-titre-mt: clamp(49.6px, 45.318px + 1.098vw, 55.2px);
   --com-dl-mt:    clamp(37.68px, 144.657px - 11.8863vw, 98.3px);
-  --com-pb:       clamp(51.7px, 27.6275vw - 56.05px, 192.6px);
+  --com-pb:       0px;
+  --com-visuel-w:     min(228.12px + 89.765vw, 1036px);
+  --com-visuel-h:     calc(var(--com-visuel-w) * 939 / 1295);
+  --com-visuel-bleed: min(71.365px + 14.4706vw, 201.6px);
+  --com-visuel-mt:    52.3px;
+  --com-dl-bas:       calc(var(--com-visuel-h) * 0.076079);
 
   --pil-pt:       clamp(32px, 37.294px - 0.5882vw, 35px);
   --pil-pb:       clamp(38.5px, 25.806px + 3.2549vw, 55.1px);
@@ -864,6 +869,9 @@ button {
 }
 
 .commercants {
+  position: relative;
+  z-index: 0;
+  overflow: clip;
   padding-top: var(--com-pt);
   padding-bottom: var(--com-pb);
   background: var(--jaune);
@@ -877,10 +885,30 @@ button {
   color: var(--noir);
 }
 
+.commercants__visuel {
+  position: relative;
+  height: var(--com-visuel-h);
+  margin-top: var(--com-visuel-mt);
+  margin-inline: calc(-1 * var(--marge));
+}
+
+.commercants__visuel > img {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  right: calc(-1 * var(--com-visuel-bleed));
+  width: var(--com-visuel-w);
+  height: auto;
+  max-width: none;
+}
+
 .commercants__dl {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--com-dl-bas);
   display: flex;
   justify-content: center;
-  margin-top: var(--com-dl-mt);
 }
 
 @media (min-width: 900px) {
@@ -893,7 +921,19 @@ button {
 
   .commercants__texte { max-width: var(--lead-w); }
 
-  .commercants__dl { justify-content: flex-start; }
+  .commercants__visuel { display: contents; }
+
+  .commercants__visuel > img {
+    top: calc(67.8 * var(--px));
+    right: min(0px, calc(100vw - 1692 * var(--px)));
+    width: calc(1295 * var(--px));
+  }
+
+  .commercants__dl {
+    position: static;
+    justify-content: flex-start;
+    margin-top: var(--com-dl-mt);
+  }
 }
 
 .piliers {
@@ -1073,12 +1113,47 @@ button {
   animation-timing-function: linear;
   animation-iteration-count: infinite;
 
-  & img {
-    height: var(--part-logo-h);
-    width: auto;
-  }
+}
 
-  & .partenaires__dw img { height: var(--part-logo-dw); }
+.marquee__logo {
+  display: block;
+  height: var(--part-logo-h);
+  width: calc(var(--part-logo-h) * var(--part-logo-ratio));
+  color: var(--noir);
+  background-color: currentColor;
+  -webkit-mask: var(--part-logo-src) no-repeat center / contain;
+  mask: var(--part-logo-src) no-repeat center / contain;
+  transition: color var(--t-fast);
+
+  &:hover,
+  &:focus-visible { color: var(--jaune); }
+
+  &:focus-visible { outline-color: var(--noir); }
+}
+
+.partenaires__dw .marquee__logo {
+  height: var(--part-logo-dw);
+  width: calc(var(--part-logo-dw) * var(--part-logo-ratio));
+}
+
+.marquee__logo--fleurus {
+  --part-logo-src: url(assets/logos/logo-ville-de-fleurus-noir.svg);
+  --part-logo-ratio: calc(74.82 / 51.6);
+}
+
+.marquee__logo--wallonie {
+  --part-logo-src: url(assets/logos/logo-wallonie-noir.svg);
+  --part-logo-ratio: calc(39.87 / 51.6);
+}
+
+.marquee__logo--shop-in {
+  --part-logo-src: url(assets/logos/logo-shop-in-noir.svg);
+  --part-logo-ratio: calc(74.8 / 51.6);
+}
+
+.marquee__logo--dw {
+  --part-logo-src: url(assets/logos/logo-digitalwallonia-noir.svg);
+  --part-logo-ratio: calc(156.46 / 39.01);
 }
 
 .marquee:hover .marquee__piste,

@@ -194,7 +194,16 @@
   --com-pt:       clamp(37.3px, 27.894px + 2.4118vw, 49.6px);    /* haut de bande → boîte de l'eyebrow : 37,3 (390) · 62 (1440) */
   --com-titre-mt: clamp(49.6px, 45.318px + 1.098vw, 55.2px);     /* eyebrow → titre : 49,6 (390) · 69 (1440) */
   --com-dl-mt:    clamp(37.68px, 144.657px - 11.8863vw, 98.3px); /* paragraphe → bouton : 98,3 (390) · 47,1 (1440) */
-  --com-pb:       clamp(51.7px, 27.6275vw - 56.05px, 192.6px);   /* bouton → fin de bande : 51,7 (390) · 240,8 (1440) */
+  --com-pb:       0px;                                           /* ⚠️ NUL sous 900 depuis la V2 : c'est le VISUEL qui ferme la bande, plus le bouton. 240,8 × --px au-dessus. */
+  /* Le visuel commerçant. Largeur et débord droit interpolés 390 → 900, tous deux
+     linéaires en vw ; ils rejoignent à 900 les valeurs de l'homothétie (1295 × 0,80
+     = 1036 et 252 × 0,80 = 201,6), donc le visuel ne change pas de TAILLE au
+     breakpoint — seule sa POSITION saute, avec la mise en page. */
+  --com-visuel-w:     min(228.12px + 89.765vw, 1036px);          /* 578,2 (390) · 1036 (900) — relevé maquette mobile : 1295 × 0,4465 */
+  --com-visuel-h:     calc(var(--com-visuel-w) * 939 / 1295);    /* le ratio de l'asset, une seule source */
+  --com-visuel-bleed: min(71.365px + 14.4706vw, 201.6px);        /* débord à DROITE : 127,8 (390) · 201,6 (900) */
+  --com-visuel-mt:    52.3px;                                    /* paragraphe → visuel. CONSTANT de 390 à 900 (règle des écarts d'empilement mobile) */
+  --com-dl-bas:       calc(var(--com-visuel-h) * 0.076079);      /* bas du visuel → bas du bouton : 31,9 à 390. Exprimé en part de la hauteur pour suivre l'image. */
 
   /* ---- Piliers ----
      Bande BLANCHE : y=3544 → 3753 sur la maquette 1440 (210 de haut), y=3027 → 3438
@@ -1291,7 +1300,17 @@ button {
    C'est le rendu de la maquette, pas un oubli de code (question posée à Sylvain).
    Comme dans le hero, le label « Téléchargez maintenant » et les deux badges sont
    remplacés par le bouton unique, qui DÉMARRE OÙ LE LABEL DÉMARRAIT. */
+/* ⚠️ `overflow: clip` est INDISPENSABLE : le visuel déborde volontairement à droite
+   (252 px à 1440) et sous la bande (213,6 px à 1440). Sans lui, la page gagnerait
+   une barre de défilement horizontale et la manche jaune déborderait sur les piliers.
+   `clip` et non `hidden` : `hidden` créerait un conteneur de défilement.
+   `position: relative` + `z-index: 0` font de la section un contexte d'empilement,
+   ce qui enferme le `z-index: -1` de l'image : elle passe DEVANT le fond jaune de la
+   section mais DERRIÈRE le texte. Même mécanique que la barre du header. */
 .commercants {
+  position: relative;
+  z-index: 0;
+  overflow: clip;
   padding-top: var(--com-pt);
   padding-bottom: var(--com-pb);
   background: var(--jaune);
@@ -1305,14 +1324,61 @@ button {
   color: var(--noir);                   /* relevé #2a292e, comme le chapô du hero */
 }
 
+/* ---- Le visuel commerçant (maquettes V2 du 07/09/2026) ----
+   L'asset `visuel-commercant.webp` fait 1295 × 939 avec canal alpha, et son encre
+   touche déjà ses bords haut, bas et droit (seule marge transparente : 174 px à
+   gauche). Il est donc FAIT pour être rogné par les bords.
+
+   Placement relevé au pixel sur les deux maquettes — dans les deux cas l'échelle a
+   été retrouvée en calant la pointe de la flèche du haut (ligne 0 du WebP) puis
+   vérifiée sur cinq autres lignes, à ~1 px près :
+     · desktop 1440 : ÉCHELLE 1:1, coin haut-gauche à x=397, y=+67,8 sous le haut de
+       bande. L'image déborde donc de 252 à droite et de 213,6 sous la bande.
+     · mobile 390   : échelle 0,4465, coin haut-gauche à x=−60,4, y=+364 sous le haut
+       de bande. Elle déborde des DEUX côtés (60,4 à gauche, 127,8 à droite) et son
+       bas tombe pile sur le bas de bande.
+
+   Sous 900 l'enveloppe est un bloc du FLUX, posé après le paragraphe : c'est elle qui
+   donne sa hauteur à la bande, et elle suit le paragraphe si celui-ci gagne une ligne.
+   Au-dessus de 900 elle passe en `display: contents` et l'image devient une simple
+   surimpression calée sur la section — la bande garde exactement la hauteur qu'elle
+   avait avant (794,9), le visuel étant rogné en bas.
+   ⚠️ Conséquence assumée : la hauteur de bande SAUTE au breakpoint (≈1129 à 899,
+   635,9 à 901). C'est le changement de mise en page, comme le hero (−395) ou les
+   piliers (−314), pas une cassure de typo. */
+.commercants__visuel {
+  position: relative;
+  height: var(--com-visuel-h);
+  margin-top: var(--com-visuel-mt);
+  margin-inline: calc(-1 * var(--marge));   /* sort du .container : pleine largeur, pour que le débord se mesure depuis le bord de l'écran */
+}
+
+.commercants__visuel > img {
+  position: absolute;
+  z-index: -1;                              /* derrière le texte, devant le fond jaune */
+  top: 0;
+  right: calc(-1 * var(--com-visuel-bleed));
+  width: var(--com-visuel-w);
+  height: auto;
+  max-width: none;                          /* sinon le `img { max-width: 100% }` global l'écraserait — piège déjà rencontré avec le logo */
+}
+
 /* Sous 900 le bloc de téléchargement est CENTRÉ, comme dans le hero mobile.
    `flex` et non `text-align` : le bouton est un inline-block, il s'asseyait sinon
    sur la ligne de base et sa boîte prenait 6,4 px de plus que le bouton — la
-   bande finissait à 777 au lieu des 771 relevés. */
+   bande finissait à 777 au lieu des 771 relevés.
+   ⚠️ Il est maintenant ABSOLU sous 900, calé sur le BAS de l'enveloppe du visuel :
+   il chevauche la manche jaune, comme sur la maquette mobile. Ancré par `bottom` et
+   non par `top` — c'est le bas du bouton que la maquette aligne (relevé 751,5 pour
+   une bande de 782,2), et la hauteur du bouton diffère de 3 px entre la maquette
+   (Lufga, 65) et le site (Inter, 62). */
 .commercants__dl {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--com-dl-bas);
   display: flex;
   justify-content: center;
-  margin-top: var(--com-dl-mt);
 }
 
 @media (min-width: 900px) {
@@ -1329,7 +1395,31 @@ button {
      Même largeur pour celui de Fidélité, d'où le token partagé. */
   .commercants__texte { max-width: var(--lead-w); }
 
-  .commercants__dl { justify-content: flex-start; }
+  /* L'enveloppe s'efface : l'image et le bloc bouton redeviennent des enfants
+     directs du .container. L'image, en absolu, se cale alors sur .commercants. */
+  .commercants__visuel { display: contents; }
+
+  /* Homothétie pure : à 1440 on retombe sur le relevé (x=397, y=67,8, 1295 × 939).
+     ⚠️ Le `min(0px, …)` est le SEUL écart, et il sert à deux choses opposées :
+     · sous 1152, `--px` est bloqué à 0,80 alors que la fenêtre continue de rétrécir ;
+       l'homothétie garde donc l'image à 317,6 du bord gauche au lieu de la laisser
+       remonter sur la colonne de texte. Sans ça le paragraphe tombait SUR le
+       téléphone de 900 à ~997 (mesuré). Marge la plus serrée aujourd'hui : 136,8 px.
+     · au-delà de 1692, l'homothétie figée laisserait l'image se DÉCOLLER du bord
+       droit — on verrait une manche coupée flottant dans du jaune. Le `min` la
+       plaque alors au bord de l'écran (débord nul mais bord franc).
+     Entre 1152 et 1692, les deux expressions sont égales : aucune cassure. */
+  .commercants__visuel > img {
+    top: calc(67.8 * var(--px));
+    right: min(0px, calc(100vw - 1692 * var(--px)));
+    width: calc(1295 * var(--px));
+  }
+
+  .commercants__dl {
+    position: static;
+    justify-content: flex-start;
+    margin-top: var(--com-dl-mt);
+  }
 }
 
 
@@ -1578,13 +1668,85 @@ button {
   animation-timing-function: linear;
   animation-iteration-count: infinite;
 
-  & img {
-    height: var(--part-logo-h);
-    width: auto;
-  }
+}
 
-  /* digitalwallonia n'a pas la même boîte que les trois autres (39,01 et non 51,6) */
-  & .partenaires__dw img { height: var(--part-logo-dw); }
+/* ---- Les logos partenaires : des LIENS recolorables (07/09/2026) ----
+   Sylvain les veut cliquables, et JAUNES au survol.
+
+   ⚠️ Pourquoi un `mask` et pas un `fill` : un SVG chargé via `<img src>` est un
+   DOCUMENT SÉPARÉ — le CSS de la page ne le traverse pas, `fill` n'a donc aucun
+   effet dessus. Pour utiliser `fill` il faudrait inliner les quatre logos (ou les
+   passer en sprite <symbol>/<use> comme le logo Move in). Écarté ici pour deux
+   raisons : ça ferait entrer ~37 Ko de tracés dans index.html (22,6 Ko aujourd'hui)
+   à chaque chargement au lieu de quatre fichiers cachés séparément, et TROIS des
+   quatre SVG ont des classes internes `.cls-1`/`.cls-2`/`.cls-3` — exactement la
+   collision signalée dans CLAUDE.md, qu'il faudrait préfixer à la main dans chaque
+   fichier. Les logos étant strictement monochromes (#2a292e partout, vérifié), le
+   masque donne le même rendu sans toucher aux assets : la forme vient du SVG, la
+   couleur de `background-color`.
+
+   ⚠️ Contrepartie : on perd le `loading="lazy"` des anciens <img> — une image de
+   masque est chargée par le CSS dès que l'élément est dans l'arbre de rendu. ~37 Ko
+   bruts, très compressibles, pour une section de toute façon vue au scroll.
+
+   ⚠️ NE PAS nommer ces variables `--logo-h` / `--logo-ratio` : `--logo-h` est DÉJÀ
+   un token global du projet (la hauteur du logo Move in — 60 en desktop, 44 à 390).
+   Les variables CSS héritant, `var(--logo-h, var(--part-logo-h))` récupérait 60 au
+   lieu de 100 et tous les logos partenaires rétrécissaient sans erreur visible.
+   D'où le préfixe `--part-` sur les deux. */
+.marquee__logo {
+  display: block;
+  height: var(--part-logo-h);
+  width: calc(var(--part-logo-h) * var(--part-logo-ratio));
+
+  /* La couleur du logo EST `currentColor` : une seule propriété à animer, et le
+     contour de focus (`outline: 3px solid currentColor`) suivrait sinon le sable
+     hérité de `.partenaires`, illisible sur le crème. */
+  color: var(--noir);
+  background-color: currentColor;
+  -webkit-mask: var(--part-logo-src) no-repeat center / contain;
+  mask: var(--part-logo-src) no-repeat center / contain;
+  transition: color var(--t-fast);
+
+  /* ⚠️ Le jaune sur le crème ne fait que 1,30:1 — le logo survolé est très pâle.
+     C'est le choix de Sylvain (07/09/2026), et ça rejoint la liste des contrastes
+     hors normes (question 16). `--jaune-fonce` ou `--noir` + opacité seraient les
+     replis si le rendu à l'écran ne convient pas. */
+  &:hover,
+  &:focus-visible { color: var(--jaune); }
+
+  /* Le contour de focus reste NOIR même quand le logo est passé au jaune. */
+  &:focus-visible { outline-color: var(--noir); }
+}
+
+/* digitalwallonia n'a pas la même boîte que les trois autres (39,01 et non 51,6) */
+.partenaires__dw .marquee__logo {
+  height: var(--part-logo-dw);
+  width: calc(var(--part-logo-dw) * var(--part-logo-ratio));
+}
+
+/* Un couple (fichier, ratio) par logo. Le ratio vient du viewBox de l'asset — c'est
+   lui qui donnait la largeur quand les logos étaient des <img> en `width: auto` ;
+   un masque n'ayant pas de taille intrinsèque, il faut l'écrire. Vérifié : les
+   tailles rendues sont inchangées (100 / 75,6 à 1440 · 63 / 47,6 à 390). */
+.marquee__logo--fleurus {
+  --part-logo-src: url(assets/logos/logo-ville-de-fleurus-noir.svg);
+  --part-logo-ratio: calc(74.82 / 51.6);
+}
+
+.marquee__logo--wallonie {
+  --part-logo-src: url(assets/logos/logo-wallonie-noir.svg);
+  --part-logo-ratio: calc(39.87 / 51.6);
+}
+
+.marquee__logo--shop-in {
+  --part-logo-src: url(assets/logos/logo-shop-in-noir.svg);
+  --part-logo-ratio: calc(74.8 / 51.6);
+}
+
+.marquee__logo--dw {
+  --part-logo-src: url(assets/logos/logo-digitalwallonia-noir.svg);
+  --part-logo-ratio: calc(156.46 / 39.01);
 }
 
 /* Le défilement se met en pause au survol ET au focus clavier : c'est le minimum

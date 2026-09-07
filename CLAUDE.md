@@ -378,8 +378,14 @@ Planchers de lisibilité (seule entorse à l'homothétie) : 12 px sur `--fs-nav`
      collées au bas de la bande et le bloc titre + paragraphe en haut. Le blanc supplémentaire tombe au milieu, sur la photo.
      La typo, elle, **reste figée** à 1440 : le titre devient simplement plus petit par
      rapport à la photo, et il retombe sur le fond flou (plantes / étagère).
-5. **Commerçant** — ✅ FAIT (05/09/2026). Bande jaune de **y=2773 à 3543** (1440 × **771**)
-   en desktop, **y=2502 à 3025** (390 × **524**) en mobile.
+5. **Commerçant** — ✅ FAIT (05/09/2026), **visuel ajouté le 07/09/2026** d'après les
+   maquettes V2. Bande jaune de **y=2737,4 à 3530,6** (1440 × **793,4**) en desktop,
+   **y=3270 à 4052,2** (390 × **782,4**) en mobile.
+   ⚠️ Les anciens relevés (771 en desktop, 524 en mobile) valaient pour les maquettes
+   d'avant : le **rythme du texte n'a pas bougé d'un pixel** (vérifié dans le
+   navigateur : 62 / 157 / 360,2 / 503,3 à 1440), les +22,4 viennent de la **4e ligne
+   de paragraphe** — la V2 intègre enfin le vrai texte de Sylvain, celui du site. En
+   mobile les +258 viennent du visuel, qui est empilé et ferme la bande.
    - ⚠️ **Le jaune y est un APLAT `--jaune` `#ffdd0d`**, relevé aux quatre coins — **ni le
      dégradé du hero, ni la trame de rues, ni voile**. Le token `--voile` qui traînait dans
      la feuille (hérité de l'ancienne description de cette section) a été supprimé.
@@ -400,10 +406,93 @@ Planchers de lisibilité (seule entorse à l'homothétie) : 12 px sur `--fs-nav`
    - ⚠️ `.commercants__dl` est en **`display: flex`**, pas en `text-align: center` : le
      bouton est un `inline-block`, il s'asseyait sinon sur la ligne de base et sa boîte
      prenait 6,4 px de plus — la bande finissait à 777 au lieu de 771.
-   - ⚠️ **La moitié droite de la bande est VIDE** (zéro pixel non jaune au-delà de x=800,
-     vérifié) **et il reste 240 px de jaune sous le bouton** en desktop, contre 52 en
-     mobile. Repris tel quel, mais c'est sans doute là que devait aller un mockup :
-     cf. la question posée à Sylvain.
+   - ✅ **LA MOITIÉ DROITE N'EST PLUS VIDE** — c'était bien un mockup qui manquait
+     (question 11, désormais résolue). L'asset est **`assets/images/visuel-commercant.webp`**,
+     **1295 × 939 avec canal alpha**, 499 Ko. Livré sous le nom `Visuel Commerçant.webp`,
+     **renommé** en kebab-case comme le reste des assets.
+     - ⚠️ **Son encre touche déjà ses bords haut, bas et droit** ; la seule marge
+       transparente est à **gauche (174 px)**. L'image est donc FAITE pour être rognée
+       par les bords — ne jamais la recadrer sur son contenu, et ne jamais l'afficher
+       en entier : le bras coupé se mettrait à flotter dans le jaune.
+     - **Placement relevé au pixel, identique méthode sur les deux maquettes** : on cale
+       la **pointe de la flèche du haut** (ligne 0 du WebP, un liseré de 6 px) puis on
+       vérifie sur cinq autres lignes. ⚠️ **La largeur de 6 px à la pointe ne prouve
+       RIEN à elle seule** — c'est le plancher de l'antialiasing, elle mesure 6 px aux
+       deux échelles. Ce qui tranche, ce sont les longs bras de levier.
+       - **Desktop : ÉCHELLE 1:1**, coin haut-gauche **x=397**, **y=+67,8** sous le haut
+         de bande. Vérifié par trois repères indépendants : pointe de la flèche gauche
+         prédite à x=571,1 / **mesurée 571,1** ; ligne du bas prédite à 1059,1 / mesurée
+         1058,6 ; zone haut-droite prédite vide / **vide des deux côtés**. L'image
+         déborde donc de **252 à droite** et de **213,6 sous la bande**.
+       - **Mobile : échelle 0,4465**, coin haut-gauche **x=−60,4**, **y=+364** sous le
+         haut de bande. Elle déborde des **DEUX** côtés (60,4 à gauche, 127,8 à droite)
+         et son bas tombe **pile sur le bas de bande** (783,4 contre 782,2).
+     - ⚠️ **`overflow: clip` sur `.commercants` est INDISPENSABLE** — sans lui la page
+       gagne une barre de défilement horizontale et la manche jaune déborde sur les
+       piliers. `clip` et non `hidden` : `hidden` créerait un conteneur de défilement.
+       La section est aussi `position: relative` + `z-index: 0`, ce qui enferme le
+       `z-index: -1` de l'image : elle passe **devant le fond jaune, derrière le texte**
+       (même mécanique que la barre du header).
+     - ⚠️ **Effet de bord assumé** : `overflow: clip` rogne les 48 px de translation de
+       `.apparait` sur le bloc bouton en mobile — il « monte » depuis le bas de bande au
+       lieu d'apparaître entier. Anodin, mais c'est bien la conséquence du clip.
+   - ⚠️ **Il reste 240 px de jaune sous le bouton en desktop** : c'est voulu, la maquette
+     les a toujours eus, et le visuel les recouvre maintenant en partie.
+
+   ### Le responsive du visuel commerçant — DEUX mises en page, pas une
+
+   C'est le point délicat de la section : les deux maquettes ne font pas la même chose
+   du visuel, et il ne faut pas essayer de les réconcilier.
+
+   - **Sous 900** : l'enveloppe `.commercants__visuel` est un **bloc du FLUX**, posé
+     après le paragraphe. C'est **elle qui donne sa hauteur à la bande** (`--com-pb`
+     passe donc à **0** en mobile, contre 51,7 avant), et elle **suit le paragraphe**
+     si celui-ci gagne une ligne. Le **bouton est DANS l'enveloppe**, en `position:
+     absolute`, calé sur son **bas** : il chevauche la manche jaune, comme sur la
+     maquette. ⚠️ Ancré par `bottom` et non par `top` — c'est le bas du bouton que la
+     maquette aligne (751,5 pour une bande de 782,2), et le bouton fait **65 dans la
+     maquette (Lufga) contre 62 sur le site (Inter)**.
+   - **Au-dessus de 900** : l'enveloppe passe en **`display: contents`** — elle
+     s'efface, l'image et le bloc bouton redeviennent des enfants directs du
+     `.container`, le bouton reprend son `margin-top` normal et l'image devient une
+     **simple surimpression** calée sur la section. **La bande garde exactement la
+     hauteur qu'elle avait avant** (794,9 à 1440) : le visuel y est rogné en bas.
+
+   ⚠️ **CONSÉQUENCE : la hauteur de bande SAUTE au breakpoint** — ≈**1129 à 899**,
+   **635,9 à 901**. C'est le changement de mise en page, au même titre que le hero
+   (−395) ou les piliers (−314), **pas** une cassure de typo : le visuel garde la
+   **même taille** de part et d'autre (1036 de large des deux côtés, soit 1295 × 0,80),
+   seule sa **position** saute. Ne pas « corriger » ce saut.
+
+   **Tokens** (`--com-visuel-*`), interpolés linéairement en `vw` de 390 à 900 et
+   rejoignant à 900 les valeurs de l'homothétie :
+
+   | Token | 390 | 900 | ≥900 |
+   |---|---|---|---|
+   | `--com-visuel-w` | 578,2 | 1036 | `1295 × --px` |
+   | `--com-visuel-bleed` (débord droit) | 127,8 | 201,6 | via le `min()` ci-dessous |
+   | `--com-visuel-h` | 419,3 | 751,2 | — (dérivé : `w × 939 / 1295`) |
+   | `--com-visuel-mt` (paragraphe → visuel) | 52,3 | 52,3 | — |
+   | `--com-dl-bas` (bas du visuel → bas du bouton) | 31,9 | — | — |
+
+   `--com-visuel-h` et `--com-dl-bas` sont **dérivés de la largeur**, pas relevés à part :
+   une seule source, et le bouton reste au même endroit de l'image quelle que soit sa taille.
+
+   ⚠️ **La position horizontale en desktop est `right: min(0px, calc(100vw - 1692 * var(--px)))`,
+   et ce `min()` n'est pas une coquetterie — il règle DEUX problèmes opposés :**
+   - **Sous 1152**, `--px` est bloqué à 0,80 alors que la fenêtre continue de rétrécir.
+     Une image ancrée au bord droit remonte alors sur la colonne de texte : **le
+     paragraphe tombait SUR le téléphone de 900 à ~997** (mesuré, chevauchement jusqu'à
+     95,8 px). L'homothétie la maintient à 317,6 du bord gauche. Marge la plus serrée
+     aujourd'hui : **136,8 px** (le titre), vérifiée en testant l'encre réelle du WebP
+     contre les boîtes de texte, à 901 · 1000 · 1152 · 1300 · 1440 · 1920.
+   - **Au-delà de 1692**, l'homothétie figée laisserait l'image **se décoller du bord
+     droit** : on verrait une manche coupée flotter dans du jaune (à 2560 : 308 px de
+     jaune après le bras). Le `min()` la plaque au bord de l'écran.
+   - Entre 1152 et 1692 les deux expressions sont **égales** : aucune cassure.
+   ⚠️ Pour mesurer l'encre du texte, prendre les **nœuds de texte** (Range) et non la
+   boîte des éléments : `.lignes > span` est en `display: block`, sa boîte fait toute
+   la largeur du conteneur et fait croire à un chevauchement qui n'existe pas.
 6. **Piliers** — ✅ FAIT (05/09/2026). Fond **blanc pur** `#ffffff` (relevé, pas le crème),
    **y=3544 → 3753** (210 de haut) en desktop, **y=3027 → 3438** (412) en mobile.
    Attirer / Fidéliser / Contribuer : picto sable **40 × 40** (`picto-magasin` /
@@ -464,6 +553,37 @@ Planchers de lisibilité (seule entorse à l'homothétie) : 12 px sur `--fs-nav`
      redimensionnement (ResizeObserver). Mesuré : 10,9 s à 390, 28,5 s à 1440, 50,9 s à
      2560, soit exactement 50 px/s partout. La valeur CSS `--part-duree: 28s` ne sert plus
      que de repli si le JS ne tourne pas.
+   - ⚠️ **LES LOGOS SONT DES LIENS DEPUIS LE 07/09/2026, ET JAUNES AU SURVOL** (Sylvain).
+     Ce ne sont plus des `<img>` mais des **`<a>` vides recolorés par `mask` CSS**.
+     - **Pourquoi pas `fill`** (la question de Sylvain) : un SVG chargé via `<img src>` est
+       un **document séparé**, le CSS de la page ne le traverse pas — `fill` n'a aucun effet.
+       Il faudrait inliner les quatre logos, ou les passer en sprite `<symbol>`/`<use>` comme
+       le logo Move in. Écarté ici pour deux raisons concrètes : ~**37 Ko de tracés** iraient
+       dans `index.html` (22,6 Ko aujourd'hui) à chaque chargement au lieu de quatre fichiers
+       cachés séparément, et **trois des quatre SVG ont des classes internes `.cls-1`…**,
+       exactement la collision signalée plus haut, à préfixer à la main dans chaque fichier.
+       Les logos étant **strictement monochromes `#2a292e`** (vérifié dans les quatre
+       fichiers), le masque donne le même rendu sans toucher aux assets.
+     - La forme vient du SVG (`mask`), la couleur de `background-color: currentColor`. Un
+       seul token de couleur à changer, et le contour de focus suit.
+     - ⚠️ **Contrepartie** : on perd le `loading="lazy"` — une image de masque est chargée
+       par le CSS dès que l'élément entre dans l'arbre de rendu. ~37 Ko bruts, très
+       compressibles, pour une section vue au scroll de toute façon.
+     - ⚠️ **PIÈGE DE NOMMAGE, déjà tombé dedans** : ne pas appeler ces variables `--logo-h`
+       ni `--logo-ratio`. **`--logo-h` est DÉJÀ un token global** (hauteur du logo Move in :
+       60 en desktop, 44 à 390). Les variables CSS héritant, `var(--logo-h, var(--part-logo-h))`
+       récupérait **60 au lieu de 100** et tous les logos partenaires rétrécissaient — sans
+       la moindre erreur, juste des logos plus petits. D'où `--part-logo-src` / `--part-logo-ratio`.
+     - Le `--part-logo-ratio` de chaque logo vient de son **viewBox** : c'est lui qui donnait
+       la largeur du temps des `<img>` en `width: auto`, et un masque n'a pas de taille
+       intrinsèque. Vérifié : tailles rendues **inchangées** (100 / 75,6 à 1440 · 63 / 47,6 à 390).
+     - Nom accessible : **`aria-label`** sur le `<a>` (il n'y a plus d'`alt`). La 2e piste,
+       décorative, garde `aria-hidden` et ses liens sont en **`tabindex="-1"`** — ils restent
+       cliquables et survolables, sinon la moitié des logos qui défilent seraient inertes.
+     - ⚠️ **Le jaune sur le crème ne fait que 1,30:1** — le logo survolé est très pâle
+       (visible, mais délavé). C'est le choix de Sylvain ; ça rejoint la liste des contrastes
+       hors normes de la question 16. Replis si le rendu ne convient pas : `--jaune-fonce`
+       `#ffd405` (à peine mieux), ou garder le noir en jouant sur l'opacité.
    - Le défilement se met en **pause au survol et au focus clavier**. ⚠️ WCAG 2.2.2 exige
      un moyen de mettre en pause tout contenu qui bouge seul plus de 5 s ; un bouton pause
      explicite serait plus strict — question 18.
@@ -697,19 +817,45 @@ move-in-fleurus/
 ├── script.js     (burger + routage des stores — chargé en `defer`)
 ├── commentaires/ (copie de référence des 3 fichiers, cf. « Copie commentée » plus bas)
 ├── CLAUDE.md
-├── maquette/     (Maquette desktop 1440.png — 1440 × 3908, seule référence)
+├── maquette/     (cf. « Les fichiers de maquette » ci-dessous)
 └── assets/
     ├── logos/    (Move in noir/blanc/jaune, Ville de Fleurus, Wallonie, Shop In, digitalwallonia)
     ├── icons/    (badges stores, réseaux, pictos mobilité, pictos piliers, pins)
-    └── images/   (mockup iPhone hero, photo commerçants, skyline+route, trame de rues, titre hero)
+    └── images/   (mockup iPhone hero, photo commerçants, visuel commerçant, skyline+route, trame de rues, titre hero)
 ```
+
+### Les fichiers de maquette
+
+⚠️ **Les maquettes V2 (07/09/2026) ne sont PLUS au 1:1** — elles sont exportées à
+**×4,1667 (25/6)**. Toujours diviser par ce facteur pour retomber en pixels de maquette,
+sinon tous les relevés sont faux d'un facteur 4.
+
+| Fichier | Pixels | = maquette |
+|---|---|---|
+| `Maquette desktop 1440.png` | 6000 × 22246 | **1440 × 5339** |
+| `V2 Maquette Mobile 390px.png` | 1625 × 22259 | **390 × 5342** |
+| `Maquette Mobile 390px.png` (V1, 03/09) | 390 × 4140 | 390 × 4140 |
+
+⚠️ **La V2 mobile a encore l'ANCIEN paragraphe de la section Commerçant** — le
+copier-coller du chapô du hero (« Choisissez une destination… »), 4 lignes. Le site
+utilise le vrai texte de Sylvain, qui en fait **5** à 390. La bande mobile fait donc
+**802,6 sur le site contre 782,2 sur la maquette** : les 20,4 d'écart sont cette ligne
+en trop, c'est **normal et déjà assumé** (cf. question 12). La V2 desktop, elle, a bien
+le vrai texte.
+
+⚠️ Sylvain a d'abord livré une « V2 mobile » qui était en réalité **un second export du
+desktop** (6000 × 22246, mise en page desktop). Réexportée le soir même. En cas de doute
+sur un futur export, vérifier les dimensions **avant** de mesurer quoi que ce soit.
 
 - **Chemins relatifs** (`assets/…`), jamais de base64 en production.
 - ✅ **Tous les assets ont été renommés** en minuscules kebab-case, sans espaces ni accents.
   Repères : `logo-move-in-blanc.svg` · `badge-app-store-noir.svg` · `badge-google-play-blanc.svg` ·
   `picto-{trajet,magasin,cadeau}-sable.svg` · `carte-fleurus-jaune.svg` ·
   `titre-rejoignez-le-move.svg` · `mockup-iphone-hero.png` · `photo-commercants.webp` ·
-  `illustration-skyline.svg`.
+  `illustration-skyline.svg` · `visuel-commercant.webp`.
+  ⚠️ Ce dernier a été livré `Visuel Commerçant.webp` (espace + cédille) et **renommé** le
+  07/09/2026. Renommer systématiquement à la livraison : c'est la convention du projet, et
+  un nom accentué oblige à percent-encoder l'URL dans le HTML.
   ✅ **Plus rien à renommer** : `Mockup iPhone - Mobilité - 02.webp`, le dernier fichier
   hors convention, a été **supprimé par Sylvain** le 06/09/2026. `assets/images/` ne
   contient plus que des fichiers utilisés, tous en kebab-case, pour **816 Ko au total**.
@@ -937,12 +1083,30 @@ Le **footer** a suivi : **227** de haut au pixel en desktop, 250 en mobile (la l
 mentions s'y replie en deux, cf. section 9). La cale de dev `.dev-spacer` a été **supprimée**
 du HTML comme de la feuille de style.
 
+**Point d'arrêt du 07/09/2026 (soir).** Le **visuel de la section Commerçant** est posé
+d'après les maquettes V2, et vérifié dans le navigateur (pas seulement sur le papier) :
+- **placement exact aux deux bornes** — à 1440 l'image est à `x 397 → 1692`, `top 67,8`,
+  1295 × 939, soit le relevé au pixel ; à 390 elle est à `x −60,4 → 517,8`, 578,2 × 419,2,
+  soit le relevé également ;
+- **bande** : 794,9 à 1440 (maquette 793,4) et 802,6 à 390 (maquette 782,2, l'écart étant
+  la 5e ligne de paragraphe du vrai texte) ;
+- **aucun débordement horizontal** de 320 à 2560, et **aucun chevauchement texte/visuel** à
+  aucune largeur — marge la plus serrée **136,8 px** ;
+- les autres sections sont **inchangées** (hero 1114,8 · fidélité 1132 · piliers 210 ·
+  footer 240,3 à 1440), et les deux boutons de store répondent toujours.
+
+⚠️ Ce qui reste ouvert sur cette section : le **poids** de l'asset (487 Ko, cf. la passe
+finale) et le **saut de hauteur au breakpoint** (≈1129 → 635,9), qui est voulu mais que
+Sylvain n'a pas encore vu.
+
 🎉 **LE SITE STATIQUE EST COMPLET** — les neuf sections y sont, des deux maquettes.
 Il reste la **passe finale** (étape 10) : a11y et contrastes, tenue de 320 à 1920, poids des
-images, puis la **Phase 2 — animations**. ✅ **Plus aucune URL manquante** depuis le
-07/09/2026 : les mentions légales sont renseignées et il ne reste plus un seul `TODO` dans
-le HTML (cf. la question 14, résolue). Les deux `href="#"` qui subsistent sont les liens du
-logo (header et menu) vers le haut de page — voulus, ce ne sont pas des trous.
+images, puis la **Phase 2 — animations**. Les mentions légales sont renseignées et il ne
+reste plus un seul `TODO` dans le HTML (cf. la question 14, résolue).
+⚠️ **Il reste des `href="#"`, et il faut savoir lesquels sont des trous** : les **2 liens du
+logo** (header et menu) pointent volontairement vers le haut de page — ce ne sont pas des
+trous ; les **8 liens des logos partenaires** (4 logos × 2 pistes), eux, **attendent leurs
+vraies URL** (question 15).
 
 ## Relevés déjà faits pour les sections suivantes
 
@@ -988,8 +1152,18 @@ réserve qui n'a pas lieu d'être puisque le header n'est pas sticky et ne recou
   (`mockup-iphone-hd.png` 8,2 Mo et `mockup-iphone-hero.png` 2,72 Mo) avaient déjà disparu ;
   `Mockup iPhone - Mobilité - 02.webp` (687 Ko) a été **supprimé par Sylvain** le même jour.
   `assets/images/` fait désormais **816 Ko**, tout est utilisé.
-- Piste restante : `photo-commercants.webp` (551 Ko, 4232 × 5948) est deux fois plus grande
+- Piste restante : `photo-commercants.webp` (539 Ko, 4232 × 5948) est deux fois plus grande
   que nécessaire (2560 de large suffirait). Chargement différé, donc moins critique.
+- ⚠️ **`assets/images/` est repassé de 816 Ko à 1290 Ko** le 07/09/2026 avec l'arrivée de
+  `visuel-commercant.webp` (**487 Ko**, 1295 × 939 avec alpha). C'est désormais le
+  **2e fichier le plus lourd du site**, juste derrière la photo de Fidélité. Il est en
+  `loading="lazy"` + `decoding="async"` et sa section est loin sous la ligne de flottaison,
+  donc il ne pèse pas sur le premier rendu — mais **les deux gros WebP font maintenant
+  1026 Ko à eux seuls**. Deux pistes si Sylvain veut alléger : réexporter à une qualité
+  plus basse (c'est un composite photo + aplats, il encaisserait), ou fournir un 2e fichier
+  plus petit pour le mobile (`<picture>`), où l'image n'est affichée qu'à 578 px de large.
+  ⚠️ Ne PAS la réduire à 1295 px « puisque c'est sa taille d'affichage » : elle est
+  affichée 1:1 à 1440, donc déjà sous-définie sur un écran à 2 dpr.
 
 **Responsive — ✅ vérifié** de 320 à 1920 (320 · 360 · 480 · 700 · 899 · 901 · 1100 · 1440 ·
 1920) : aucun débordement horizontal, aucun élément qui sort du cadre. Les sauts de hauteur
@@ -1078,12 +1252,9 @@ même logo, simplement plus grand.
    ou l'assumer. **À trancher avec Sylvain.**
 9. **Coquille de la maquette** : « Les points sont cumulés lors de vos **achat**. » Le site
    écrit « **achats** ». À confirmer.
-11. **Moitié droite vide de la section Commerçant** : sur les deux maquettes le contenu tient
-   dans les colonnes 1-5 et il reste **240 px de jaune sous le bouton** en desktop (52 en
-   mobile). Repris tel quel. Est-ce qu'un **mockup** devait y aller ? Si oui, il suffit de le
-   poser à droite ; la hauteur de bande (771) est déjà la bonne.
-   ⚠️ **Le candidat évident n'existe plus** : `Mockup iPhone - Mobilité - 02.webp` a été
-   supprimé par Sylvain le 06/09/2026. Il faudra donc un nouvel asset si la réponse est oui.
+11. ✅ **Résolu (07/09/2026)** — c'était bien un mockup qui manquait dans la moitié droite.
+   Sylvain a livré `Visuel Commerçant.webp` et mis à jour les deux maquettes ; le visuel
+   est posé, responsive et vérifié de 320 à 2560. Cf. la section 5.
 12. ✅ **Réglé (05/09/2026)** — le paragraphe de la section Commerçant reprenait mot pour mot
    le chapô du hero sur les deux maquettes (un copier-coller : il parlait de trajets, pas de
    commerce). **Texte fourni par Sylvain le 05/09/2026** : « Devenez partenaire de Move in et
@@ -1121,8 +1292,12 @@ même logo, simplement plus grand.
    (`Mockup iPhone - Mobilité - 02.webp`, 687 Ko) supprimé par Sylvain lui-même.
    `assets/images/` fait 816 Ko et ne contient plus que des fichiers servis. ⚠️ Voir la
    question 11 : ce fichier était le candidat pour la moitié droite vide de Commerçant.
-15. **Les logos du footer sont-ils des liens ?** Aujourd'hui non (de simples `<img>`).
-   S'ils doivent l'être : fleurus.be, wallonie.be, digitalwallonia.be… à confirmer.
+15. ⏳ **Les logos partenaires SONT des liens depuis le 07/09/2026** (demande Sylvain) —
+   mais les quatre `href` sont encore des **placeholders `#`**. Sylvain fournit les vraies
+   URL. **C'est le seul trou restant dans le HTML** : les quatre `<a class="marquee__logo">`
+   de `index.html` (deux pistes, donc **8 occurrences** — ne pas oublier la piste
+   dupliquée `aria-hidden`, sinon la moitié des logos qui défilent pointent dans le vide).
+   Pistes évoquées : fleurus.be, wallonie.be, digitalwallonia.be, et Shop In à confirmer.
 10. ✅ **Résolu (05/09/2026)** — cadrage de la photo au-delà de 1440. Sur l'écran 2560 × 1440
    de Sylvain les téléphones montaient sur le titre : la bande gardait ses 1133 de haut
    pendant que la largeur croissait, donc `cover` zoomait. La hauteur suit désormais la

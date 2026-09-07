@@ -219,10 +219,19 @@
         une bonne raison de revenir. À chaque achat, ils cumulent des points qu'ils peuvent
         ensuite utiliser dans votre commerce.</p>
 
-      <div class="commercants__dl apparait">
-        <a class="btn-dl" href="https://play.google.com/store/apps/details?id=be.fleurus.rwbc&hl=fr"
-           data-store-ios="https://apps.apple.com/be/app/move-in-fleurus-commer%C3%A7ant/id6751838735"
-           data-store-android="https://play.google.com/store/apps/details?id=be.fleurus.rwbc&hl=fr">Télécharger l'appli</a>
+      <!-- Le bouton est DANS l'enveloppe du visuel : sous 900 il est positionné en absolu
+           par rapport à elle et chevauche la manche jaune, comme sur la maquette mobile.
+           Au-dessus de 900 l'enveloppe passe en `display: contents` : le bouton redevient
+           un bloc du flux normal et l'image se cale sur la section. -->
+      <div class="commercants__visuel">
+        <img src="assets/images/visuel-commercant.webp" width="1295" height="939" loading="lazy" decoding="async"
+             alt="L'appli commerçant sur un téléphone, ouverte sur la carte de fidélité digitale, entourée des messages « Client fidélisé », « +60 points » et « Points utilisés ».">
+
+        <div class="commercants__dl apparait">
+          <a class="btn-dl" href="https://play.google.com/store/apps/details?id=be.fleurus.rwbc&hl=fr"
+             data-store-ios="https://apps.apple.com/be/app/move-in-fleurus-commer%C3%A7ant/id6751838735"
+             data-store-android="https://play.google.com/store/apps/details?id=be.fleurus.rwbc&hl=fr">Télécharger l'appli</a>
+        </div>
       </div>
 
     </div>
@@ -258,18 +267,26 @@
 
     <h2 class="eyebrow apparait" id="partenaires-titre">Nos partenaires</h2>
 
+    <!-- Les logos sont des LIENS depuis le 07/09/2026 (demande Sylvain), et ce ne sont plus
+         des <img> : ce sont des <a> vides recolorés par `mask` en CSS, parce qu'un SVG
+         chargé en <img> est un document séparé que le CSS de la page n'atteint pas.
+         ⚠️ Les href sont des PLACEHOLDERS « # » — Sylvain fournit les vraies URL.
+         Le nom accessible est porté par aria-label (il n'y a plus d'alt à porter).
+         La 2e piste est décorative (aria-hidden) : ses liens sont en tabindex="-1" pour ne
+         pas doubler l'ordre de tabulation, mais restent cliquables et survolables — sinon
+         la moitié des logos qui défilent seraient inertes. -->
     <div class="marquee">
       <ul class="marquee__piste">
-        <li><img src="assets/logos/logo-ville-de-fleurus-noir.svg" alt="Ville de Fleurus" width="75" height="52" loading="lazy"></li>
-        <li><img src="assets/logos/logo-wallonie-noir.svg" alt="Wallonie" width="40" height="52" loading="lazy"></li>
-        <li><img src="assets/logos/logo-shop-in-noir.svg" alt="Fleurus Shop In" width="75" height="52" loading="lazy"></li>
-        <li class="partenaires__dw"><img src="assets/logos/logo-digitalwallonia-noir.svg" alt="Digital Wallonia" width="156" height="39" loading="lazy"></li>
+        <li><a class="marquee__logo marquee__logo--fleurus" href="#" aria-label="Ville de Fleurus"></a></li>
+        <li><a class="marquee__logo marquee__logo--wallonie" href="#" aria-label="Wallonie"></a></li>
+        <li><a class="marquee__logo marquee__logo--shop-in" href="#" aria-label="Fleurus Shop In"></a></li>
+        <li class="partenaires__dw"><a class="marquee__logo marquee__logo--dw" href="#" aria-label="Digital Wallonia"></a></li>
       </ul>
       <ul class="marquee__piste" aria-hidden="true">
-        <li><img src="assets/logos/logo-ville-de-fleurus-noir.svg" alt="" width="75" height="52" loading="lazy"></li>
-        <li><img src="assets/logos/logo-wallonie-noir.svg" alt="" width="40" height="52" loading="lazy"></li>
-        <li><img src="assets/logos/logo-shop-in-noir.svg" alt="" width="75" height="52" loading="lazy"></li>
-        <li class="partenaires__dw"><img src="assets/logos/logo-digitalwallonia-noir.svg" alt="" width="156" height="39" loading="lazy"></li>
+        <li><a class="marquee__logo marquee__logo--fleurus" href="#" tabindex="-1"></a></li>
+        <li><a class="marquee__logo marquee__logo--wallonie" href="#" tabindex="-1"></a></li>
+        <li><a class="marquee__logo marquee__logo--shop-in" href="#" tabindex="-1"></a></li>
+        <li class="partenaires__dw"><a class="marquee__logo marquee__logo--dw" href="#" tabindex="-1"></a></li>
       </ul>
     </div>
 

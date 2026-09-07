@@ -137,6 +137,10 @@
   --bulle-icone:      clamp(16px, 26.941px - 1.2157vw, 22.2px);
 
   --fs-foot:          12px;
+  --fs-foot-poids:    400;
+  --fs-foot-caps:     none;
+  --fs-foot-ls:       normal;
+  --lh-foot:          1.667;
   --foot-legal-gap:   clamp(16px, 12.902px + 0.7941vw, 22.5px);
 
   --trame-w: clamp(2800px, 4035.29px - 137.2549vw, 3500px);
@@ -1151,10 +1155,10 @@ button {
   gap: 8px var(--foot-legal-gap);
   margin-top: var(--foot-mentions-mt);
   font-size: var(--fs-foot);
-  font-weight: 700;
-  line-height: 1.3;
-  text-transform: uppercase;
-  letter-spacing: .04em;
+  font-weight: var(--fs-foot-poids);
+  line-height: var(--lh-foot);
+  text-transform: var(--fs-foot-caps);
+  letter-spacing: var(--fs-foot-ls);
 }
 
 .footer__legal {
@@ -1175,6 +1179,10 @@ button {
     --bulle-icone:      calc( 20    * var(--px));
     --foot-legal-gap:   calc( 25  * var(--px));
     --fs-foot:          max(12px, calc(14 * var(--px)));
+    --fs-foot-poids:    700;
+    --fs-foot-caps:     uppercase;
+    --fs-foot-ls:       .04em;
+    --lh-foot:          1.3;
   }
 
   .footer__haut {

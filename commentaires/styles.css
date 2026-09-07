@@ -269,6 +269,19 @@
   /* Mentions : 14 à 1440 (cap 10). La maquette mobile descend à 9 px — refusé, on
      garde 12, quitte à ce que la ligne se replie en deux (cf. section 12). */
   --fs-foot:          12px;
+  /* ⚠️ Mobile : traitement « petites mentions » de klarna.com/be/fr (demande Sylvain,
+     07/09/2026) — même corps de 12 px qu'avant, mais graisse normale, minuscules et
+     sans interlettrage. La taille n'a PAS changé : c'étaient les capitales + le gras
+     + les .04em qui faisaient paraître la ligne bien plus grosse que chez Klarna.
+     ⚠️ Graisse 400 et non 500 (la valeur relevée chez Klarna) : Inter 500 n'est pas
+     dans le lien Google Fonts, il en a été retiré le 06/09 comme graisse morte. Le
+     remettre coûterait un fichier de police de plus, pour un écart invisible à 12 px.
+     ⚠️ Le bloc >=900 les remet toutes à la valeur de la maquette (Bold 700, capitales,
+     .04em) : le desktop n'est pas touché. */
+  --fs-foot-poids:    400;
+  --fs-foot-caps:     none;
+  --fs-foot-ls:       normal;
+  --lh-foot:          1.667;                                      /* 20/12, l'interligne Klarna */
   --foot-legal-gap:   clamp(16px, 12.902px + 0.7941vw, 22.5px);   /* écart entre les deux liens : 25 à 1440 */
 
   /* Trame de rues — largeur RÉELLE en px (et non plus en pixels de maquette).
@@ -1672,10 +1685,10 @@ button {
   gap: 8px var(--foot-legal-gap);
   margin-top: var(--foot-mentions-mt);
   font-size: var(--fs-foot);
-  font-weight: 700;
-  line-height: 1.3;
-  text-transform: uppercase;
-  letter-spacing: .04em;
+  font-weight: var(--fs-foot-poids);
+  line-height: var(--lh-foot);
+  text-transform: var(--fs-foot-caps);
+  letter-spacing: var(--fs-foot-ls);
 }
 
 /* Les deux liens portent `.souligne` : même soulignement animé que la nav. */
@@ -1698,6 +1711,10 @@ button {
     --bulle-icone:      calc( 20    * var(--px));
     --foot-legal-gap:   calc( 25  * var(--px));
     --fs-foot:          max(12px, calc(14 * var(--px)));   /* cap 10 relevé */
+    --fs-foot-poids:    700;                               /* la maquette : Inter Bold, */
+    --fs-foot-caps:     uppercase;                         /* en capitales, */
+    --fs-foot-ls:       .04em;                             /* avec interlettrage */
+    --lh-foot:          1.3;
   }
 
   .footer__haut {

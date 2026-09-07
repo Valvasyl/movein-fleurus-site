@@ -584,7 +584,34 @@ Planchers de lisibilité (seule entorse à l'homothétie) : 12 px sur `--fs-nav`
      Les trois icônes sont **inline** (sprite `<symbol>` + `<use>`, `fill: currentColor`) :
      aucune classe interne dans ces fichiers, donc rien à préfixer.
    - Mentions : Inter Bold **14** majuscules (cap 10 relevé), blanches, © à gauche et les
-     liens à droite. ⚠️ **Ils sont TROIS depuis le 07/09/2026** (Sylvain), et non deux —
+     liens à droite — **en desktop seulement depuis le 07/09/2026.**
+     ⚠️ **SOUS 900 PX LA LIGNE DE MENTIONS PASSE AU TRAITEMENT « PETITES MENTIONS » DE
+     KLARNA** (demande Sylvain, d'après klarna.com/be/fr) : **même corps de 12 px qu'avant**,
+     mais **graisse normale, minuscules, sans interlettrage**, interligne **1,667** (le
+     20/12 de Klarna). C'est le seul endroit du site où le traitement typographique change
+     au breakpoint, et c'est assumé : au-dessus de 900 on revient exactement à la maquette.
+     - ⚠️ **Le malentendu à ne pas refaire : la taille n'a jamais été le problème.** La
+       ligne était **déjà à 12 px** en mobile, comme le petit texte de Klarna (relevé :
+       12 px / interligne 20 / graisse 400–500 / minuscules / sans interlettrage). Ce qui
+       la faisait paraître bien plus grosse, ce sont les **capitales + le gras 700 + les
+       0,04 em** d'interlettrage. C'est le traitement qui a changé, pas le corps.
+     - Porté par quatre tokens — `--fs-foot-poids`, `--fs-foot-caps`, `--fs-foot-ls` et
+       `--lh-foot` — définis en mobile dans le `:root` général et **remis aux valeurs de
+       la maquette dans le bloc ≥900**. Le projet n'ayant qu'un seul breakpoint et étant
+       mobile-first, c'était ça ou une `max-width` interdite par la règle du projet.
+     - ⚠️ **Graisse 400 et non 500**, la valeur relevée chez Klarna : Inter 500 a été retiré
+       du lien Google Fonts le 06/09 comme graisse morte. Le remettre coûterait un fichier
+       de police pour un écart invisible à 12 px. À changer seulement si Sylvain le demande.
+     - ⚠️ **Mesuré, et contraire à ce que j'avais annoncé : ça n'a PAS fait tenir la rangée
+       sur une ligne.** À 390 (largeur intérieure 350), les trois liens se partagent 318 px,
+       soit ~106 px chacun, alors que « Politique de confidentialité » en demande 150 même
+       en minuscules : il reste sur **deux lignes**, comme avant. Le bloc de mentions passe
+       de **54,8 à 68** et le footer mobile de ~250 à **~263**. La contrepartie du meilleur
+       confort de lecture (interligne 20 au lieu de 15,6) est donc 13 px de footer en plus.
+       Pour retrouver la hauteur d'avant, il suffirait de garder `--lh-foot: 1.3` en mobile.
+     - Testé aussi : ajouter `flex-wrap` sur `.footer__legal` (le levier que suggérait la
+       note ci-dessous). **Rejeté** — les liens passent alors sur deux rangées pleines et le
+       bloc monte à **84**, c'est pire que les deux lignes internes. ⚠️ **Ils sont TROIS depuis le 07/09/2026** (Sylvain), et non deux —
      « Politique de confidentialité » (`fleurus.be/move-in-fleurus/politique-de-confidentialite`),
      « Politique de vie privée » (`movein.fleurus.be/app/user/vie_privee.html`) et
      « Conditions générales » (`movein.fleurus.be/app/user/conditions.html`). Les deux

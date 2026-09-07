@@ -512,6 +512,36 @@ Planchers de lisibilité (seule entorse à l'homothétie) : 12 px sur `--fs-nav`
      coins. À 2560 elle est donc 1,8 × plus haute — c'est le comportement voulu d'une
      illustration pleine largeur, mais **à valider avec Sylvain**.
    - `aspect-ratio` et non une hauteur en `vw` : `vw` inclut la barre de défilement.
+   - ✅ **RÉEXPORT REÇU (07/09/2026, 18:21) — la section est rouverte.** Sylvain a livré le
+     nouveau `illustration-skyline.svg`. Il **annule le plan de travail cassé** de la veille
+     (`viewBox="0 0 2416.82 903.2"`, masque décalé à x=488,41, aplat noir à x=488,4) et
+     revient exactement à la géométrie du dernier commit : `viewBox="0 0 1440 446.49"`,
+     masque à x=0, 125 tracés. **Rien à changer dans le CSS ni dans le HTML.**
+     - Comparé au fichier commité, groupe par groupe : `Skyline_Compacte` est **identique
+       à l'octet près** (65 917 caractères des deux côtés). Ce qui a été redessiné, c'est le
+       **chemin et ses personnages** — le groupe passe de `#Lign_poitillé` (pointillés,
+       `dasharray 28,02`) à **`#Ligne_tiret`** (tirets, `28,17`), et `Shop`, `Walk`,
+       `Skateboard`, `Vélo` ont bougé (`Trotinette` et `icone_trajet` inchangés au chiffre
+       près). Aucune conséquence de mise en page : la colline, seule à toucher les bords,
+       n'a pas bougé.
+     - ⚠️ **Il n'y a PAS d'aplat noir de footer dans ce fichier** — ni dans celui du dernier
+       commit. Les `<rect fill="#2a292e">` que décrit le haut de cette section
+       appartenaient à un asset encore antérieur. Le noir du bas vient donc du `<footer>`,
+       et l'`overflow: clip` rogne du **dessin**, pas une bande noire.
+     - ⚠️ **Les trois valeurs de recadrage restent fausses**, et c'est le seul point ouvert :
+       `aspect-ratio: 859.11 / 217.81` (= 3,944) dans `styles.css` et
+       `width="859" height="355"` sur l'`<img>` de `index.html`, alors que le fichier fait
+       **1440 × 446,49 (= 3,225)**. Le fichier étant plus **haut** que l'enveloppe, le
+       recadrage tient — `overflow: clip` coupe le bas — donc le rendu est celui du dernier
+       commit, mais il tient **par coïncidence de ratios, pas par calcul**. À reprendre avec
+       Sylvain : soit aligner les trois valeurs sur 1440 / 446,49 (plus aucun recadrage),
+       soit décider quelle part du bas doit être rognée et écrire ce ratio-là.
+     - Règle à garder pour tout futur réexport : `.savoir-plus__illu` n'a pas de `height` et
+       son `<img>` est en `width: 100%` / `height: auto`. Le recadrage ne tient que si le
+       **ratio du fichier est plus petit** (dessin plus haut) que celui de l'enveloppe ;
+       sinon la hauteur du contenu l'emporte, l'`aspect-ratio` ne coupe plus rien et une
+       bande crème s'intercale entre la colline et le footer. C'est exactement ce qui
+       s'était passé avec le plan de travail 2416,82 × 903,2.
 9. **Footer** — ✅ FAIT (05/09/2026). ⚠️ **Le logo Move in blanc occupe la place des
    anciens logos partenaires, à gauche** (demande Sylvain, 2e passe) : 65 de haut à 1440,
    44 à 390, repris du sprite `#logo-move-in` (donc recolorable).
@@ -554,7 +584,21 @@ Planchers de lisibilité (seule entorse à l'homothétie) : 12 px sur `--fs-nav`
      Les trois icônes sont **inline** (sprite `<symbol>` + `<use>`, `fill: currentColor`) :
      aucune classe interne dans ces fichiers, donc rien à préfixer.
    - Mentions : Inter Bold **14** majuscules (cap 10 relevé), blanches, © à gauche et les
-     deux liens à droite. **« Politique vie privée » et « Conditions générales » ont le
+     liens à droite. ⚠️ **Ils sont TROIS depuis le 07/09/2026** (Sylvain), et non deux —
+     « Politique de confidentialité » (`fleurus.be/move-in-fleurus/politique-de-confidentialite`),
+     « Politique de vie privée » (`movein.fleurus.be/app/user/vie_privee.html`) et
+     « Conditions générales » (`movein.fleurus.be/app/user/conditions.html`). Les deux
+     premiers **ne font pas doublon** : ce sont deux documents distincts, l'un côté Ville,
+     l'autre côté application (confirmé par Sylvain).
+     ⚠️ **Conséquence mesurée : la rangée est saturée de 900 à ~1090 px.** « Politique de
+     confidentialité » y casse en deux lignes dans son `<li>` (rangée à 31,2 au lieu de
+     15,6), et à 700 comme à 901 le dernier lien finit à **moins de 3 px du bord** du
+     `.footer__inner`. Aucun débordement horizontal à aucune largeur (vérifié de 390 à
+     1920), mais il n'y a plus de gras : **tout lien légal supplémentaire, ou tout libellé
+     plus long, débordera**. Au-dessus de 1100 tout retombe sur une ligne. Si la double
+     ligne gêne, les leviers sont un libellé plus court (« Confidentialité ») ou un
+     `flex-wrap` assumé sur `.footer__legal`.
+     **« Politique de vie privée » et « Conditions générales » ont le
      MÊME soulignement animé que la nav** (demande Sylvain, 05/09/2026) : l'effet a été
      sorti dans un rôle partagé **`.souligne`** (section 03 de la feuille de style), que
      portent désormais les liens de la nav comme ceux du footer. `.nav-link` ne garde que
@@ -733,6 +777,77 @@ hauteur de page comprise. Le JS a été retranscrit à la main (les `//` dans le
 un dépouillement automatique dangereux) puis comparé ligne à ligne, commentaires neutralisés :
 **111 lignes de code identiques des deux côtés**.
 
+⚠️ **`commentaires/index.html` ne contient AUCUN commentaire**, et c'est normal :
+`index.html` avait déjà été dépouillé le 05/09, avant la création du dossier. Seuls
+`styles.css` et `script.js` y ont une vraie valeur documentaire. Ne pas s'en étonner et ne
+pas « réparer » le fichier — pour retrouver les 27 commentaires d'origine du HTML, c'est
+Git qu'il faut interroger, pas ce dossier.
+
+⚠️ **Le HTML de la racine est passé au formateur de l'éditeur le 07/09/2026** (Prettier /
+format-on-save de VS Code) : tout le fichier est ré-indenté à 2 espaces et les longues
+lignes sont cassées. `commentaires/index.html` a **gardé son formatage compact** — les deux
+fichiers ne diffèrent donc plus que par les blancs, mais un `diff` brut entre eux est
+devenu illisible. Pour les comparer, normaliser d'abord les espaces :
+`diff <(tr -d '\r' < a | tr '\n' ' ' | sed 's/>[[:space:]]\+</></g; s/[[:space:]]\+/ /g') …`.
+Le reformatage est **sans effet visuel** (vérifié) : les trois endroits sensibles aux blancs
+sont `.lignes > span` (`display: block`), `.marquee__piste` (flex, les nœuds de texte blancs
+y sont ignorés) et `.pilier__titre` (inline-block, le blanc de fin de ligne est collapsé).
+
+## Textes modifiés par Sylvain le 07/09/2026
+
+Passe de relecture, faite directement dans l'éditeur. Reportée dans `commentaires/`.
+
+| Où | Avant | Après |
+|---|---|---|
+| Favicon | `logo-move-in-jaune.svg` | **`logo-move-in-noir.svg`** |
+| Carte 03 | « Chaque kilomètre parcouru vous fait gagner des points. » | « Chaque distance parcourue s'ajoute à **votre compteur**. » |
+| Carte 04 | « = un **chèque de** 10 € » | « = un **bon d'achat de** 10 € » |
+| Commerçant | « partenaire de Move in » | « partenaire de **Move in Fleurus** » |
+| En savoir plus | « **Retrouve** toutes les informations » | « **Retrouvez** toutes les informations » |
+| Footer légal | 2 liens en `href="#"` | **3 liens** avec de vraies URL (cf. section 9) |
+| Footer légal | « Politique vie privée » | « Politique **de** vie privée » |
+
+⚠️ **La géométrie des cartes est intacte** : vérifié dans le navigateur, les deux textes
+retouchés tiennent toujours sur **2 lignes** à 1440 comme à 390, donc aucune carte ne
+grandit et la bande jaune garde sa hauteur. `.carte` n'ayant **pas** de hauteur figée
+(flex column dont la hauteur suit le contenu, égalisée par la grille en desktop), toute
+retouche de texte future doit être remesurée de la même façon — un mot de trop et c'est
+toute la rangée qui gagne une ligne.
+
+⚠️ **`<strong>` et non `<b>`** dans le corps des cartes. Le `<b>` de la carte 03 a été
+converti : `.carte__texte` ne stylise que `& strong { font-weight: 700 }`, un `<b>` retombe
+donc sur le gras par défaut du navigateur au lieu de la règle du projet, et `<strong>` porte
+en plus l'importance sémantique que lisent les lecteurs d'écran. Le point final a été sorti
+du gras au passage.
+
+⚠️ **Trois de ces retouches ont été PERDUES puis restaurées le 07/09/2026 (18:24 → session
+du soir).** Une sauvegarde de l'éditeur depuis un tampon périmé a écrasé `index.html` après
+que les corrections aient été indexées : l'`alt` du mockup était revenu à « un chèque de
+10 € », la carte 03 à `<b>votre comteur.</b>` (coquille comprise) et la carte 04 à « un bon
+d'achat 10 € » (« de » manquant). Les trois sont remises ; `commentaires/index.html`, jamais
+touché, avait gardé la bonne version et a servi de référence.
+**Signature du problème à connaître** : un `git diff` non indexé qui *défait* des
+corrections déjà indexées, avec une mtime du fichier postérieure à celle de `.git/index`.
+En cas de doute, `commentaires/index.html` fait foi pour le contenu — comparer en
+neutralisant les blancs, les deux fichiers n'ayant pas le même formatage.
+
+## ⚠️ Le mot officiel est « BON D'ACHAT », pas « chèque »
+
+Tranché par Sylvain le 07/09/2026 : **la communication de la Ville dit « bon d'achat »**.
+C'est ce terme qui doit être employé partout sur le site, y compris là où l'ancien mot
+traînait encore. Concerne la carte 04 (« 100 km = un bon d'achat de 10 € ») **et l'`alt`
+du mockup du hero**, aligné dans la foulée.
+
+⚠️ **L'`alt` s'écarte donc volontairement de ce que montre l'image** : la capture d'écran
+de l'appli affiche, elle, « Vous avez gagné un chèque de 10 euros ! ». C'est un choix
+assumé et non un oubli — un `alt` transmet le **sens** de l'image, pas sa transcription
+littérale, et c'est le vocabulaire de la communication qui fait foi. **Ne pas le
+« corriger » en relisant la capture.** Si l'appli passe un jour à « bon d'achat », les deux
+se rejoindront d'eux-mêmes.
+
+⚠️ Le mot « chèque » figure encore **dans l'image** `mockup-iphone-hero.webp`, qui est un
+asset livré : rien à faire côté site tant que l'appli n'a pas changé son libellé.
+
 ## Dépôt et mise en ligne
 
 Le site est publié sur **https://valvasyl.github.io/movein-fleurus-site/** à chaque push sur
@@ -797,9 +912,10 @@ du HTML comme de la feuille de style.
 
 🎉 **LE SITE STATIQUE EST COMPLET** — les neuf sections y sont, des deux maquettes.
 Il reste la **passe finale** (étape 10) : a11y et contrastes, tenue de 320 à 1920, poids des
-images, puis la **Phase 2 — animations**. Et il manque **quatre URL** (Facebook, Instagram,
-politique vie privée, conditions générales) : elles sont en `href="#"` avec un `TODO` dans
-le HTML, cf. la question 14.
+images, puis la **Phase 2 — animations**. ✅ **Plus aucune URL manquante** depuis le
+07/09/2026 : les mentions légales sont renseignées et il ne reste plus un seul `TODO` dans
+le HTML (cf. la question 14, résolue). Les deux `href="#"` qui subsistent sont les liens du
+logo (header et menu) vers le haut de page — voulus, ce ne sont pas des trous.
 
 ## Relevés déjà faits pour les sections suivantes
 
@@ -957,9 +1073,10 @@ même logo, simplement plus grand.
 13. **Blanc sur jaune, section Commerçant** : l'eyebrow et le titre sont blancs sur `#ffdd0d`,
    soit **~1,15:1** — même problème que « Scrollez pour découvrir » (question 1), mais cette
    fois sur un titre de 78 px. C'est la maquette. Options : passer en `--noir`, ou assumer.
-14. **Quatre URL manquantes** (footer) : **Facebook**, **Instagram**, **politique vie privée**
-   et **conditions générales**. Elles sont en `href="#"` avec un commentaire `TODO` dans le
-   HTML — à remplacer avant toute mise en ligne. Le globe pointe déjà `movein.fleurus.be`.
+14. ✅ **Résolu (07/09/2026)** — les URL manquantes du footer. Facebook et Instagram
+   pointaient déjà les pages de la Ville ; Sylvain a renseigné les mentions légales, qui
+   sont désormais **trois** liens et non deux (cf. section 9 du footer). Plus aucun `TODO`
+   dans le HTML ; les deux `href="#"` restants sont les liens du logo vers le haut de page.
 16. **Les cinq contrastes hors normes** (cf. « Passe finale ») : blanc et sable sur fond clair,
    1,3:1 là où il en faut 3 à 4,5. Trois pistes, à trancher globalement plutôt qu'au cas par
    cas — (a) assumer et publier une déclaration d'accessibilité qui liste les écarts,

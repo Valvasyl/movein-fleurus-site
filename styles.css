@@ -1201,10 +1201,12 @@ button {
     transition: translate 800ms var(--t-reveal);
   }
 
-  .js-anim :is(.apparait, .carte, .lignes > span > span).est-visible {
+  .js-anim :is(.apparait, .carte).est-visible {
     opacity: 1;
     translate: 0 0;
   }
+
+  .js-anim .lignes.est-visible > span > span { translate: 0 0; }
 
   .js-anim .carte:nth-child(2) { transition-delay: 120ms; }
   .js-anim .carte:nth-child(3) { transition-delay: 240ms; }

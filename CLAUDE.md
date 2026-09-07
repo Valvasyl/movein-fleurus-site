@@ -1156,6 +1156,42 @@ recours, `prefers-reduced-motion` respecté.
 - ⚠️ Le JS ne pose pas `.js-anim` du tout si `prefers-reduced-motion` est demandé.
 - ⚠️ **AUCUNE animation dans le bloc des piliers** (ni les colonnes, ni leurs textes) :
   demande Sylvain, deux fois plutôt qu'une.
+- 🩹 **BUG iOS CORRIGÉ LE 07/09/2026 — l'observateur vise le CONTENEUR `.lignes`, jamais la
+  ligne intérieure.** Sur iPhone, les trois seuls titres qui portent `.lignes` — « Achetez
+  local / et cumulez / des points », « Fidéliser vos clients » et « En savoir plus » — **ne
+  s'affichaient pas du tout**. Le reste du site était normal : ce sont exactement les trois
+  éléments animés par masque, et il n'y en a pas d'autres.
+  - Mécanique du bug : `.lignes > span > span` part à `translate: 0 110%`, donc
+    **entièrement hors du `overflow: clip` de son parent**. Or le JS observait cette ligne
+    intérieure. WebKit calcule l'intersection **après** avoir appliqué le recadrage des
+    ancêtres : la cible étant déjà clippée, `isIntersecting` restait `false` pour toujours,
+    `.est-visible` n'était jamais posée et le titre ne remontait jamais de derrière son
+    masque. Blink est plus permissif, d'où un rendu correct sur Chrome et sur Android.
+  - Correctif, deux lignes : `script.js` observe **`.lignes`** (le `<h2>`, un bloc normal
+    jamais transformé) au lieu de `.lignes > span > span`, et le CSS passe de
+    `:is(…, .lignes > span > span).est-visible` à une règle séparée
+    `.lignes.est-visible > span > span`. Les délais restent sur `> span:nth-child(n) > span`,
+    donc la cascade ne change pas : les lignes d'un même titre démarrent ensemble, décalées
+    de 120 ms — ce qui était déjà l'intention.
+  - Effet de bord bienvenu : le `:is()` ne contient plus de sélecteur complexe, ce qui écarte
+    au passage la seconde hypothèse (le support de `:is(A, B > C)` sur d'anciens Safari).
+  - ⚠️ **Ne jamais observer une cible qu'on a soi-même translatée hors de son masque.**
+    C'est la règle générale à retenir ; y revenir recasse iOS sans rien casser sur Chrome,
+    donc le bug repasserait inaperçu en développement.
+  - ⚠️ Vérification faite dans le navigateur, mais **côté CSS seulement** : en posant
+    `.est-visible` à la main sur les trois conteneurs, les six lignes repassent bien à
+    `translate: 0` et à un décalage de 0 dans leur masque. La partie IntersectionObserver
+    n'est pas testable ici (l'onglet piloté est en arrière-plan, `visibilityState: hidden`,
+    et Chrome n'y délivre aucune notification d'intersection ni ne fait progresser les
+    transitions — ne pas confondre cet artefact avec un bug du site). **C'est l'iPhone de
+    Sylvain qui tranche.**
+  - ⚠️ Reste à surveiller sur iOS : `overflow-clip-margin: .18em` — la marge qui empêche le
+    masque de rogner accents et jambages — **n'est pas supportée par Safari**. Le masque y
+    coupe donc pile à la boîte de ligne, et `.titre-section` est en `line-height: .897`.
+    Si des accents ou des jambages apparaissent rognés sur iPhone une fois les titres
+    revenus, c'est de là que ça vient. Remède : `padding` + `margin` négatif sur
+    `.lignes > span` — mais les marges négatives se fusionnent entre lignes adjacentes,
+    donc il faudrait recalculer le rythme vertical des titres.
 
 Pistes restantes (à compléter / valider avec Sylvain) :
 - ~~Apparition en douceur des cartes d'étapes au scroll~~ ✅ fait.

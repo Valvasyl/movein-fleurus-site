@@ -97,12 +97,17 @@
    style), donc fluide quel que soit le rythme du scroll.
    ⚠️ La classe `.js-anim` est posée ICI, pas dans le HTML : c'est elle qui active
    l'état de départ (opacité 0). Si ce script ne tourne pas, rien n'est masqué.
-   ⚠️ Et on ne la pose pas du tout si l'utilisateur a demandé moins d'animations. */
+   ⚠️ Et on ne la pose pas du tout si l'utilisateur a demandé moins d'animations.
+   ⚠️ On observe le TITRE `.lignes` et non ses lignes intérieures : celles-ci sont
+   translatées hors de leur masque, et WebKit calcule l'intersection APRÈS le recadrage
+   des ancêtres — elles n'entraient donc jamais dans le champ sur iOS et les trois
+   titres masqués ne réapparaissaient pas (corrigé le 07/09/2026). Le conteneur, lui,
+   est un bloc normal jamais transformé : son intersection est toujours calculable. */
 (() => {
   if (!('IntersectionObserver' in window)) return;
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  const cibles = document.querySelectorAll('.apparait, .carte, .lignes > span > span');
+  const cibles = document.querySelectorAll('.apparait, .carte, .lignes');
   if (!cibles.length) return;
 
   document.documentElement.classList.add('js-anim');

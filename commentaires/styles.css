@@ -1745,10 +1745,17 @@ button {
     transition: translate 800ms var(--t-reveal);
   }
 
-  .js-anim :is(.apparait, .carte, .lignes > span > span).est-visible {
+  .js-anim :is(.apparait, .carte).est-visible {
     opacity: 1;
     translate: 0 0;
   }
+
+  /* ⚠️ La cible observée par le JS est le TITRE `.lignes`, PAS la ligne intérieure.
+     Celle-ci est poussée à 110 % hors de son masque : WebKit calcule l'intersection
+     APRÈS le recadrage des ancêtres, la déclarait donc « jamais visible » et ne posait
+     jamais `.est-visible`. Les trois titres restaient invisibles sur iOS (07/09/2026).
+     Ne pas revenir à un sélecteur qui vise la ligne intérieure. */
+  .js-anim .lignes.est-visible > span > span { translate: 0 0; }
 
   /* Décalages : les cartes d'une rangée et les lignes d'un titre se succèdent. */
   .js-anim .carte:nth-child(2) { transition-delay: 120ms; }

@@ -70,7 +70,7 @@
   if (!('IntersectionObserver' in window)) return;
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  const cibles = document.querySelectorAll('.apparait, .carte, .lignes > span > span');
+  const cibles = document.querySelectorAll('.apparait, .carte, .lignes');
   if (!cibles.length) return;
 
   document.documentElement.classList.add('js-anim');

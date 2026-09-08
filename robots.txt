@@ -1,4 +1,17 @@
-# Site en test — on ne veut pas qu'il sorte dans les moteurs de recherche.
-# ⚠️ À SUPPRIMER (ou à vider) le jour de la mise en ligne officielle.
+# Move in Fleurus — https://movein.fleurus.be/app-store/
+#
+# ⚠️ AUX DÉVELOPPEURS : ce fichier N'EST PAS LU à l'adresse de production.
+#    Un robots.txt n'est valable qu'à la RACINE d'un domaine. Le site étant servi
+#    depuis /app-store/, les moteurs liront https://movein.fleurus.be/robots.txt
+#    et jamais https://movein.fleurus.be/app-store/robots.txt.
+#    Il est laissé ici pour deux raisons : servir de modèle si le site déménage un
+#    jour à la racine, et documenter l'intention. Ce qui pilote réellement
+#    l'indexation de cette page, c'est le <link rel="canonical"> de index.html.
+#
+#    Si la Ville veut ajuster l'indexation, c'est le robots.txt de la racine de
+#    movein.fleurus.be qu'il faut modifier — pas celui-ci.
+
 User-agent: *
-Disallow: /
+Allow: /
+
+Sitemap: https://movein.fleurus.be/sitemap.xml

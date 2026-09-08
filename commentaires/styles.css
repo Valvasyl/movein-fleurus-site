@@ -4,7 +4,8 @@
    CSS natif : variables + nesting avec &. Pas de SASS, pas de build.
    -------------------------------------------------------------
    Sommaire
-   00. Tokens
+   00. Polices auto-hébergées (@font-face)
+   00b. Tokens
    01. Reset & base
    02. Utilitaires de mise en page (container, grid)
    03. Rôles typographiques
@@ -12,7 +13,7 @@
    05. Bande jaune (dégradé + trame de rues)
    06. Hero
    07. Mobilité — les 4 cartes d’étapes
-   08. Fidélité — photo pleine largeur + 4 cartes
+   08. Fidélité — bande bleue, photo en vignette + 4 cartes
    09. Commerçant — bande jaune
    10. Piliers — Attirer / Fidéliser / Contribuer
    11. En savoir plus — bande crème
@@ -21,6 +22,67 @@
    14. Animations (Phase 2) — apparitions au scroll
    99. Accessibilité / reduced-motion / dev
    ============================================================= */
+
+
+/* ============ 00. POLICES AUTO-HÉBERGÉES ============
+   ⚠️ LES POLICES NE VIENNENT PLUS DE GOOGLE (09/09/2026, avant la livraison).
+   Elles étaient chargées depuis fonts.googleapis.com : sur le site d'une administration
+   publique, cela transmet l'adresse IP de chaque visiteur à un tiers — le point RGPD
+   classique des Google Fonts. Les fichiers sont maintenant dans assets/fonts/, sous
+   licence SIL Open Font License 1.1 (livrée à côté), qui autorise explicitement
+   l'auto-hébergement. Effets mesurés : zéro requête vers un tiers, deux connexions
+   externes en moins, et un rendu strictement identique (54 repères remesurés).
+
+   ⚠️ INTER EST UNE POLICE VARIABLE : un seul fichier couvre 400, 700 et 800, d'où le
+   `font-weight: 100 900`. Barlow Condensed, elle, est statique — le fichier livré ne
+   contient QUE le 800 droit. Pour utiliser une autre graisse de Barlow Condensed il
+   faudra télécharger le fichier correspondant ; pour Inter, il n'y a rien à faire.
+
+   ⚠️ QUATRE FICHIERS, MAIS DEUX SEULEMENT SONT TÉLÉCHARGÉS. Chaque famille est découpée
+   en `latin` et `latin-ext` avec son `unicode-range` : le navigateur ne va chercher un
+   sous-ensemble que si un caractère de sa plage apparaît dans la page. Le français tient
+   entièrement dans `latin` (U+0000-00FF couvre les accents, et Œ/œ sont en U+0152-0153),
+   donc `latin-ext` n'est jamais chargé ici — il ne coûte que 100 Ko dans le dépôt et sert
+   de filet si un nom étranger apparaît un jour. Vérifié : 69 Ko sur le fil, 2 requêtes.
+
+   Les unicode-range sont recopiés tels quels depuis la réponse de l'API Google Fonts :
+   ne pas les réécrire à la main. */
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;                /* police variable : couvre 400, 700 et 800 */
+  font-display: swap;
+  src: url("assets/fonts/inter-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("assets/fonts/inter-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Barlow Condensed";
+  font-style: normal;
+  font-weight: 800;                    /* police statique : ce fichier ne contient que le 800 */
+  font-display: swap;
+  src: url("assets/fonts/barlow-condensed-800-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Barlow Condensed";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("assets/fonts/barlow-condensed-800-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
 
 
 /* ============ 00. TOKENS ============ */
@@ -1212,7 +1274,7 @@ button {
 }
 
 
-/* ============ 08. FIDÉLITÉ — photo pleine largeur + 4 cartes ============
+/* ============ 08. FIDÉLITÉ — bande bleue, photo en vignette + 4 cartes ============
    Relevés (maquette 1440) : bande photo y=1640 → 2772 (1133 de haut) ; eyebrow
    « FIDÉLITÉ » cap à y=1741 ; titre 78 / interligne 70, 3 lignes à partir de
    y=1841 ; cartes 318,5 × 220 de y=2493 à 2712, puis 60 de photo sous elles.

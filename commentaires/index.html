@@ -3,15 +3,75 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Move in Fleurus</title>
+<title>Move in Fleurus — l'appli qui récompense vos déplacements durables</title>
 <meta name="description" content="Move in Fleurus récompense vos déplacements durables : chaque kilomètre à pied, à vélo ou en trottinette rapporte des points à dépenser chez les commerçants de Fleurus.">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@800&family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+<!-- ⚠️ LES QUATRE URL ABSOLUES DE CE HEAD SONT LES SEULES DU SITE. Tout le reste est en
+     chemin relatif, donc le site fonctionne où qu'on le pose ; mais le canonical, l'og:url,
+     l'og:image et les deux URL du JSON-LD doivent désigner l'adresse de PRODUCTION, aucun
+     moteur ni aucun aperçu de partage n'acceptant de chemin relatif. Si l'adresse finale
+     change, ce sont les seules lignes à reprendre. -->
+<link rel="canonical" href="https://movein.fleurus.be/app-store/">
+
+<!-- Aperçu de partage (Facebook, LinkedIn, WhatsApp…). L'image est fabriquée à partir des
+     assets du hero : dégradé + trame de rues + titre vectorisé + logo, en 1200 × 630, le
+     format attendu par toutes les plateformes. Elle n'est joignable qu'à l'adresse de
+     production : l'aperçu ne peut donc être testé qu'une fois le site en ligne. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Move in Fleurus">
+<meta property="og:locale" content="fr_BE">
+<meta property="og:url" content="https://movein.fleurus.be/app-store/">
+<meta property="og:title" content="Move in Fleurus — l'appli qui récompense vos déplacements durables">
+<meta property="og:description" content="Chaque kilomètre à pied, à vélo ou en trottinette rapporte des points. 100 km = un bon d'achat de 10 € chez les commerçants partenaires de Fleurus.">
+<meta property="og:image" content="https://movein.fleurus.be/app-store/assets/images/partage-move-in-fleurus.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Rejoignez le Move — Move in Fleurus">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- Couleur de la barre d'adresse sur Android et de la barre d'état sur iOS. -->
+<meta name="theme-color" content="#ffdd0d">
+
+<!-- Trois icônes, et l'ordre compte : un navigateur qui sait lire le SVG le prend (c'est la
+     dernière déclaration d'icône qu'il comprend), les autres retombent sur le PNG 32.
+     L'apple-touch-icon est le seul format qu'iOS accepte pour l'écran d'accueil, et il ne
+     doit pas être transparent — d'où le logo noir sur fond jaune plutôt que le SVG. -->
+<link rel="icon" href="assets/logos/favicon-32.png" sizes="32x32">
 <link rel="icon" href="assets/logos/logo-move-in-noir.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/logos/apple-touch-icon.png">
+
+<!-- ⚠️ `crossorigin` est OBLIGATOIRE sur un preload de police, même en même origine : sans
+     lui le navigateur télécharge le fichier deux fois. On ne précharge que les deux
+     sous-ensembles `latin`, les seuls réellement utilisés par une page en français. -->
+<link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/barlow-condensed-800-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
 <script src="script.js" defer></script>
+
+<!-- Données structurées. C'est un bloc de DONNÉES, pas du script exécutable : il n'est pas
+     concerné par une Content-Security-Policy en `script-src 'self'`. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Move in Fleurus",
+  "url": "https://movein.fleurus.be/app-store/",
+  "inLanguage": "fr-BE",
+  "description": "Move in Fleurus récompense vos déplacements durables : chaque kilomètre à pied, à vélo ou en trottinette rapporte des points à dépenser chez les commerçants de Fleurus.",
+  "publisher": {
+    "@type": "GovernmentOrganization",
+    "name": "Ville de Fleurus",
+    "url": "https://fleurus.be/",
+    "logo": "https://movein.fleurus.be/app-store/assets/logos/logo-ville-de-fleurus-noir.svg",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Fleurus",
+      "addressRegion": "Hainaut",
+      "addressCountry": "BE"
+    }
+  }
+}
+</script>
 </head>
 <body>
 
@@ -110,8 +170,7 @@
 
           <div class="hero__intro" id="mobilite">
             <p class="eyebrow apparait">Mobilité</p>
-            <p class="lead apparait">Choisissez une destination, laissez-vous guider, et transformez
-              vos trajets du quotidien en récompenses concrètes chez les commerçants de Fleurus.</p>
+            <p class="lead apparait">Choisissez une destination et activez le GPS lors de vos déplacements sur le territoire fleurusien. Laissez-vous guider et transformez vos trajets du quotidien en récompenses concrètes chez les commerçants fleurusiens.</p>
           </div>
 
         </div>
@@ -134,26 +193,24 @@
         <li class="carte">
           <p class="carte__num" aria-hidden="true">01</p>
           <h3 class="carte__titre">Choisissez le mode de déplacement</h3>
-          <p class="carte__texte">À pied, à vélo, en trottinette ou autres.
-            Chaque trajet durable est pris en compte.</p>
+          <p class="carte__texte">À pied, à vélo, à trottinette... sélectionnez le mode de déplacement durable de votre choix.</p>
         </li>
 
         <li class="carte">
           <p class="carte__num" aria-hidden="true">02</p>
           <h3 class="carte__titre">Entrez votre<br class="br-lg"> destination</h3>
-          <p class="carte__texte">Indiquez une adresse ou le nom d'un commerce et l'app
-            vous guide en GPS jusqu'au point d'arrivée.</p>
+          <p class="carte__texte">Indiquez une adresse, sélectionnez un lieu d’intérêt ou rentrez le nom d’un commerce dans le GPS de l’app et laissez-vous guider.</p>
         </li>
 
         <li class="carte">
           <p class="carte__num" aria-hidden="true">03</p>
           <h3 class="carte__titre">Cumulez<br class="br-lg"> des kilomètres</h3>
-          <p class="carte__texte">Chaque distance parcourue s'ajoute à <strong>votre compteur</strong>.</p>
+          <p class="carte__texte">L’app comptabilise chaque kilomètre parcouru et l’ajoute automatiquement à <strong>votre compteur</strong>.</p>
         </li>
 
         <li class="carte">
           <p class="carte__num" aria-hidden="true">04</p>
-          <h3 class="carte__titre">Encaissez<br class="br-lg"> la récompense</h3>
+          <h3 class="carte__titre">Profitez de<br class="br-lg"> votre récompense</h3>
           <p class="carte__texte"><strong>100&nbsp;km</strong> = un bon d'achat de
             <strong>10&nbsp;€</strong> chez les commerçants partenaires.</p>
         </li>
@@ -181,9 +238,7 @@
         <h2 class="display titre-section fidelite__titre lignes" id="fidelite-titre"><span><span>Achetez local</span></span><span><span>et cumulez</span></span><span><span>des points</span></span></h2>
 
         <div class="fidelite__texte apparait">
-          <p class="lead">Réductions, cadeaux, offres spéciales… Chaque commerçant définit
-            ses propres avantages.</p>
-          <p class="lead">Les points sont cumulés lors de vos achats.</p>
+          <p class="lead">Achetez local et cumulez des points sur votre carte de fidélité digitale. Profitez des réductions, cadeaux et offres spéciales proposées par les commerçants.</p>
         </div>
       </div>
 
@@ -221,7 +276,7 @@
     <div class="container">
 
       <p class="eyebrow apparait">Commerçant</p>
-      <h2 class="display titre-section commercants__titre lignes" id="commercants-titre"><span><span>Fidéliser</span></span><span><span>vos clients</span></span></h2>
+      <h2 class="display titre-section commercants__titre lignes" id="commercants-titre"><span><span>Fidélisez</span></span><span><span>vos clients</span></span></h2>
 
       <p class="lead commercants__texte apparait">Commerçant fleurusien ou entreprise locale ?<br>Devenez partenaire de Move in Fleurus et donnez à vos clients une bonne raison de revenir.</p>
 
@@ -262,7 +317,7 @@
       <div class="pilier">
         <h3 class="display display--s pilier__titre">
           <img class="pilier__picto" src="assets/icons/picto-trajet-sable.svg" alt="" width="40" height="40" loading="lazy">Contribuer</h3>
-        <p class="pilier__texte">À une ville plus dynamique en encourageant<br>la mobilité douce des Fleurusiens.</p>
+        <p class="pilier__texte">À une ville plus dynamique en encourageant<br>la mobilité douce des fleurusiens.</p>
       </div>
 
     </div>
@@ -296,8 +351,7 @@
 
       <h2 class="display savoir-plus__titre lignes" id="savoir-plus-titre"><span><span>En savoir plus</span></span></h2>
 
-      <p class="savoir-plus__texte apparait">Retrouvez toutes les informations sur Move in Fleurus,
-        son fonctionnement, les récompenses et les commerçants partenaires sur fleurus.be.</p>
+      <p class="savoir-plus__texte apparait">Une question sur le fonctionnement de Move in Fleurus, les récompenses ou les commerces partenaires ? Retrouvez toutes les informations utiles sur le site de la Ville.</p>
 
       <p class="savoir-plus__cta apparait">
         <a class="btn-dl btn-dl--jaune" href="https://fleurus.be/move-in-fleurus/" target="_blank" rel="noopener">fleurus.be</a>
@@ -325,7 +379,7 @@
           <svg viewBox="0 0 26.51 26.41" aria-hidden="true" focusable="false"><use href="#icone-facebook"></use></svg></a></li>
         <li><a class="bulle" href="https://www.instagram.com/villedefleurus" target="_blank" rel="noopener" aria-label="Move in Fleurus sur Instagram">
           <svg viewBox="0 0 26.51 26.51" aria-hidden="true" focusable="false"><use href="#icone-instagram"></use></svg></a></li>
-        <li><a class="bulle" href="https://fleurus.be/move-in-fleurus" target="_blank" rel="noopener" aria-label="Le site de Move in Fleurus">
+        <li><a class="bulle" href="https://fleurus.be/move-in-fleurus/" target="_blank" rel="noopener" aria-label="Le site de Move in Fleurus">
           <svg viewBox="0 0 26.5 26.51" aria-hidden="true" focusable="false"><use href="#icone-web"></use></svg></a></li>
       </ul>
 

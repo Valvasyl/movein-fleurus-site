@@ -7,7 +7,7 @@ réexpliquer le contexte à chaque fois, tout est ici.
 
 Site vitrine **one-page** pour « Move in Fleurus », l'application de mobilité douce
 de la **Ville de Fleurus**. L'appli récompense les déplacements durables (à pied, à
-vélo, en trottinette) : chaque kilomètre rapporte des points, **100 km = un chèque de
+vélo, en trottinette) : chaque kilomètre rapporte des points, **100 km = un bon d'achat de
 10 €** à dépenser chez les commerçants partenaires. Il existe **deux applications** :
 une pour les **citoyens**, une pour les **commerçants**.
 
@@ -97,8 +97,8 @@ Autres relevés confirmés : crème `#FFFBF0` ✅ · noir `#2A292E` ✅.
 
 ## Charte — typographie
 
-Deux polices, **toutes deux gratuites via Google Fonts** — aucun besoin d'Adobe, rien à
-self-hoster (Lufga abandonnée) :
+Deux polices, **toutes deux libres (SIL OFL) et désormais AUTO-HÉBERGÉES** — plus aucune
+requête vers Google (Lufga abandonnée) :
 
 - **Inter** → tout le **texte courant** : paragraphes, labels / eyebrows, **titres de carte
   (h3)**, et tout contenu lisible.
@@ -194,18 +194,38 @@ jamais sur la chasse**.
 | Paragraphe « En savoir plus » | **16** / 19 | **27,5** / 30,5 | cap 12 / 20 — interligne en px |
 | Pastille « fleurus.be » | **16,5** | **18** | cap 12 / 13 |
 | Titre de pilier (Attirer…) | **26,3** | **38,7** | cap 19 / 28 — `--fs-display-s` |
-| Texte de pilier | **14** / 16 | **14** / 16 | ⚠️ **PLUS le corps de carte** depuis la V3 : token à part `--fs-pil-texte` |
+| Texte de pilier | **14** / 16 | **14** / 16 | de nouveau `--fs-card-text`, comme avant la V3 |
 | Liens de nav | — | **14** | cap 10 |
 | « Scrollez pour découvrir » | masqué | **30** | choix Sylvain (la maquette relève 15) |
 
-⚠️ Inter **800 (ExtraBold)** est chargé dans le lien Google Fonts — ne pas l'enlever.
-⚠️ **Le lien a été dégraissé le 06/09/2026** : il chargeait **7 fichiers de police, dont 3
-  morts** — Inter **500** et **600** (jamais déclarés : le site n'utilise que 400, 700 et
-  800) et **Barlow Condensed italique** (plus aucun italique, cf. plus haut). L'URL est
-  maintenant `family=Barlow+Condensed:wght@800&family=Inter:wght@400;700;800`. Avant
-  d'ajouter une graisse dans le CSS, l'ajouter dans l'URL — et l'inverse aussi.
+### ⚠️ LES POLICES SONT AUTO-HÉBERGÉES DEPUIS LE 09/09/2026
+
+Elles venaient de `fonts.googleapis.com`. Sur le site d'une administration publique, cela
+transmet l'**adresse IP de chaque visiteur** à un tiers — le point RGPD classique des Google
+Fonts. Les quatre `.woff2` sont maintenant dans **`assets/fonts/`**, avec leurs deux licences
+**SIL Open Font License 1.1**, qui autorise explicitement l'auto-hébergement.
+
+- **Quatre fichiers, deux seulement téléchargés.** Chaque famille est découpée en `latin` et
+  `latin-ext` avec son `unicode-range` : le navigateur ne va chercher un sous-ensemble que si
+  un caractère de sa plage apparaît. Le français tient entièrement dans `latin`
+  (U+0000-00FF couvre les accents, Œ/œ sont en U+0152-0153), donc **`latin-ext` n'est jamais
+  chargé**. Coût réel mesuré : **69 Ko, 2 requêtes, 0 vers un tiers**. Les 100 Ko de
+  `latin-ext` ne pèsent que dans le dépôt et servent de filet.
+- ⚠️ **INTER EST UNE POLICE VARIABLE** : un seul fichier couvre 400, 700 **et** 800, d'où le
+  `font-weight: 100 900` de son `@font-face`. **Il n'y a donc plus rien à faire pour ajouter
+  une graisse d'Inter** — c'était l'inverse avant, où il fallait la déclarer dans l'URL.
+- ⚠️ **BARLOW CONDENSED, ELLE, EST STATIQUE** : le fichier livré ne contient **que le 800
+  droit**. Pour une autre graisse ou l'italique, il faut télécharger le fichier
+  correspondant depuis Google Fonts et ajouter un `@font-face`.
+- Les `unicode-range` sont recopiés tels quels depuis la réponse de l'API Google Fonts.
+  **Ne pas les réécrire à la main.**
+- Vérifié après bascule : **0 requête vers googleapis/gstatic**, et les 54 repères de rendu
+  sont **strictement identiques** (hero 350/877, toutes les bandes au dixième de pixel).
+- Historique : le lien avait déjà été dégraissé le 06/09/2026 (il chargeait 7 fichiers dont
+  3 morts — Inter 500 et 600, jamais déclarés, et Barlow Condensed italique).
 Planchers de lisibilité (seule entorse à l'homothétie) : **12 px** sur `--fs-nav`,
-`--fs-eyebrow-sm`, `--fs-card-text` et `--fs-pil-texte`. (Le plancher de 9 px portait sur
+`--fs-eyebrow-sm` et `--fs-card-text` (partagé avec le texte des piliers depuis le
+09/09/2026, `--fs-pil-texte` ayant été supprimé). (Le plancher de 9 px portait sur
 `--fs-card-note`, supprimé le 08/09/2026 avec la note de la carte 01.)
 
 ## Structure du site (dans l'ordre)
@@ -1043,11 +1063,17 @@ move-in-fleurus/
 ├── index.html
 ├── styles.css
 ├── script.js     (burger + routage des stores — chargé en `defer`)
-├── commentaires/ (copie de référence des 3 fichiers, cf. « Copie commentée » plus bas)
+├── robots.txt    (⚠️ INERTE à l'adresse de production, cf. LIVRAISON.md)
+├── LIVRAISON.md  (🆕 09/09/2026 — le document remis à l'équipe qui met en ligne)
+├── README.md
 ├── CLAUDE.md
-├── maquette/     (cf. « Les fichiers de maquette » ci-dessous)
+├── .editorconfig
+├── commentaires/ (copie de référence des 3 fichiers, cf. « Copie commentée » plus bas)
+├── archive/      (🆕 09/09/2026 — les 27 assets inutilisés, cf. archive/LISEZ-MOI.md)
+├── maquette/     (cf. « Les fichiers de maquette » ci-dessous — hors dépôt)
 └── assets/
-    ├── logos/    (Move in noir/blanc/jaune, Ville de Fleurus, Wallonie, Shop In, digitalwallonia)
+    ├── fonts/    (🆕 Inter + Barlow Condensed en .woff2, latin et latin-ext, + les 2 OFL)
+    ├── logos/    (Move in noir, Ville de Fleurus, Wallonie, Shop In, digitalwallonia, favicons)
     ├── icons/    (badges stores, réseaux, pictos mobilité, pictos piliers, pins)
     └── images/   (mockup iPhone hero, photo commerçants, visuel commerçant, skyline+route, trame de rues, titre hero)
 ```
@@ -1252,11 +1278,79 @@ asset livré : rien à faire côté site tant que l'appli n'a pas changé son li
 
 ## Dépôt et mise en ligne
 
-Le site est publié sur **https://valvasyl.github.io/movein-fleurus-site/** à chaque push sur
-`main` (GitHub Pages, branche `main`, racine). Comptez une à deux minutes après le push.
-Vérifié au déploiement : 16 ressources, aucune en échec, 738 Ko au total, toutes les
-sections aux bonnes hauteurs. Les chemins sont tous relatifs, le site fonctionne donc dans
-son sous-dossier.
+**Recette** — le site est publié sur **https://valvasyl.github.io/movein-fleurus-site/** à
+chaque push sur `main` (GitHub Pages, branche `main`, racine). Comptez une à deux minutes
+après le push. Les chemins sont tous relatifs, le site fonctionne donc dans son sous-dossier.
+
+### 🎯 LA DESTINATION FINALE : `https://movein.fleurus.be/app-store/`
+
+⚠️ **Le site REMPLACE la page qui se trouve déjà à cette adresse**, et **l'URL ne change
+pas** (elle est déjà diffusée : QR codes, communication de la Ville, liens depuis les
+applications). Tout le reste du contenu de cette page est le nôtre.
+
+⚠️ **Quatre URL absolues dans le `<head>`, et ce sont les SEULES du site.** Tout le reste est
+relatif, donc le site fonctionne où qu'on le pose ; mais le `canonical`, l'`og:url`,
+l'`og:image` et les deux URL du JSON-LD doivent désigner l'adresse de production — aucun
+moteur ni aucun aperçu de partage n'accepte de chemin relatif. **Si l'adresse change un jour,
+ce sont les seules lignes à reprendre.**
+
+### Ce que le `<head>` contient depuis le 09/09/2026
+
+Il ne contenait que le titre, la description, le lien Google Fonts et le favicon. Ajouté
+avant la livraison :
+
+- **`<link rel="canonical">`** vers l'adresse de production. Il joue un double rôle : il
+  désigne la version de référence pour les moteurs, **et** il évite que la copie de recette
+  sur GitHub Pages ne soit indexée comme un doublon. C'est lui, et pas `robots.txt`, qui
+  pilote réellement l'indexation — cf. le piège ci-dessous.
+- **Open Graph + Twitter card**, avec une image de partage **1200 × 630** fabriquée à partir
+  des assets du hero (dégradé + trame + titre vectorisé + logo) :
+  `assets/images/partage-move-in-fleurus.jpg`, 79 Ko. ⚠️ Elle n'est joignable qu'à l'adresse
+  de production : **l'aperçu ne peut être testé qu'une fois le site en ligne**.
+- **`theme-color`** `#ffdd0d` (barre d'adresse Android, barre d'état iOS).
+- **Trois icônes, et l'ordre compte** : `favicon-32.png`, puis le SVG (les navigateurs qui
+  le comprennent le prennent, les autres retombent sur le PNG), puis `apple-touch-icon.png`
+  en 180 × 180. ⚠️ Les deux PNG sont **noir sur jaune** et non transparents : iOS pose
+  l'apple-touch-icon tel quel sur l'écran d'accueil, un logo noir transparent y serait
+  invisible. Ils sont générés depuis `logo-move-in-noir.svg`.
+- **Deux `<link rel="preload">`** sur les polices `latin`. ⚠️ `crossorigin` est
+  **obligatoire** même en même origine : sans lui le navigateur télécharge le fichier deux fois.
+- **Un bloc `application/ld+json`** (WebSite + GovernmentOrganization). C'est un bloc de
+  **données**, pas du script exécutable : il n'est pas concerné par une CSP en
+  `script-src 'self'`.
+- Le **`<title>` est devenu descriptif** : « Move in Fleurus — l'appli qui récompense vos
+  déplacements durables ». Il ne disait que « Move in Fleurus ».
+
+### ⚠️ LE PIÈGE DU `robots.txt`
+
+**Un `robots.txt` n'est lu qu'à la RACINE d'un domaine.** Le site étant servi depuis
+`/app-store/`, les moteurs liront `https://movein.fleurus.be/robots.txt` et **jamais**
+`https://movein.fleurus.be/app-store/robots.txt`.
+
+Le fichier du dépôt est donc **inerte à l'adresse de production**, et il l'était **déjà sur
+GitHub Pages** (dont la racine est `valvasyl.github.io`, pas le sous-dossier du projet) —
+autrement dit le `Disallow: /` qu'il contenait depuis le début n'a **jamais rien bloqué**.
+Il a été réécrit en fichier de production honnête, avec le piège documenté en tête.
+
+Pour ajuster réellement l'indexation, c'est le `robots.txt` de la racine de
+`movein.fleurus.be` qu'il faut modifier.
+
+### Zéro requête vers un tiers
+
+Depuis l'auto-hébergement des polices, **le site ne contacte aucun serveur extérieur** :
+pas de police distante, pas de cookie, pas de stockage local, pas de mesure d'audience. Les
+seules adresses externes sont des **liens sur lesquels le visiteur clique**. Conséquence
+pratique : **en l'état, pas besoin de bandeau de consentement** — à réévaluer si un outil de
+mesure d'audience est ajouté.
+
+### `LIVRAISON.md`
+
+🆕 Créé le 09/09/2026 pour l'équipe qui met le site en ligne : ce qu'il faut déployer et ce
+qu'il faut laisser, les **types MIME** à vérifier (`.woff2`, `.webp`, `.svg` — c'est le seul
+réglage réellement bloquant, notamment sur IIS), la compression, le cache, les en-têtes de
+sécurité avec une **CSP directement applicable**, le piège du `robots.txt`, le point RGPD, le
+point accessibilité et une checklist d'avant-mise-en-ligne.
+**C'est le document à envoyer aux développeurs**, pas celui-ci.
 
 ## Workflow
 

@@ -1,14 +1,16 @@
 <div align="center" id="haut">
 
-<img src="assets/logos/logo-move-in-jaune-noir.svg" alt="Move in Fleurus" height="90">
+<img src="assets/logos/apple-touch-icon.png" alt="Move in Fleurus" height="90">
 
 # MOVE IN FLEURUS
 
 **Site vitrine de l'application de mobilité douce de la Ville de Fleurus.**
 
-[![Voir le site](https://img.shields.io/badge/%E2%86%92_VOIR_LE_SITE-ffdd0d?style=for-the-badge&labelColor=2a292e)](https://valvasyl.github.io/movein-fleurus-site/)
+[![Voir le site](https://img.shields.io/badge/%E2%86%92_VOIR_LA_RECETTE-ffdd0d?style=for-the-badge&labelColor=2a292e)](https://valvasyl.github.io/movein-fleurus-site/)
 
-`HTML` · `CSS natif` · `JavaScript vanilla` · zéro dépendance · zéro build
+`HTML` · `CSS natif` · `JavaScript vanilla` · zéro dépendance · zéro build · zéro requête tierce
+
+**Vous mettez ce site en ligne ?** → [**LIVRAISON.md**](LIVRAISON.md)
 
 </div>
 
@@ -17,8 +19,8 @@
 ## À propos
 
 Move in Fleurus récompense les déplacements durables. Chaque kilomètre parcouru à pied, à
-vélo ou en trottinette rapporte des points ; **100 km = un chèque de 10 €** à dépenser chez
-les commerçants partenaires de la ville. Deux applications coexistent — une pour les
+vélo ou en trottinette rapporte des points ; **100 km = un bon d'achat de 10 €** à dépenser
+chez les commerçants partenaires de la ville. Deux applications coexistent — une pour les
 **citoyens**, une pour les **commerçants**.
 
 Ce dépôt contient le **site vitrine one-page** qui présente le dispositif et oriente le
@@ -28,11 +30,11 @@ visiteur vers le téléchargement de l'application qui le concerne.
 |---|---|
 | **Client** | Ville de Fleurus |
 | **Type** | Site vitrine one-page, statique |
-| **En ligne** | [valvasyl.github.io/movein-fleurus-site](https://valvasyl.github.io/movein-fleurus-site/) |
-| **Hébergement** | GitHub Pages — publication automatique à chaque push sur `main` |
+| **Destination** | `https://movein.fleurus.be/app-store/` — il **remplace** la page qui s'y trouve |
+| **Recette** | [valvasyl.github.io/movein-fleurus-site](https://valvasyl.github.io/movein-fleurus-site/) — GitHub Pages, publication automatique à chaque push sur `main` |
 | **Source de vérité** | Deux maquettes Illustrator, **390 px** et **1440 px** |
-| **Poids du code** | 55 Ko (21 + 29 + 4) · **9 Ko une fois compressé** |
-| **Poids des médias** | 1,1 Mo, tout est utilisé |
+| **Poids du code** | 60 Ko (23 + 33 + 4) · **~10 Ko une fois compressé** |
+| **Poids des médias** | 1,3 Mo, dont 1 Mo pour deux photos |
 | **Dépendances** | aucune |
 
 ---
@@ -59,15 +61,20 @@ move-in-fleurus/
 ├── index.html          Structure — 10 sections, un seul <h1>
 ├── styles.css          Toute la mise en forme, organisée en 16 sections numérotées
 ├── script.js           5 blocs autonomes, chacun en IIFE
-├── CLAUDE.md           Mémoire technique du projet (voir « Documentation »)
-├── README.md
 ├── robots.txt
-├── commentaires/       Copie intégralement commentée des 3 fichiers ci-dessus
-├── maquette/           Planches Illustrator de référence (non déployées)
+│
+├── LIVRAISON.md        ★ Tout ce qu'il faut pour mettre le site en ligne
+├── README.md           Ce fichier
+├── CLAUDE.md           Mémoire technique du projet (voir « Documentation »)
+├── commentaires/       Copie intégralement commentée des 3 fichiers de code
+├── archive/            Fichiers graphiques inutilisés, conservés pour mémoire
+├── maquette/           Planches Illustrator de référence (hors dépôt, non déployées)
+│
 └── assets/
-    ├── logos/          Move in (4 variantes), Ville de Fleurus, Wallonie, Shop In, DigitalWallonia
-    ├── icons/          Réseaux sociaux, pictogrammes des piliers
-    └── images/         Mockup, photo, trame de rues, titre vectorisé, illustration skyline
+    ├── fonts/          Inter et Barlow Condensed en .woff2, + leurs licences SIL OFL
+    ├── logos/          Move in, Ville de Fleurus, Wallonie, Shop In, DigitalWallonia, favicons
+    ├── icons/          Les 3 pictogrammes des piliers
+    └── images/         Mockup, photos, trame de rues, titre vectorisé, skyline, image de partage
 ```
 
 Les chemins sont **tous relatifs** : le site fonctionne à la racine d'un domaine comme dans
@@ -107,13 +114,27 @@ La maquette contient **trois jaunes**, pas un :
 | Fond du hero — **un dégradé diagonal**, pas un aplat | `#ffe330` → `#ffea63` |
 | Trame de rues, pastille App Store | `#ffd405` |
 
-Deux polices, toutes deux via Google Fonts : **Inter** pour tout le texte lisible,
-**Barlow Condensed** pour les gros titres display et les numéros de carte. **La police suit
-le rôle, pas la balise** : un titre de carte reste en Inter même si c'est un `<h3>`.
+Deux polices : **Inter** pour tout le texte lisible, **Barlow Condensed** pour les gros
+titres display et les numéros de carte. **La police suit le rôle, pas la balise** : un titre
+de carte reste en Inter même si c'est un `<h3>`.
 
-Le lien Google Fonts ne charge que les graisses réellement déclarées — 400, 700 et 800 pour
-Inter, 800 droit pour Barlow Condensed. Avant d'utiliser une nouvelle graisse dans le CSS,
-il faut l'ajouter à l'URL.
+### Des polices auto-hébergées
+
+Elles étaient chargées depuis les serveurs de Google. Sur le site d'une administration
+publique, cela transmet l'adresse IP de chaque visiteur à un tiers — le point RGPD classique
+des Google Fonts. Elles sont **installées localement** depuis le 09/09/2026, sous licence
+**SIL Open Font License 1.1** qui l'autorise explicitement (les licences sont livrées avec
+les fichiers).
+
+Quatre `.woff2` seulement, et **deux sont chargés en pratique** : chaque famille est
+découpée en sous-ensembles `latin` et `latin-ext` avec leur `unicode-range`, et le navigateur
+ne télécharge `latin-ext` que si un caractère de cette plage apparaît — ce qui n'arrive pas
+sur une page en français. Coût réel : **69 Ko**, deux requêtes, aucune vers un tiers.
+
+Inter est servi en **police variable** : un seul fichier couvre les graisses 400, 700 et 800.
+Barlow Condensed n'est chargé qu'en 800 droit. Avant d'utiliser une nouvelle graisse dans le
+CSS, il faut donc vérifier qu'elle est bien couverte — et pour Barlow Condensed, télécharger
+le fichier correspondant.
 
 ### Header sticky escamotable
 
@@ -211,8 +232,8 @@ Le site est ensuite servi sur `http://localhost:8000`.
 
 ## Déploiement
 
-GitHub Pages, branche `main`, racine du dépôt. **Un push suffit** ; la mise en ligne prend
-une à deux minutes.
+**Recette** — GitHub Pages, branche `main`, racine du dépôt. Un push suffit ; la mise en
+ligne prend une à deux minutes.
 
 ```bash
 git add -A
@@ -220,8 +241,12 @@ git commit -m "…"
 git push
 ```
 
-Aucune étape de compilation, aucun artefact à générer : ce qui est dans le dépôt est ce qui
-est servi.
+**Production** — voir **[LIVRAISON.md](LIVRAISON.md)** : ce qu'il faut déployer et ce qu'il
+faut laisser, les types MIME à vérifier, la compression, le cache, les en-têtes de sécurité,
+et le piège du `robots.txt` dans un sous-dossier.
+
+Dans les deux cas : aucune étape de compilation, aucun artefact à générer. **Ce qui est dans
+le dépôt est ce qui est servi.**
 
 ---
 
@@ -260,28 +285,32 @@ raisonnement derrière chaque valeur, les pièges, les décisions.
 
 ### 1. Avant toute communication publique
 
-- [ ] **Renseigner deux URL manquantes** — « Politique vie privée » et « Conditions
-      générales » sont en `href="#"` dans le pied de page.
+- [ ] ⚠️ **`https://fleurus.be/move-in-fleurus/commercant/` renvoie un 404** — c'est la cible
+      du bouton « En savoir plus » de la section Commerçant. Créer la page ou corriger le lien.
+- [ ] **Publier la déclaration d'accessibilité** et la lier depuis le pied de page. Elle est
+      **obligatoire** pour un organisme public (directive UE 2016/2102) et n'existe pas encore.
 - [ ] **Arbitrer les cinq écarts de contraste** hérités de la maquette. Trois options,
       à trancher globalement plutôt qu'au cas par cas :
-      *(a)* les assumer et publier une déclaration d'accessibilité qui les liste,
+      *(a)* les assumer et les lister dans la déclaration d'accessibilité,
       *(b)* foncer les couleurs concernées — ce qui modifie l'identité visuelle,
       *(c)* ne corriger que le texte non décoratif et assumer les grands titres.
 
 ### 2. Performance
 
-- [ ] **Redimensionner `photo-commercants.webp`** — 552 Ko en 4232 × 5948 px, alors que
-      2560 px de large suffisent. Chargée en différé, donc non bloquante, mais c'est le
-      dernier poste lourd du site.
+- [ ] **Réexporter `photo-commercants.webp`** — 552 Ko en 4232 × 5948 px, alors que 2560 px
+      de large suffisent largement. Avec `visuel-commercant.webp` (432 Ko), ces deux fichiers
+      représentent à eux seuls 75 % du poids du site. Tous deux sont chargés en différé, donc
+      non bloquants, mais c'est le dernier vrai gisement d'optimisation.
+      *À réexporter depuis les sources plutôt qu'à recompresser : ce sont déjà des WebP.*
 
 ### 3. Contenu et finition
 
-- [ ] **Moitié droite de la section Commerçant** : elle est vide sur les deux maquettes.
-      Vérifier s'il s'agit d'un choix ou d'un mockup manquant — la hauteur de bande est déjà
-      dimensionnée pour l'accueillir.
 - [ ] **Bandeau partenaires** : le défilement se met en pause au survol et au focus, ce qui
       couvre l'essentiel de WCAG 2.2.2. La lettre de la norme demande un moyen d'arrêt
       explicite pour tout contenu animé de plus de 5 secondes — un bouton pause reste à arbitrer.
+- [ ] **Fleurus Shop In** n'a ni site ni page : son logo est le seul du bandeau partenaires à
+      ne pas être un lien. À rebasculer en `<a href>` le jour où l'URL existe (une balise à
+      changer dans `index.html`, rien à toucher dans le CSS).
 - [ ] **Phase 2 — animations** : les apparitions au scroll sont en place. Restent le point qui
       parcourt la route de l'illustration finale et un léger mouvement du mockup à l'entrée.
       **CSS de préférence, JavaScript en dernier recours, `prefers-reduced-motion` toujours respecté.**

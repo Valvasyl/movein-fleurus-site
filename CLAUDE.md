@@ -188,7 +188,7 @@ jamais sur la chasse**.
 | Chapô (lead) | **16** / 19,2 | **20** / 24 | cap 12 / 15 |
 | Titre de carte h3 | **20** / 22 | **20** / 22 | Illustrator, Inter **ExtraBold** 20pt |
 | Corps de carte | **14** / 16 | **14** / 16 | Illustrator, Inter Regular 14pt |
-| Note « * » de la carte 01 | **10** | **10** | Illustrator, Inter Regular 10pt |
+| ~~Note « * » de la carte 01~~ | — | — | **SUPPRIMÉE le 08/09/2026** — rôle `.carte__note` retiré du HTML et du CSS |
 | Numéros de carte (01–04) | **100** | **100** | Barlow Condensed 800 |
 | « En savoir plus » | **33,2** | **117,6** | cap 24 / 85 — `--fs-esp-titre` |
 | Paragraphe « En savoir plus » | **16** / 19 | **27,5** / 30,5 | cap 12 / 20 — interligne en px |
@@ -313,7 +313,10 @@ Planchers de lisibilité (seule entorse à l'homothétie) : 12 px sur `--fs-nav`
      ça reproduit exactement le soulignement de la nav. Durée dans `--t-cue`.
 3. **Mobilité** (suite jaune) — ✅ FAIT. 4 **cartes crème** dans un `<ol>`, numéros
    **01–04 en jaune plein**, titres noirs, corps noir (`#2a292e`, pas gris : relevé au
-   pixel), note en pied de carte 1.
+   pixel). ⚠️ **PLUS DE NOTE EN PIED DE CARTE 1** : « * À l'exception des transports
+   en commun et de la voiture. » a été **retirée du site le 08/09/2026** (demande Sylvain),
+   avec le rôle `.carte__note` et ses deux tokens (`--fs-card-note`, `--carte-gap-note`).
+   La carte 01 perd donc la hauteur de cette ligne ; la rangée s'égalise sur les trois autres.
    - **Géométrie desktop (Illustrator)** : **318,4998 × 270**, **rayon 20**, padding **20**
      (bas 20), fond `--creme` `#fffbf0` — soit 3 colonnes sur 12 + la gouttière de 12,
      de `y = 1310` à `1579`. La bande jaune s'arrête **59 px** sous les cartes (`y = 1638`).
@@ -321,12 +324,13 @@ Planchers de lisibilité (seule entorse à l'homothétie) : 12 px sur `--fs-nav`
      `grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr))`. Les cartes
      passent donc de **1 par rangée** (téléphone) à **2 × 2** (à partir de ~700 px) sans le
      moindre breakpoint, puis à **4 de front** au-dessus de 900. La typo garde ses valeurs
-     nominales (titre 20, corps 14, note 10) à 390 — à 2 par rangée sur la maquette mobile
-     le corps tombait à 8 px et la note à 6 px, illisible.
-   - ⚠️ **Les trois espacements verticaux sont des écarts entre BOÎTES DE LIGNE**, pas des
-     espaces optiques : **33** (numéro → titre), **17** (titre → corps), **11** (corps →
-     note) — c'est cette somme qui fait retomber la carte sur ses 270 px. La demi-interligne
-     est déjà retranchée, cf. le piège plus haut. Le numéro porte un `margin-top` négatif
+     nominales (titre 20, corps 14) à 390 — à 2 par rangée sur la maquette mobile
+     le corps tombait à 8 px, illisible.
+   - ⚠️ **Les espacements verticaux sont des écarts entre BOÎTES DE LIGNE**, pas des
+     espaces optiques : **33** (numéro → titre) et **17** (titre → corps). La demi-interligne
+     est déjà retranchée, cf. le piège plus haut. ⚠️ Il y en avait un **troisième**, **11**
+     (corps → note) : c'est la somme des TROIS qui faisait retomber la carte sur ses 270 px
+     relevés. Depuis le retrait de la note (08/09/2026) ce n'est plus le cas. Le numéro porte un `margin-top` négatif
      égal au padding : en `line-height: 1` la boîte de Barlow Condensed dépasse de ~18 px
      au-dessus des chiffres.
    - Les titres 02, 03 et 04 portent un `<br class="br-lg">`, comme sur la maquette.
@@ -339,8 +343,20 @@ Planchers de lisibilité (seule entorse à l'homothétie) : 12 px sur `--fs-nav`
    - Contenu : eyebrow « FIDÉLITÉ » (blanc) → titre **« Achetez local / et cumulez / des
      points »** en 3 lignes (Barlow Condensed 800 DROIT, 78/70 à 1440, 37,3/33,5 à 390 —
      le seul rôle display qui ne suit pas `--fs-display-xl`, d'où `--fs-fid-titre`) →
-     paragraphe `.lead` **sous le titre, à gauche** → **4 cartes crème** 318,5 × **220**
-     (numéro + titre seulement, ni corps ni note).
+     paragraphe `.lead` **sous le titre, à gauche** → **4 cartes crème** 318,5 de large.
+   - ⚠️ **LES CARTES ONT MAINTENANT UN TITRE COURT + UNE DESCRIPTION** (textes fournis par
+     Sylvain le 08/09/2026). Elles ne portaient jusque-là qu'un **numéro + une phrase entière
+     en guise de titre**, et faisaient **220** de haut au relevé. Elles reprennent désormais
+     **exactement le principe des cartes de Mobilité** : `carte__num` + `carte__titre` court
+     + `carte__texte`. Les quatre titres portent un `<br class="br-lg">` de coupure desktop,
+     comme ceux de Mobilité.
+     ⚠️ **Conséquence assumée : les 220 px relevés ne valent plus.** `.carte` n'a pas de
+     hauteur figée (flex column égalisée par la grille), la rangée suit donc la carte la plus
+     haute, et la bande de Fidélité grandit d'autant. C'est le contenu qui prime sur le relevé.
+   - ⚠️ Un token de plus dans les overrides mobile de `.fidelite` : **`--carte-gap-texte`**
+     (titre → corps), réduit dans la même proportion que `--carte-gap-titre` (17 × 18/33 ≈
+     **9,3** à 390, et 13,6 à 900 pour rejoindre la valeur globale sans cassure). Il est
+     **remis à `calc(17 * var(--px))`** dans le bloc ≥900, comme les quatre autres.
    - **Aucun voile sombre** : la comparaison au pixel entre la maquette et la photo source
      montre un écart de ±10/255, c'est-à-dire rien. Ce que l'ancienne note prenait pour un
      voile est l'éclairage de la photo elle-même.
@@ -393,8 +409,18 @@ Planchers de lisibilité (seule entorse à l'homothétie) : 12 px sur `--fs-nav`
      Barlow Condensed 800 **DROIT** — c'est le **même rôle** que « Achetez local » de la
      section Fidélité, d'où la classe partagée **`.titre-section`** et le token renommé
      **`--fs-titre-section`** (ex-`--fs-fid-titre`) → paragraphe `.lead` **noir** `#2a292e`
-     → **bouton unique** « Télécharger l'appli », qui remplace le label + les deux badges
-     de la maquette et **démarre là où le label démarrait** (même règle que le hero).
+     → **bouton unique**, qui remplace le label + les deux badges de la maquette et
+     **démarre là où le label démarrait** (même règle que le hero).
+   - ⚠️ **CE BOUTON N'EST PLUS UN BOUTON DE STORE depuis le 08/09/2026** (demande Sylvain) :
+     il portait « Télécharger l'appli » et routait vers l'appli **commerçant** ; il porte
+     maintenant **« En savoir plus »** et mène à `https://fleurus.be/move-in-fleurus/commercant/`.
+     Ses deux attributs `data-store-*` ont été **retirés**, ce qui suffit à le faire sortir
+     du filtre de `script.js` (`.btn-dl[data-store-ios]`) — rien d'autre à toucher côté JS.
+     Le composant `.btn-dl` est **inchangé** : même pilule blanche, même noir qui remonte au
+     survol. ⚠️ Le libellé étant plus court, le bouton **rétrécit** (il prend sa taille au
+     contenu) — à regarder à l'écran, la maquette montrait un bouton plus large.
+     ⚠️ Les URL de l'appli commerçant (`id6751838735` / `be.fleurus.rwbc`) restent
+     consignées dans « Liens réels » : plus aucun endroit du site n'y mène.
    - Relevés desktop (capitales, band top = 0) : eyebrow **68**, titre **168** (2 lignes,
      interligne 70), paragraphe **365** (3 lignes de 24), label 484, badges 514 → 564.
      En boîtes de ligne (demi-interligne retranchée) : `--com-pt` **62**,
@@ -573,6 +599,17 @@ Planchers de lisibilité (seule entorse à l'homothétie) : 12 px sur `--fs-nav`
      que de repli si le JS ne tourne pas.
    - ⚠️ **LES LOGOS SONT DES LIENS DEPUIS LE 07/09/2026, ET JAUNES AU SURVOL** (Sylvain).
      Ce ne sont plus des `<img>` mais des **`<a>` vides recolorés par `mask` CSS**.
+     - ✅ **URL renseignées le 08/09/2026** (cf. « Liens réels ») — sauf **Fleurus Shop In**,
+       qui n'a encore ni site ni page sur fleurus.be. Ce logo-là est donc un
+       **`<span role="img" aria-label="Fleurus Shop In">`** et non un `<a>` : un lien mort
+       en `href="#"` renverrait en haut de page et serait annoncé comme un lien par les
+       lecteurs d'écran.
+       ⚠️ **Conséquence CSS** : la règle de survol est passée de `&:hover` à
+       **`&[href]:hover`** (idem `:focus-visible`), sinon le span prendrait le jaune de
+       survol sans être cliquable. Le contour de focus, lui, reste sur `&:focus-visible`
+       tout court — un span n'étant pas focusable, la règle ne le touche jamais.
+       Le clonage de `script.js` n'a rien demandé : il ne pose `tabindex="-1"` que sur les
+       `<a>`, et un span n'est pas focusable.
      - **Pourquoi pas `fill`** (question de Sylvain, posée deux fois — la réponse est ici) :
        un SVG chargé via `<img src>` est un **document séparé**, le CSS de la page ne le
        traverse pas, `fill` n'a donc aucun effet. Pour l'utiliser il faudrait inliner les
@@ -821,27 +858,53 @@ Décision Sylvain : plus de label « Téléchargez maintenant », plus de deux p
   le tracking n'ajoute un blanc qu'après la DERNIÈRE lettre, il faut donc rattraper la
   moitié de ce blanc. L'ancienne valeur (tracking entier) poussait le texte 1,1 px trop à
   droite — écart mesuré sur la pastille « fleurus.be », signalé par Sylvain.
-- ⚠️ **Il y a maintenant DEUX boutons de téléchargement** (hero = appli citoyen, section
-  Commerçant = appli commerçant) : le script fait un `querySelectorAll` et traite **chacun
-  avec SES propres** `data-store-*`. Ne pas revenir à un `querySelector` — le second bouton
-  pointerait alors vers la mauvaise appli.
-- ⚠️ …et un **TROISIÈME `.btn-dl` qui n'est pas un bouton de store** : la pastille
-  « fleurus.be » de la section En savoir plus (`.btn-dl--jaune`). Le script filtre donc sur
+- ⚠️ **Il y a TROIS `.btn-dl` sur le site, et UN SEUL est un bouton de store** (depuis le
+  08/09/2026) : le hero (appli citoyen) route vers le store ; la pastille « fleurus.be » de
+  la section En savoir plus (`.btn-dl--jaune`) et le bouton « En savoir plus » de la section
+  Commerçant mènent tous deux à fleurus.be. Le script filtre donc sur
   **`.btn-dl[data-store-ios]`** et non sur `.btn-dl` seul.
+  ⚠️ **Garder le `querySelectorAll`** malgré le bouton unique : chaque bouton porte SES
+  propres `data-store-*`, et l'appli commerçant peut revenir. Un `querySelector` marcherait
+  aujourd'hui et ferait pointer le 2e bouton vers la mauvaise appli le jour où il revient.
 - Les liens des quatre stores sont **renseignés**, cf. « Liens réels ».
 - Les SVG `badge-*.svg` restent dans `assets/icons/` mais **ne sont plus utilisés** ; les
   règles CSS `.badges` / `.badge` et leurs tokens ont été supprimées.
-- ✅ **Reconduit en section Commerçant** (05/09/2026) : même bouton, même mécanique, les
-  URL de l'appli commerçant.
+- ~~**Reconduit en section Commerçant** (05/09/2026) : même bouton, même mécanique, les URL
+  de l'appli commerçant.~~ **Caduc depuis le 08/09/2026** — ce bouton mène désormais à la
+  page « commerçant » de fleurus.be, cf. la section 5.
 
 ## Liens réels
 
-- « En savoir plus » → `https://fleurus.be/move-in-fleurus/`
+- « En savoir plus » (pastille de la section 7) → `https://fleurus.be/move-in-fleurus/`
+- « En savoir plus » (bouton de la section **Commerçant**, depuis le 08/09/2026) →
+  `https://fleurus.be/move-in-fleurus/commercant/`
 - Réseaux / site appli → `https://movein.fleurus.be`
+- **Logos partenaires** (donnés par Sylvain le 08/09/2026) — Ville de Fleurus
+  `https://fleurus.be/` · Wallonie `https://www.wallonie.be/fr` · Smart Region /
+  digitalwallonia `https://www.digitalwallonia.be/smartregion/`.
+  ⚠️ **Fleurus Shop In n'a PAS d'URL** : ils n'ont encore ni site ni page sur
+  fleurus.be. Ce logo n'est donc **pas un lien** (cf. section 6 bis).
 - Appli **citoyen** — App Store `id6751238428` · Google Play `be.fleurus.rwb`
 - Appli **commerçant** — App Store `id6751838735` · Google Play `be.fleurus.rwb**c**`
   (donnés par Sylvain le 05/09/2026 ; attention au `c` final côté Android, c'est le seul
   caractère qui distingue les deux applis)
+
+⚠️ **TOUS LES LIENS EXTERNES OUVRENT UN NOUVEL ONGLET depuis le 08/09/2026** (demande
+Sylvain). C'est l'inverse de la convention qui tenait jusque-là — le site n'avait **pas un
+seul** `target="_blank"`. Les **12** `<a>` en `http(s)://` d'`index.html` portent maintenant
+`target="_blank" rel="noopener"` : les 3 logos partenaires, les 3 `.btn-dl` (store du hero,
+« En savoir plus » Commerçant, pastille fleurus.be), les 3 bulles du footer et les 3 liens
+légaux.
+- ⚠️ **La règle est « le lien sort du site », pas « le lien est en https »** : les **11**
+  ancres internes (skip-link, 8 liens de nav + menu, 2 liens du logo) n'en ont pas et ne
+  doivent pas en avoir. Pour en ajouter un, la question à se poser est celle-là.
+- `rel="noopener"` est posé avec : les navigateurs récents l'appliquent d'office sur
+  `target="_blank"`, mais il ne coûte rien et couvre les anciens.
+- ⚠️ **Point d'accessibilité laissé ouvert** : prévenir que le lien ouvre un onglet est un
+  critère **WCAG 3.2.5, niveau AAA** — le site vise AA (directive UE 2016/2102), il n'est
+  donc **pas en défaut**. Si on voulait le faire, ce serait un suffixe dans l'`aria-label`
+  des liens icônes (« … — nouvel onglet ») et un `<span class="sr-only">` dans les liens
+  texte. À trancher avec Sylvain — voir la question 20.
 
 ## Organisation des fichiers
 
@@ -1138,11 +1201,10 @@ Sylvain n'a pas encore vu.
 Il reste la **passe finale** (étape 10) : a11y et contrastes, tenue de 320 à 1920, poids des
 images, puis la **Phase 2 — animations**. Les mentions légales sont renseignées et il ne
 reste plus un seul `TODO` dans le HTML (cf. la question 14, résolue).
-⚠️ **Il reste des `href="#"`, et il faut savoir lesquels sont des trous** : les **2 liens du
-logo** (header et menu) pointent volontairement vers le haut de page — ce ne sont pas des
-trous ; les **4 liens des logos partenaires**, eux, **attendent leurs vraies URL**
-(question 15). Ils sont bien **4 et non 8** : la seconde piste du bandeau est clonée par
-`script.js`, plus recopiée dans le HTML.
+✅ **PLUS AUCUN TROU DANS LE HTML depuis le 08/09/2026.** Les deux seuls `href="#"` restants
+sont les **liens du logo** (header et menu), qui pointent volontairement vers le haut de page.
+Les logos partenaires ont leurs vraies URL, sauf Fleurus Shop In qui n'est plus un lien du
+tout (question 15). Vérifié dans la page servie : **2 `href="#"`**, tous deux intentionnels.
 
 ## Relevés déjà faits pour les sections suivantes
 
@@ -1272,8 +1334,9 @@ même logo, simplement plus grand.
    dessous du 4,5:1 exigé. Sylvain a demandé de **garder la taille de 30 px** (la maquette
    relève 15). Options restantes : passer en `--noir`, l'assumer comme purement décoratif,
    ou le retirer.
-2. ✅ **Résolu** — la note de la carte 01 est à **10 px** (valeur Illustrator) et tient sur
-   une ligne dans une carte de 318,5.
+2. ✅ **Sans objet depuis le 08/09/2026** — la note de la carte 01 a été **retirée du site**
+   (demande Sylvain). Elle était à 10 px et tenait sur une ligne dans une carte de 318,5 ;
+   le rôle `.carte__note` et ses deux tokens n'existent plus.
 3. ✅ **Résolu** — les deux badges ont le même comportement : blanc/logo noir au repos,
    noir/logo blanc au survol. La pastille noire de l'App Store de la maquette n'est pas suivie.
 4. ✅ **Résolu** — les liens des stores sont renseignés.
@@ -1324,16 +1387,22 @@ même logo, simplement plus grand.
    et pour cause : la section non plus.)
 19. **Versions foncées des logos partenaires** : Ville de Fleurus, Wallonie et Shop In
    n'existent qu'en blanc. Tant qu'il en est ainsi, le bandeau doit rester sur fond sombre.
+20. **Prévenir de l'ouverture en nouvel onglet ?** Les 12 liens externes ouvrent maintenant
+   un onglet (08/09/2026). Le signaler aux lecteurs d'écran est un critère **WCAG 3.2.5,
+   niveau AAA** : le site vise AA, il n'est donc pas en défaut. Si Sylvain le veut quand
+   même, ce serait un suffixe « — nouvel onglet » dans l'`aria-label` des liens icônes
+   (bulles, logos partenaires) et un `<span class="sr-only">` dans les liens texte
+   (`.btn-dl`, liens légaux). Coût : rien de visible, une douzaine de libellés à retoucher.
 17. ✅ **Résolu (06/09/2026)** — les trois fichiers lourds inutilisés ont disparu, le dernier
    (`Mockup iPhone - Mobilité - 02.webp`, 687 Ko) supprimé par Sylvain lui-même.
    `assets/images/` fait 816 Ko et ne contient plus que des fichiers servis. ⚠️ Voir la
    question 11 : ce fichier était le candidat pour la moitié droite vide de Commerçant.
-15. ⏳ **Les logos partenaires SONT des liens depuis le 07/09/2026** (demande Sylvain) —
-   mais les quatre `href` sont encore des **placeholders `#`**. Sylvain fournit les vraies
-   URL. **C'est le seul trou restant dans le HTML** : les **4** `<a class="marquee__logo">`
-   de `index.html` — et il n'y en a bien que 4 depuis que la seconde piste est clonée par
-   `script.js` au lieu d'être recopiée.
-   Pistes évoquées : fleurus.be, wallonie.be, digitalwallonia.be, et Shop In à confirmer.
+15. ✅ **Résolu (08/09/2026) — sauf Shop In.** Sylvain a donné les trois URL (cf. « Liens
+   réels »). **Fleurus Shop In reste sans lien** : ils n'ont encore ni site ni page sur
+   fleurus.be. Ce logo est donc devenu un `<span role="img" aria-label="Fleurus Shop In">`
+   plutôt qu'un `<a href="#">` — un lien mort qui renvoie en haut de page est pire qu'un
+   logo qui n'en est pas un. ⏳ **À rebasculer en `<a href>` le jour où l'URL existe** :
+   une balise à changer dans `index.html`, rien à toucher dans le CSS.
 10. ✅ **Résolu (05/09/2026)** — cadrage de la photo au-delà de 1440. Sur l'écran 2560 × 1440
    de Sylvain les téléphones montaient sur le titre : la bande gardait ses 1133 de haut
    pendant que la largeur croissait, donc `cover` zoomait. La hauteur suit désormais la
@@ -1363,8 +1432,10 @@ telle quelle par Sylvain (05/09/2026)** — ne pas la rectifier.
 - ✅ **Bulles réseaux sociaux (footer)** — appliqué le 05/09/2026 : le survol est
   **uniquement un changement de couleur** — fond blanc → **jaune**, icône noire →
   **blanche**. Pas de déplacement, pas d'ombre. (Consigne Sylvain, 03/09/2026.)
-- **Cartes de la section Fidélité** : 318,4998 × 220, rayon 20, mêmes valeurs de titre
-  que les cartes Mobilité (cf. section 4 plus haut).
+- ~~**Cartes de la section Fidélité** : 318,4998 × 220~~ — **la hauteur de 220 est caduque
+  depuis le 08/09/2026** : les cartes ont gagné une description et suivent maintenant leur
+  contenu, exactement comme celles de Mobilité (cf. section 4 plus haut). Rayon 20 et
+  valeurs de titre inchangés.
 
 ## Phase 2 — animations (plus tard)
 

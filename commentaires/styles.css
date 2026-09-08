@@ -70,7 +70,6 @@
   --fs-card-title: clamp(16px, 23.06px - 0.7843vw, 20px);      /* 20 → 16 */
   --fs-card-text:  clamp(12px,   15.53px - 0.3922vw, 14px);    /* 14 → 12  (plancher de lisibilité) */
   --lh-card-text:  1.1429;                                     /* 16 / 14 relevé — partagé avec le texte des piliers */
-  --fs-card-note:  clamp(9px,    10.7647px - 0.1961vw, 10px);  /* 10 → 9   (plancher de lisibilité) */
   --fs-num:        clamp(80px, 115.29px - 3.9216vw, 100px);    /* 100 → 80  numéros 01–04 */
   --fs-display-s:  clamp(26.3px, 22.737px + 0.9137vw, 30.96px);/* 26,3 → 31  titres des piliers : cap 19 (390) · cap 28 (1440) → 38,7 */
   --fs-display-l:  clamp(40px, 24.40px + 4.000vw, 82px);       /* 40 → 82 */
@@ -139,7 +138,6 @@
   --carte-p:         clamp(16px, 23.0588px - 0.7843vw, 20px);  /* padding, les 4 côtés */
   --carte-gap-titre: clamp(26.4px, 38.0471px - 1.2941vw, 33px);/* numéro → titre  */
   --carte-gap-texte: clamp(13.6px, 19.6px - 0.6667vw, 17px);   /* titre  → corps  */
-  --carte-gap-note:  clamp( 8.8px, 12.6824px - 0.4314vw, 11px);/* corps  → note   */
   --mobilite-pb:     clamp(38px, 30.9647px + 1.8039vw, 47.2px);/* cartes → fin de la bande jaune (59 à 1440) */
 
   /* ---- Hero — relevés sur LES DEUX maquettes (390 · 1440) ----
@@ -1119,13 +1117,6 @@ button {
   & strong { font-weight: 700; }
 }
 
-.carte__note {
-  margin-top: var(--carte-gap-note);
-  font-size: var(--fs-card-note);
-  line-height: 1.3;
-  color: var(--noir);
-}
-
 /* Coupure de ligne des titres 03 et 04 : elle n'existe que sur la grille desktop,
    où la carte ne fait que 3 colonnes. */
 .br-lg { display: none; }
@@ -1143,13 +1134,11 @@ button {
     /* Entorse assumée, comme --fs-nav : sans plancher le corps de carte tomberait
        à 8,75 px à 900. Le plancher n'agit qu'en dessous de ~1235 px. */
     --fs-card-text:    max(12px, calc(14 * var(--px)));
-    --fs-card-note:    max( 9px, calc(10 * var(--px)));   /* Inter 10pt */
 
     /* Écarts entre boîtes de ligne, demi-interligne déjà retranchée.
        33 + 17 + 11 font retomber la carte sur ses 270 px d'Illustrator. */
     --carte-gap-titre: calc(33 * var(--px));
     --carte-gap-texte: calc(17 * var(--px));
-    --carte-gap-note:  calc(11 * var(--px));
   }
 
   .cartes {
@@ -1186,6 +1175,7 @@ button {
      Ces overrides sont annulés dans le bloc ≥900, où l'homothétie reprend. */
   --carte-p:         clamp(12px, 8.94px + 0.7843vw, 16px);
   --carte-gap-titre: clamp(18px, 11.58px + 1.6471vw, 26.4px);
+  --carte-gap-texte: clamp( 9.3px,  6.01px + 0.8431vw, 13.6px);  /* même réduction que le gap ci-dessus (17 × 18/33) */
   --fs-num:          clamp(56px, 37.65px + 4.7059vw, 80px);
   --fs-card-title:   clamp(14px, 12.47px + 0.3922vw, 16px);
 }
@@ -1254,6 +1244,7 @@ button {
   .fidelite {
     --carte-p:         calc( 20 * var(--px));
     --carte-gap-titre: calc( 33 * var(--px));
+    --carte-gap-texte: calc( 17 * var(--px));
     --fs-num:          calc(100 * var(--px));
     --fs-card-title:   calc( 20 * var(--px));
   }
@@ -1717,9 +1708,12 @@ button {
   /* ⚠️ Le jaune sur le crème ne fait que 1,30:1 — le logo survolé est très pâle.
      C'est le choix de Sylvain (07/09/2026), et ça rejoint la liste des contrastes
      hors normes (question 16). `--jaune-fonce` ou `--noir` + opacité seraient les
-     replis si le rendu à l'écran ne convient pas. */
-  &:hover,
-  &:focus-visible { color: var(--jaune); }
+     replis si le rendu à l'écran ne convient pas.
+     ⚠️ Filtré sur `[href]` : Fleurus Shop In n'a pas encore de site, c'est donc un
+     <span role="img"> et non un <a>. Sans ce filtre il prendrait l'affordance de
+     survol d'un lien sans en être un. */
+  &[href]:hover,
+  &[href]:focus-visible { color: var(--jaune); }
 
   /* Le contour de focus reste NOIR même quand le logo est passé au jaune. */
   &:focus-visible { outline-color: var(--noir); }

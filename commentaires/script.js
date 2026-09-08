@@ -68,11 +68,12 @@
    chargement plutôt qu'au clic : le lien reste un vrai lien (clic milieu, copie
    de l'adresse, clavier) et il est déjà correct avant même le premier clic. */
 (() => {
-  // Il y en a plusieurs : l'appli citoyen (hero) et l'appli commerçant. Chacun
-  // porte SES deux URL en data-*, on les traite donc tous, pas seulement le 1er.
-  // ⚠️ On filtre sur `[data-store-ios]` et pas sur `.btn-dl` seul : la pastille
-  // « fleurus.be » de la section En savoir plus est le même composant mais ne
-  // pointe aucun store.
+  // ⚠️ On filtre sur `[data-store-ios]` et pas sur `.btn-dl` seul : DEUX des trois
+  // `.btn-dl` du site ne pointent aucun store — la pastille « fleurus.be » de la
+  // section En savoir plus, et depuis le 08/09/2026 le bouton « En savoir plus »
+  // de la section Commerçant, qui mène à fleurus.be et non au Play Store.
+  // On garde le querySelectorAll (et pas un querySelector) : chaque bouton porte
+  // SES propres data-*, et l'appli commerçant pourrait revenir un jour.
   const btns = document.querySelectorAll('.btn-dl[data-store-ios]');
   if (!btns.length) return;
 

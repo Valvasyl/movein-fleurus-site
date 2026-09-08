@@ -68,9 +68,13 @@
      note Inter 10pt. Sous 900 les cartes s'EMPILENT en pleine largeur : la typo y
      reste à sa taille nominale à 390 puis rejoint l'homothétie à 900. */
   --fs-card-title: clamp(16px, 23.06px - 0.7843vw, 20px);      /* 20 → 16 */
-  --fs-card-text:  clamp(12px,   15.53px - 0.3922vw, 14px);    /* 14 → 12  (plancher de lisibilité) */
+  --fs-card-text:  clamp(12px, 19.06px - 0.7843vw, 16px);      /* 16 → 12. ⚠️ 16 et non 14 depuis la V3 (08/09/2026) :
+                                                                  la carte mobile est pleine largeur, le corps peut respirer. */
+  --fs-pil-texte:  clamp(12px, 15.53px - 0.3922vw, 14px);      /* ⚠️ l'ANCIENNE valeur du corps de carte, gardée pour les
+                                                                  piliers seuls : ils partageaient le rôle, plus maintenant. */
   --lh-card-text:  1.1429;                                     /* 16 / 14 relevé — partagé avec le texte des piliers */
-  --fs-num:        clamp(80px, 115.29px - 3.9216vw, 100px);    /* 100 → 80  numéros 01–04 */
+  --fs-num:        clamp(60px, 44.71px + 3.9216vw, 80px);      /* 60 → 80  numéros 01–04. ⚠️ 60 et non 100 à 390 depuis la V3 :
+                                                                  le numéro est À CÔTÉ du titre, plus au-dessus. */
   --fs-display-s:  clamp(26.3px, 22.737px + 0.9137vw, 30.96px);/* 26,3 → 31  titres des piliers : cap 19 (390) · cap 28 (1440) → 38,7 */
   --fs-display-l:  clamp(40px, 24.40px + 4.000vw, 82px);       /* 40 → 82 */
   --fs-display-xl: clamp(62px, 61.69px + 0.0784vw, 62.4px);    /* 62 → 62,4  Bougez/Cumulez/Profitez : quasi constant */
@@ -135,7 +139,15 @@
      Illustrator, desktop : 318,4998 × 270, rayon 20, padding 20.
      Les trois « gap » ne sont pas des espaces optiques : ce sont les écarts entre
      BOÎTES DE LIGNE, la demi-interligne déjà retranchée (cf. le piège plus haut). */
-  --carte-p:         clamp(16px, 23.0588px - 0.7843vw, 20px);  /* padding, les 4 côtés */
+  --carte-p:         clamp(16px, 17.7647px - 0.1961vw, 17px);  /* padding GAUCHE/DROITE : 17 (390) → 16 (900) */
+  --carte-pt:        clamp( 6.3px, -1.118px + 1.902vw, 16px);   /* padding HAUT. ⚠️ 6,3 et non 17 : la boîte de Barlow
+                                                                   dépasse de ~10,7 au-dessus des chiffres à 60 px, l'encre
+                                                                   du numéro retombe donc bien à 16 sous le bord (relevé V3). */
+  --carte-pb:        clamp(10.2px, 5.765px + 1.1373vw, 16px);   /* padding BAS, plus court que le haut : relevé V3. */
+  --carte-num-col:   clamp(75px, 55.88px + 4.902vw, 100px);     /* colonne du numéro, GOUTTIÈRE COMPRISE : le titre démarre
+                                                                   à x=112 quelle que soit la largeur de « 01 » ou « 04 ». */
+  --carte-row-gap:   clamp( 8.5px, 6.336px + 0.5549vw, 11.33px);/* rangée numéro+titre → description */
+  --cartes-gap:      clamp( 9.6px, 13.835px - 0.4706vw, 12px);  /* entre cartes : 12 (relevé V3), pas les 16 de --gutter */
   --carte-gap-titre: clamp(26.4px, 38.0471px - 1.2941vw, 33px);/* numéro → titre  */
   --carte-gap-texte: clamp(13.6px, 19.6px - 0.6667vw, 17px);   /* titre  → corps  */
   --mobilite-pb:     clamp(38px, 30.9647px + 1.8039vw, 47.2px);/* cartes → fin de la bande jaune (59 à 1440) */
@@ -1058,8 +1070,10 @@ button {
    Illustrator (desktop) : 318,4998 × 270, rayon 20, padding 20, fond crème
    #fffbf0 — soit 4 cartes de 3 colonnes sur 12 avec la gouttière de 12.
    Relevés maquette : cartes de y=1310 à 1579, bande jaune close 59 px plus bas.
-   Sous 900 px les cartes s'EMPILENT en pleine largeur (décision Sylvain) : la
-   maquette mobile les met 2 par rangée, ce qui tombait à 8 px de corps. */
+   Sous 900 px les cartes s'EMPILENT en pleine largeur : c'était une décision de
+   Sylvain contre les maquettes V1/V2 (qui les mettaient 2 par rangée, ce qui faisait
+   tomber le corps à 8 px) — la V3 lui donne raison et les empile elle aussi, avec
+   un dessin de carte entièrement revu. */
 .mobilite {
   padding-bottom: var(--mobilite-pb);
 }
@@ -1070,18 +1084,25 @@ button {
 .cartes {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-  gap: var(--gutter);
+  gap: var(--cartes-gap);
 }
 
+/* ⚠️ SOUS 900 PX LA CARTE EST UNE GRILLE 2 COLONNES (maquette V3, 08/09/2026) :
+   le numéro est À GAUCHE du titre, la description passe SOUS les deux, sur toute
+   la largeur. Au-dessus de 900 on repasse en colonne empilée (bloc ≥900), la
+   maquette desktop n'ayant pas changé.
+   `align-items: center` n'est pas décoratif : c'est lui qui place le titre. Le
+   numéro (60 px, line-height 1) fait la hauteur de la rangée, le titre de 2 lignes
+   n'en fait que 44 — centré, sa capitale retombe à 18 sous le bord de la carte,
+   la valeur relevée. Un `start` l'aurait mis à 10. */
 .carte {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: var(--carte-num-col) minmax(0, 1fr);
+  align-items: center;
+  row-gap: var(--carte-row-gap);
   background: var(--creme);
   border-radius: var(--r-card);
-  padding: var(--carte-p);              /* ⚠️ le bas VAUT les autres côtés (20 relevé) : le
-                                           token --carte-pb qui existait pour lui n'a jamais
-                                           porté d'autre valeur, il a été supprimé. */
+  padding: var(--carte-pt) var(--carte-p) var(--carte-pb);
 }
 
 /* Numéro 01–04.
@@ -1096,12 +1117,14 @@ button {
   font-size: var(--fs-num);
   line-height: 1;
   color: var(--jaune);
-  margin-top: calc(-1 * var(--carte-p));
+  grid-row: 1;
+  grid-column: 1;
 }
 
 /* Inter, même en <h3> : la police suit le rôle, pas la balise. */
 .carte__titre {
-  margin-top: var(--carte-gap-titre);
+  grid-row: 1;
+  grid-column: 2;
   font-family: var(--ff-text);
   font-weight: 800;                     /* Inter ExtraBold (Illustrator) */
   font-size: var(--fs-card-title);
@@ -1110,7 +1133,8 @@ button {
 }
 
 .carte__texte {
-  margin-top: var(--carte-gap-texte);
+  grid-row: 2;
+  grid-column: 1 / -1;                  /* pleine largeur, elle passe SOUS le numéro */
   font-size: var(--fs-card-text);
   line-height: var(--lh-card-text);
   color: var(--noir);
@@ -1135,6 +1159,7 @@ button {
     /* Entorse assumée, comme --fs-nav : sans plancher le corps de carte tomberait
        à 8,75 px à 900. Le plancher n'agit qu'en dessous de ~1235 px. */
     --fs-card-text:    max(12px, calc(14 * var(--px)));
+    --fs-pil-texte:    max(12px, calc(14 * var(--px)));   /* au-dessus de 900 les deux rôles se rejoignent */
 
     /* Écarts entre boîtes de ligne, demi-interligne déjà retranchée.
        33 + 17 + 11 font retomber la carte sur ses 270 px d'Illustrator. */
@@ -1146,7 +1171,22 @@ button {
     grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
     gap: calc(12 * var(--px));
   }
-  .carte { grid-column: span 3; }        /* 4 cartes de 3 colonnes sur 12 */
+  /* ⚠️ On REPASSE en colonne empilée : la maquette desktop n'a pas suivi la V3
+     mobile, le numéro y reste au-dessus du titre. Les propriétés `grid-*` de la
+     règle de base deviennent inertes en flex — sauf `row-gap`, qui s'applique
+     AUSSI aux conteneurs flex : sans le `row-gap: 0` il s'ajouterait aux marges
+     des trois enfants et la carte grandirait de 3 × 11 px. */
+  .carte {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    row-gap: 0;
+    grid-column: span 3;                 /* 4 cartes de 3 colonnes sur 12 */
+    padding: var(--carte-p);             /* les 4 côtés, comme avant la V3 */
+  }
+  .carte__num   { margin-top: calc(-1 * var(--carte-p)); }
+  .carte__titre { margin-top: var(--carte-gap-titre); }
+  .carte__texte { margin-top: var(--carte-gap-texte); }
 
   .br-lg { display: inline; }
 }
@@ -1170,29 +1210,39 @@ button {
   color: var(--blanc);
 
   /* Cartes de CETTE section : mêmes rôles que Mobilité, mais 2 par rangée dès 390
-     comme sur la maquette mobile — les empiler doublerait la hauteur de la bande
-     et `cover` rognerait la photo à outrance. La typo est donc réduite d'autant,
-     tout en restant lisible : 14 px de titre (la maquette descend à 9,6).
-     Ces overrides sont annulés dans le bloc ≥900, où l'homothétie reprend. */
-  --carte-p:         clamp(12px, 8.94px + 0.7843vw, 16px);
-  --carte-gap-titre: clamp(18px, 11.58px + 1.6471vw, 26.4px);
-  --carte-gap-texte: clamp( 9.3px,  6.01px + 0.8431vw, 13.6px);  /* même réduction que le gap ci-dessus (17 × 18/33) */
-  --fs-num:          clamp(56px, 37.65px + 4.7059vw, 80px);
-  --fs-card-title:   clamp(14px, 12.47px + 0.3922vw, 16px);
+     comme sur la maquette mobile — les empiler doublait la hauteur de la bande.
+     ⚠️ CADUC DEPUIS LA V3 (08/09/2026) : Sylvain empile les 4 cartes et elles sont
+     STRICTEMENT IDENTIQUES à celles de Mobilité — plus une seule surcharge de carte
+     ici. Ce qui compense la bande devenue bien plus haute, c'est le cadrage de la
+     photo ci-dessous, pas une typo rapetissée. */
+
+  /* Recadrage de la photo sous 900. La V3 la montre 1,286 × plus grande que ce que
+     `cover` donnerait sur la bande seule (mesuré sur l'écran jaune du téléphone :
+     115 px de diagonale contre 89,4). On agrandit donc l'ÉLÉMENT, et on le remonte
+     comme le ferait un `object-position` — cf. .fidelite__photo. */
+  --fid-photo-h:  128.6%;
+  --fid-photo-y:  .839;
+  --fid-photo-oy: 50%;
 }
 
 /* La photo reste un <img> (alt + lazy) mais se comporte en fond de section.
-   ⚠️ 74 % : cadrage vertical relevé sur la maquette desktop. Sous 900 la bande est
-   bien plus haute que large — `cover` y montre TOUTE la hauteur et rogne les côtés,
-   exactement comme la maquette mobile —, le décalage vertical n'y joue donc plus. */
+   DEUX cadrages, et deux mécaniques différentes :
+   · ≥900, --fid-photo-h vaut 100 % : l'élément fait la bande, `cover` déborde
+     verticalement DANS l'élément et c'est `object-position: center 74 %` qui cadre
+     (74 % = relevé de la maquette desktop).
+   · sous 900, l'élément est 28,6 % plus HAUT que la bande : `cover` le remplit
+     exactement, l'object-position vertical n'a donc plus de jeu et ne fait rien —
+     c'est le `top` négatif qui cadre. La formule reproduit très exactement la
+     sémantique d'object-position : (100 % − hauteur) × position. */
 .fidelite__photo {
   position: absolute;
-  inset: 0;
+  left: 0;
+  top: calc((100% - var(--fid-photo-h)) * var(--fid-photo-y));
   z-index: -1;
   width: 100%;
-  height: 100%;
+  height: var(--fid-photo-h);
   object-fit: cover;
-  object-position: center 74%;
+  object-position: center var(--fid-photo-oy);
 }
 
 .fidelite__titre {
@@ -1206,9 +1256,10 @@ button {
   & p + p { margin-top: calc(var(--lh-lead) * 1em); }
 }
 
+/* ⚠️ Plus de `grid-template-columns` ici depuis la V3 : les cartes suivent l'auto-fit
+   commun, donc 1 par rangée à 390 comme celles de Mobilité. */
 .fidelite__cartes {
   margin-top: var(--fid-cartes-mt);
-  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 @media (min-width: 900px) {
@@ -1241,13 +1292,12 @@ button {
     --fid-rab: max(0px, calc(100vw * 1133 / 1440 - 1133px));
   }
 
-  /* L'homothétie reprend la main sur les cartes : valeurs identiques à Mobilité. */
+  /* ⚠️ Ce bloc ne restaure PLUS de tokens de carte (ils ne sont plus surchargés
+     sous 900 depuis la V3) : il ne reste que le cadrage desktop de la photo. */
   .fidelite {
-    --carte-p:         calc( 20 * var(--px));
-    --carte-gap-titre: calc( 33 * var(--px));
-    --carte-gap-texte: calc( 17 * var(--px));
-    --fs-num:          calc(100 * var(--px));
-    --fs-card-title:   calc( 20 * var(--px));
+    --fid-photo-h:  100%;
+    --fid-photo-y:  0;
+    --fid-photo-oy: 74%;
   }
 
   /* Deux rangées : le bloc eyebrow + titre + paragraphe, puis les cartes.
@@ -1497,8 +1547,10 @@ button {
 
 .pilier__texte {
   margin-top: var(--pil-texte-mt);
-  font-size: var(--fs-card-text);       /* même rôle que le corps de carte : les DEUX */
-  line-height: var(--lh-card-text);     /* valeurs viennent des mêmes tokens */
+  font-size: var(--fs-pil-texte);       /* ⚠️ PLUS le token du corps de carte : celui-ci est
+                                           passé à 16 px avec la V3, les piliers restent à 14.
+                                           Au-dessus de 900 les deux valent 14 × --px. */
+  line-height: var(--lh-card-text);     /* l'interligne, elle, reste partagée */
   color: var(--noir);
 }
 

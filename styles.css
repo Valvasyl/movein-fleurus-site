@@ -22,9 +22,10 @@
   --fs-scroll:     clamp(26px, 24.51px + 0.381vw, 30px);
 
   --fs-card-title: clamp(16px, 23.06px - 0.7843vw, 20px);
-  --fs-card-text:  clamp(12px,   15.53px - 0.3922vw, 14px);
+  --fs-card-text:  clamp(12px, 19.06px - 0.7843vw, 16px);
+  --fs-pil-texte:  clamp(12px, 15.53px - 0.3922vw, 14px);
   --lh-card-text:  1.1429;
-  --fs-num:        clamp(80px, 115.29px - 3.9216vw, 100px);
+  --fs-num:        clamp(60px, 44.71px + 3.9216vw, 80px);
   --fs-display-s:  clamp(26.3px, 22.737px + 0.9137vw, 30.96px);
   --fs-display-l:  clamp(40px, 24.40px + 4.000vw, 82px);
   --fs-display-xl: clamp(62px, 61.69px + 0.0784vw, 62.4px);
@@ -59,7 +60,12 @@
   --r-card: clamp(16px, 23.0588px - 0.7843vw, 20px);
   --r-pill: 999px;
 
-  --carte-p:         clamp(16px, 23.0588px - 0.7843vw, 20px);
+  --carte-p:         clamp(16px, 17.7647px - 0.1961vw, 17px);
+  --carte-pt:        clamp( 6.3px, -1.118px + 1.902vw, 16px);
+  --carte-pb:        clamp(10.2px, 5.765px + 1.1373vw, 16px);
+  --carte-num-col:   clamp(75px, 55.88px + 4.902vw, 100px);
+  --carte-row-gap:   clamp( 8.5px, 6.336px + 0.5549vw, 11.33px);
+  --cartes-gap:      clamp( 9.6px, 13.835px - 0.4706vw, 12px);
   --carte-gap-titre: clamp(26.4px, 38.0471px - 1.2941vw, 33px);
   --carte-gap-texte: clamp(13.6px, 19.6px - 0.6667vw, 17px);
   --mobilite-pb:     clamp(38px, 30.9647px + 1.8039vw, 47.2px);
@@ -712,16 +718,17 @@ button {
 .cartes {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-  gap: var(--gutter);
+  gap: var(--cartes-gap);
 }
 
 .carte {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: var(--carte-num-col) minmax(0, 1fr);
+  align-items: center;
+  row-gap: var(--carte-row-gap);
   background: var(--creme);
   border-radius: var(--r-card);
-  padding: var(--carte-p);
+  padding: var(--carte-pt) var(--carte-p) var(--carte-pb);
 }
 
 .carte__num {
@@ -730,11 +737,13 @@ button {
   font-size: var(--fs-num);
   line-height: 1;
   color: var(--jaune);
-  margin-top: calc(-1 * var(--carte-p));
+  grid-row: 1;
+  grid-column: 1;
 }
 
 .carte__titre {
-  margin-top: var(--carte-gap-titre);
+  grid-row: 1;
+  grid-column: 2;
   font-family: var(--ff-text);
   font-weight: 800;
   font-size: var(--fs-card-title);
@@ -743,7 +752,8 @@ button {
 }
 
 .carte__texte {
-  margin-top: var(--carte-gap-texte);
+  grid-row: 2;
+  grid-column: 1 / -1;
   font-size: var(--fs-card-text);
   line-height: var(--lh-card-text);
   color: var(--noir);
@@ -763,6 +773,7 @@ button {
     --fs-card-title:   calc( 20 * var(--px));
 
     --fs-card-text:    max(12px, calc(14 * var(--px)));
+    --fs-pil-texte:    max(12px, calc(14 * var(--px)));
 
     --carte-gap-titre: calc(33 * var(--px));
     --carte-gap-texte: calc(17 * var(--px));
@@ -772,7 +783,17 @@ button {
     grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
     gap: calc(12 * var(--px));
   }
-  .carte { grid-column: span 3; }
+  .carte {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    row-gap: 0;
+    grid-column: span 3;
+    padding: var(--carte-p);
+  }
+  .carte__num   { margin-top: calc(-1 * var(--carte-p)); }
+  .carte__titre { margin-top: var(--carte-gap-titre); }
+  .carte__texte { margin-top: var(--carte-gap-texte); }
 
   .br-lg { display: inline; }
 }
@@ -786,21 +807,20 @@ button {
   background: var(--noir);
   color: var(--blanc);
 
-  --carte-p:         clamp(12px, 8.94px + 0.7843vw, 16px);
-  --carte-gap-titre: clamp(18px, 11.58px + 1.6471vw, 26.4px);
-  --carte-gap-texte: clamp( 9.3px,  6.01px + 0.8431vw, 13.6px);
-  --fs-num:          clamp(56px, 37.65px + 4.7059vw, 80px);
-  --fs-card-title:   clamp(14px, 12.47px + 0.3922vw, 16px);
+  --fid-photo-h:  128.6%;
+  --fid-photo-y:  .839;
+  --fid-photo-oy: 50%;
 }
 
 .fidelite__photo {
   position: absolute;
-  inset: 0;
+  left: 0;
+  top: calc((100% - var(--fid-photo-h)) * var(--fid-photo-y));
   z-index: -1;
   width: 100%;
-  height: 100%;
+  height: var(--fid-photo-h);
   object-fit: cover;
-  object-position: center 74%;
+  object-position: center var(--fid-photo-oy);
 }
 
 .fidelite__titre {
@@ -815,7 +835,6 @@ button {
 
 .fidelite__cartes {
   margin-top: var(--fid-cartes-mt);
-  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 @media (min-width: 900px) {
@@ -832,11 +851,9 @@ button {
   }
 
   .fidelite {
-    --carte-p:         calc( 20 * var(--px));
-    --carte-gap-titre: calc( 33 * var(--px));
-    --carte-gap-texte: calc( 17 * var(--px));
-    --fs-num:          calc(100 * var(--px));
-    --fs-card-title:   calc( 20 * var(--px));
+    --fid-photo-h:  100%;
+    --fid-photo-y:  0;
+    --fid-photo-oy: 74%;
   }
 
   .fidelite__grille {
@@ -982,7 +999,7 @@ button {
 
 .pilier__texte {
   margin-top: var(--pil-texte-mt);
-  font-size: var(--fs-card-text);
+  font-size: var(--fs-pil-texte);
   line-height: var(--lh-card-text);
   color: var(--noir);
 }

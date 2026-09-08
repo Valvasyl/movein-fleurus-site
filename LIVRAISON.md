@@ -216,16 +216,16 @@ graphique n'est pas modifiée, et les écarts sont déclarés — c'est la voie 
 directive. **Il ne faut donc pas les « corriger » de votre côté** : toute retouche des
 couleurs rendrait la déclaration inexacte.
 
-⚠️ **Trois points restent à la charge de la Ville avant la mise en ligne :**
+✅ **La déclaration est complète.** Elle est alignée sur la
+[déclaration du site principal de la Ville](https://fleurus.be/declaration-daccessibilite/) :
+même référence légale (directive (UE) 2016/2102), même formulation du niveau de conformité
+(« partiellement conforme aux WCAG 2.1 niveau AA »), même voie de recours (Médiateur de la
+Wallonie et de la Fédération Wallonie-Bruxelles). Les coordonnées de signalement sont celles
+du Département communication : `communication@fleurus.be`, 071/820.242.
 
-1. **Remplir les coordonnées de contact** dans `accessibilite.html` — trois placeholders en
-   majuscules (`ADRESSE@fleurus.be`, `NUMÉRO`, `SERVICE`). Le mécanisme de retour
-   d'information est une exigence de la directive : sans lui la déclaration n'est pas valide.
-2. **Faire confirmer par le service juridique** la référence légale wallonne exacte et les
-   coordonnées complètes de la voie de recours (nous n'avons pu vérifier que le nom,
-   l'adresse et le site du Médiateur de la Wallonie et de la Fédération Wallonie-Bruxelles).
-3. **Programmer un audit par un organisme tiers.** La déclaration repose aujourd'hui sur une
-   auto-évaluation, ce qu'elle indique explicitement.
+⚠️ **Un seul point reste ouvert, et il n'est pas bloquant :** la déclaration repose sur une
+**auto-évaluation**, ce qu'elle indique explicitement. Un audit par un organisme tiers reste
+à programmer par la Ville.
 
 ⚠️ **Les deux applications mobiles Move in Fleurus sont soumises à la même obligation** et
 demandent chacune leur propre déclaration. Elles sortent du périmètre de ce site, mais le

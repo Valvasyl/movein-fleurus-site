@@ -223,10 +223,10 @@ page des deux pages du site. Elle est **obligatoire** pour un organisme public e
 nommément les sept écarts, avec leur rapport de contraste mesuré. Elle doit être réexaminée
 au moins une fois par an et après toute modification substantielle du site.
 
-> ⚠️ Trois champs y sont laissés en **PLACEHOLDER** (`ADRESSE@fleurus.be`, `NUMÉRO`,
-> `SERVICE`) : ce sont les coordonnées du service qui recevra les signalements. **La
-> déclaration n'est pas valide tant qu'ils ne sont pas remplis** — le mécanisme de retour
-> d'information est une exigence de la directive, pas un ornement.
+> ✅ **Complète depuis le 09/09/2026** : coordonnées du Département communication renseignées,
+> et l'ensemble aligné sur la
+> [déclaration du site principal de la Ville](https://fleurus.be/declaration-daccessibilite/)
+> — même référence légale, même formulation du niveau de conformité, même voie de recours.
 
 ---
 
@@ -304,10 +304,9 @@ raisonnement derrière chaque valeur, les pièges, les décisions.
 
 - [ ] ⚠️ **`https://fleurus.be/move-in-fleurus/commercant/` renvoie un 404** — c'est la cible
       du bouton « En savoir plus » de la section Commerçant. Créer la page ou corriger le lien.
-- [x] ~~**Publier la déclaration d'accessibilité**~~ — faite : `accessibilite.html`, liée
-      depuis le pied de page. ⚠️ **Reste à y remplir les coordonnées de contact** (trois
-      placeholders) et à faire confirmer la référence légale wallonne par le service
-      juridique.
+- [x] ~~**Publier la déclaration d'accessibilité**~~ — faite et complète :
+      `accessibilite.html`, liée depuis le pied de page des deux pages, coordonnées
+      renseignées et formulation alignée sur celle du site principal de la Ville.
 - [x] ~~**Arbitrer les écarts de contraste**~~ — tranché le 09/09/2026 : ils sont **assumés**
       et listés dans la déclaration d'accessibilité. Aucune couleur n'est modifiée.
 

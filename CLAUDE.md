@@ -1296,15 +1296,33 @@ critère est l'éditeur, pas la nature du site.
   passe finale était **périmé** : il datait d'avant le bandeau partenaires, qui en apporte
   deux (titre sable sur crème 1,30:1, logos jaunes au survol 1,30:1). Tous les rapports ont
   été **recalculés** depuis les tokens de la charte, formule WCAG.
-- ⚠️ **Trois PLACEHOLDERS en majuscules** dans la page (`ADRESSE@fleurus.be`, `NUMÉRO`,
-  `SERVICE`) : les coordonnées du service qui reçoit les signalements. **Tant qu'ils ne sont
-  pas remplis la déclaration n'est pas valide** — le mécanisme de retour d'information est
-  une exigence de la directive.
-- ⚠️ **La voie de recours n'est vérifiée qu'à moitié.** Le Médiateur de la Wallonie et de la
-  Fédération Wallonie-Bruxelles est bien l'organe compétent et son adresse (rue Lucien
-  Namèche 54, 5000 Namur) est confirmée depuis son site ; le téléphone et le courriel n'ont
-  pas pu l'être et ne figurent donc pas. À faire confirmer par le service juridique, avec la
-  référence exacte du texte wallon de transposition.
+- ✅ **COMPLÈTE DEPUIS LE 09/09/2026, ET ALIGNÉE SUR CELLE DE LA VILLE.** Sylvain a renvoyé
+  vers <https://fleurus.be/declaration-daccessibilite/>, la déclaration du site principal.
+  C'est elle qui fait autorité, et on s'est aligné sur elle :
+  - **Référence légale** : la Ville ne cite que la **directive (UE) 2016/2102**, sans le
+    décret wallon de transposition. On fait pareil — inutile d'être plus disert que l'éditeur.
+  - **Norme citée** : « partiellement conforme aux **WCAG 2.1 niveau AA** ». Le premier jet
+    citait EN 301 549 (techniquement plus exact, c'est la norme harmonisée européenne, mais
+    ce n'est pas la formulation maison). Aligné aussi.
+  - **Voie de recours** : Médiateur de la Wallonie et de la Fédération Wallonie-Bruxelles,
+    <https://www.le-mediateur.be>. La Ville n'en donne pas plus ; on ajoute l'adresse postale
+    (rue Lucien Namèche 54, 5000 Namur), vérifiée depuis le site du Médiateur.
+  - **Contacts** : `communication@fleurus.be` · **071/820.242** · Département communication,
+    Ville de Fleurus, **rue du Solstice 1, 6220 Fleurus**.
+- 🚨 **J'avais écrit « Chemin de Mons 61 » dans le premier jet, et c'était INVENTÉ.** Une
+  adresse postale plausible posée pour tenir la place, dans un document qui engage la Ville.
+  Sylvain a donné la bonne. **Ne jamais remplir un placeholder au jugé dans ce fichier-là** :
+  un `SERVICE` en capitales se repère d'un coup d'œil, une fausse rue non.
+- ⚠️ **Le site principal a lui aussi ses écarts déclarés** (PDF, contrastes, navigation
+  clavier, alternatives textuelles) et il est également « partiellement conforme ». Notre
+  déclaration reste **distincte** : celle de la Ville est explicitement limitée à
+  `fleurus.be`. La nôtre y renvoie, et réciproquement il serait bon que la Ville y ajoute un
+  renvoi vers la nôtre.
+- 🔧 **Deux liens sortants normalisés le 09/09/2026** : la politique de confidentialité était
+  pointée **sans slash final**, ce qui déclenchait une redirection à chaque clic (vérifié :
+  302 puis 200, contre 200 direct avec le slash). Les deux pages pointent maintenant
+  `…/politique-de-confidentialite/`. Le JSON-LD d'`index.html` a gagné au passage l'adresse
+  postale, le courriel et le téléphone de la Ville, maintenant qu'ils sont vérifiés.
 - ⚠️ **Les deux applications mobiles sont soumises à la même obligation** et demandent
   chacune leur déclaration. Hors périmètre de ce site, mais à remonter : la directive couvre
   les applications mobiles des organismes publics depuis le 23 juin 2021.

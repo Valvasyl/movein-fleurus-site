@@ -165,9 +165,14 @@
 
   <section class="fidelite" id="fidelite" aria-labelledby="fidelite-titre">
 
-    <img class="fidelite__photo" src="assets/images/photo-commercants.webp"
-         alt="Dans un commerce, un client présente le QR code de fidélité de son application Move in Fleurus au commerçant, qui lui ajoute des points."
-         width="4232" height="5948" loading="lazy" decoding="async">
+    <!-- La photo est enveloppée dans un CADRE (.fidelite__photo) depuis les maquettes
+         du 09/09/2026 : c'est lui qui porte le retrait, l'arrondi et le recadrage, et
+         qui rogne l'image — celle-ci est plus grande que son cadre (cf. --fid-zoom). -->
+    <div class="fidelite__photo">
+      <img src="assets/images/photo-commercants.webp"
+           alt="Dans un commerce, un client présente le QR code de fidélité de son application Move in Fleurus au commerçant, qui lui ajoute des points."
+           width="4232" height="5948" loading="lazy" decoding="async">
+    </div>
 
     <div class="container fidelite__grille">
 
@@ -218,9 +223,7 @@
       <p class="eyebrow apparait">Commerçant</p>
       <h2 class="display titre-section commercants__titre lignes" id="commercants-titre"><span><span>Fidéliser</span></span><span><span>vos clients</span></span></h2>
 
-      <p class="lead commercants__texte apparait">Devenez partenaire de Move in Fleurus et donnez à vos clients
-        une bonne raison de revenir. À chaque achat, ils cumulent des points qu'ils peuvent
-        ensuite utiliser dans votre commerce.</p>
+      <p class="lead commercants__texte apparait">Commerçant fleurusien ou entreprise locale ?<br>Devenez partenaire de Move in Fleurus et donnez à vos clients une bonne raison de revenir.</p>
 
       <!-- Le bouton est DANS l'enveloppe du visuel : sous 900 il est positionné en absolu
            par rapport à elle et chevauche la manche jaune, comme sur la maquette mobile.

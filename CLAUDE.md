@@ -321,49 +321,44 @@ Planchers de lisibilité (seule entorse à l'homothétie) : **12 px** sur `--fs-
    - **Géométrie desktop (Illustrator)** : **318,4998 × 270**, **rayon 20**, padding **20**
      (bas 20), fond `--creme` `#fffbf0` — soit 3 colonnes sur 12 + la gouttière de 12,
      de `y = 1310` à `1579`. La bande jaune s'arrête **59 px** sous les cartes (`y = 1638`).
-   - 🆕 **SOUS 900 PX LA CARTE A CHANGÉ DE DESSIN (maquette V3, 08/09/2026).** Le numéro
-     n'est plus AU-DESSUS du titre mais **À SA GAUCHE**, et la description passe **sous les
-     deux, sur toute la largeur de la carte**. `.carte` devient une **grille 2 colonnes**
-     sous 900 et **redevient une colonne empilée au-dessus** — la maquette desktop, elle,
-     n'a pas bougé. C'est le seul composant du site qui change de mise en page au breakpoint
-     autrement que par le nombre de colonnes.
-     - Relevés V3 (à 390, la maquette est au 1:1) : carte **350 de large** (pleine largeur du
-       conteneur), **1 par rangée**, gouttière **12** ; padding **17** à gauche et à droite,
-       **6,3 en haut**, **10,2 en bas** ; numéro **60** (Barlow Condensed 800), titre **20 /
-       22**, description **16 / 18** ; le titre démarre à **x=112**, soit **75** après le bord
-       du texte. Vérifié dans le navigateur : carte 01 fait **350 × 139,8** contre 139 relevés,
-       numéro à y+6,3, titre à y+14,3 / x+92, description à y+74,8 — au dixième de pixel.
-     - ⚠️ **`--carte-pt` vaut 6,3 et non 17, et ce n'est pas une faute de frappe** : à 60 px
-       la boîte de Barlow Condensed dépasse de ~10,7 px au-dessus des chiffres (0,18 em).
-       6,3 + 10,7 = 17, l'encre du numéro retombe donc bien à **16 sous le bord**, la valeur
-       relevée. C'est le même piège que le `margin-top` négatif de l'ancienne carte, réglé
-       cette fois par le padding puisque le numéro n'est plus le premier enfant d'une colonne.
-     - ⚠️ **`align-items: center` n'est pas décoratif, c'est lui qui place le titre.** Le
-       numéro (60 px, `line-height: 1`) fait la hauteur de la rangée ; un titre de 2 lignes
-       n'en fait que 44. Centré, sa capitale retombe à **18** sous le bord de la carte — le
-       relevé. Un `start` l'aurait mis à 10. Corollaire : un titre de **3 lignes** (66 px)
-       devient plus haut que le numéro et c'est LUI qui mène la rangée — c'est ce qui arrive
-       à la carte 01 en dessous de ~340 px, et le rendu reste juste.
-     - ⚠️ **`--carte-num-col` (75) contient la gouttière** : le titre démarre au même x que
-       « 01 » soit « 04 » (dont l'encre fait 41 contre 55). Ne pas la remplacer par un
-       `column-gap` + colonne auto, la maquette aligne les quatre titres.
-     - ⚠️ **Le `row-gap` de la règle de base FUITE en flex** : `row-gap` s'applique aussi aux
-       conteneurs flex. Sans le `row-gap: 0` du bloc ≥900 il s'ajouterait aux marges des trois
-       enfants et la carte desktop grandirait de 3 × 11 px. Vérifié à 901 : le rythme desktop
-       est intact (numéro y+0, titre y+106,4, texte y+155,2).
-     - ⚠️ **Les coupures de ligne de la V3 ne sont PAS reproduites, et c'est voulu** : la
-       maquette est en Lufga, plus large qu'Inter — « Entrez votre destination » y tient sur
-       2 lignes, sur le site sur une seule. C'est la règle du projet (« on cale sur la
-       HAUTEUR, jamais sur la chasse »), et `.carte` n'a pas de hauteur figée : la carte suit
-       son contenu. Ne pas ajouter de `<br>` mobile pour « corriger » ça.
-     - Le **rayon reste 20** à 390 : mesuré sur l'arc de la V3 (les points à mi-hauteur du
-       congé donnent r≈20, seule la première ligne détectée dit 16 — c'est l'antialiasing).
+   - 🔄 **LE DESSIN V3 EST ABANDONNÉ (maquettes du 09/09/2026) : LA CARTE MOBILE REPREND
+     LE DESSIN DESKTOP.** Numéro **au-dessus** du titre, description dessous, **une carte
+     par rangée** — le numéro à gauche du titre n'aura vécu qu'une journée. Conséquence :
+     `.carte` est une **simple colonne flex à toutes les largeurs**, le bloc ≥900 ne change
+     plus que le nombre de colonnes de la grille, et **trois tokens ont disparu**
+     (`--carte-num-col`, `--carte-row-gap`, `--cartes-gap`). Ce composant n'est donc plus
+     l'exception du site : plus rien ne change de mise en page au breakpoint ici.
+     - Relevés à 390 (la maquette est au 1:1) : carte **350 de large**, **1 par rangée**,
+       gouttière **16** (= `--gutter`, plus les 12 de la V3) ; padding **20** à gauche, à
+       droite et en bas (21,9 mesuré au bas) ; numéro **45** (Barlow Condensed 800, encre
+       de 32 de haut), titre **20 / 22**, description **14 / 16**.
+     - ⚠️ **La description est revenue à 14 px à 390**, contre 16 avec la V3 : `--fs-card-text`
+       reprend donc son ancienne expression et **redevient partagé avec le texte des piliers**
+       — le token `--fs-pil-texte`, créé la veille pour les séparer, a été supprimé.
+     - ⚠️ **`--carte-pt` vaut 0 au-dessus de 900, et ce n'est pas un oubli.** À
+       `line-height: 1` la boîte de Barlow Condensed dépasse de ~**0,20 em** au-dessus des
+       chiffres : à 100 px l'encre retombe donc d'elle-même à 20 sous le bord de la carte,
+       la valeur d'Illustrator. À 390, avec un numéro de 45, ce dépassement ne vaut plus que
+       9 — d'où un padding de **18,5** pour retrouver les 27 relevés. Ce token **remplace le
+       `margin-top` négatif** que portait `.carte__num` : même résultat, une règle en moins.
+     - Écarts entre boîtes de ligne (demi-interligne retranchée) : numéro → titre **11**
+       (390) → 26,4 (900) ; titre → corps **8,8** → 13,6. Les valeurs desktop (33 et 17)
+       n'ont pas bougé.
+     - Vérifié dans le navigateur à 390 : carte 01 de Mobilité **350 × 181**, numéro à
+       y+18,5, titre à y+74,5, description à y+127,3 — les relevés sont 18/75,3/128,1.
+       Elle fait 199 sur la maquette et 181 sur le site parce que sa description y tient
+       sur 3 lignes contre 2 chez nous (Lufga est plus large qu'Inter). C'est la règle du
+       projet — « on cale sur la HAUTEUR, jamais sur la chasse » — et `.carte` n'a pas de
+       hauteur figée. Ne pas ajouter de `<br>` mobile pour « corriger » ça.
+     - Le **rayon reste 20** à 390.
    - **Sous 900 px la grille des cartes est INTRINSÈQUE**, pas calée sur les 4 colonnes :
      `grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr))`. Les cartes
      passent donc de **1 par rangée** (téléphone) à **2 × 2** (à partir de ~700 px) sans le
      moindre breakpoint, puis à **4 de front** au-dessus de 900. La typo garde ses valeurs
      nominales (titre 20, corps 14) à 390 — à 2 par rangée sur la maquette mobile
      le corps tombait à 8 px, illisible.
+     ⚠️ La gouttière est **`--gutter`** et non un token à elle : les 16 relevés à 390 et les
+     12 px de maquette en desktop sont exactement la gouttière de la grille du projet.
    - ⚠️ **Les espacements verticaux sont des écarts entre BOÎTES DE LIGNE**, pas des
      espaces optiques : **33** (numéro → titre) et **17** (titre → corps). La demi-interligne
      est déjà retranchée, cf. le piège plus haut. ⚠️ Il y en avait un **troisième**, **11**
@@ -373,11 +368,38 @@ Planchers de lisibilité (seule entorse à l'homothétie) : **12 px** sur `--fs-
      au-dessus des chiffres.
    - Les titres 02, 03 et 04 portent un `<br class="br-lg">`, comme sur la maquette.
      Neutralisé sous 900 px.
-4. **Fidélité** — ✅ FAIT (05/09/2026). ⚠️ Rien à voir avec ce que décrivait l'ancienne
-   version de ce fichier : c'est une **photo pleine largeur** (l'échange du QR code au
-   comptoir), et **« Fidéliser vos clients » appartient à la section 5, Commerçant**.
-   - Relevés (maquette 1440) : la bande photo va de **y=1640 à y=2772**, soit **1440 × 1133**.
-     Sur la maquette 390 : **y=1405 → 2501** (390 × 1097).
+4. **Fidélité** — ✅ FAIT (05/09/2026), **refait le 09/09/2026 d'après les nouvelles
+   maquettes**. ⚠️ Rien à voir avec ce que décrivait l'ancienne version de ce fichier :
+   « Fidéliser vos clients » appartient à la section 5, Commerçant.
+   - 🆕 **LA BANDE A UN FOND BLEU `--bleu` `#88d0f1`, ET LA PHOTO EST UNE VIGNETTE
+     ARRONDIE EN RETRAIT** (maquettes du 09/09/2026). Elle était pleine largeur, pleine
+     hauteur, sur fond noir — un fond qu'on ne voyait jamais. Maintenant le bleu forme un
+     liseré tout autour de la photo, et **sous 900 px la photo s'arrête au-dessus des
+     cartes**, qui viennent se poser sur le bleu.
+     - Relevés desktop (bande `y=1604 → 2737`, soit 1440 × 1133) : photo de `x=15` à
+       `1424` et de `y=1619` à `2721`, soit **1410 × 1103** — un **retrait de 15 aux
+       quatre côtés** — et un **rayon de 24** (ajusté sur trois lignes du congé).
+     - Relevés mobile (bande `y=1899 → 3559`, soit 390 × 1661) : photo **374 × 851** à
+       `(8 ; 1907)`, **retrait de 8**, **rayon 10**. Puis **27** de bleu, les 4 cartes
+       empilées (gouttière 16), et **30** de bleu sous la dernière.
+     - Tokens : `--fid-inset` (8 → 15), `--fid-media-r` (10 → 24), `--fid-media-h` (851 à
+       390, la hauteur de la vignette **sous 900 seulement** — au-dessus elle fait la bande
+       moins le liseré).
+     - ⚠️ **En desktop les cartes sont POSÉES SUR la photo** : elles vont de +817 à +1086
+       sous le haut de bande alors que la photo descend jusqu'à +1118. Il reste donc 31 px
+       de photo sous elles. Sous 900 au contraire elles sont **après** la photo, dans le
+       flux. C'est la seule vraie différence de mise en page entre les deux branches.
+     - ⚠️ **C'est `.fidelite__intro` qui réserve la place de la photo sous 900**, via un
+       `min-height` : la hauteur ne peut pas venir du contenu, la maquette laissant ~500 px
+       de photo vide sous le paragraphe. Remis à 0 au-dessus de 900, où la grille reprend
+       la main.
+     - ⚠️ **Le texte reste calé sur `.container` (marge 20 à 390)** alors que la maquette
+       le pose à **24**, soit 4 px plus à droite que les cartes. Écart assumé : aligner le
+       texte sur les cartes vaut mieux qu'un décalage de 4 px reproduit tel quel. Une ligne
+       à changer si Sylvain préfère le relevé.
+   - Rythme du texte **inchangé** (vérifié : les relevés retombent au dixième sur les
+     tokens existants) — eyebrow à +39,3 sous le haut de bande à 390 et +95 à 1440, titre
+     à +119,9 / +190, paragraphe à +275,5 / +463,2.
    - Contenu : eyebrow « FIDÉLITÉ » (blanc) → titre **« Achetez local / et cumulez / des
      points »** en 3 lignes (Barlow Condensed 800 DROIT, 78/70 à 1440, 37,3/33,5 à 390 —
      le seul rôle display qui ne suit pas `--fs-display-xl`, d'où `--fs-fid-titre`) →
@@ -391,10 +413,9 @@ Planchers de lisibilité (seule entorse à l'homothétie) : **12 px** sur `--fs-
      ⚠️ **Conséquence assumée : les 220 px relevés ne valent plus.** `.carte` n'a pas de
      hauteur figée (flex column égalisée par la grille), la rangée suit donc la carte la plus
      haute, et la bande de Fidélité grandit d'autant. C'est le contenu qui prime sur le relevé.
-   - ⚠️ Un token de plus dans les overrides mobile de `.fidelite` : **`--carte-gap-texte`**
-     (titre → corps), réduit dans la même proportion que `--carte-gap-titre` (17 × 18/33 ≈
-     **9,3** à 390, et 13,6 à 900 pour rejoindre la valeur globale sans cassure). Il est
-     **remis à `calc(17 * var(--px))`** dans le bloc ≥900, comme les quatre autres.
+   - ~~Un token de plus dans les overrides mobile de `.fidelite` : `--carte-gap-texte`~~ —
+     **caduc** : `.fidelite` ne surcharge plus aucun token de carte, les deux sections
+     partagent exactement les mêmes.
    - **Aucun voile sombre** : la comparaison au pixel entre la maquette et la photo source
      montre un écart de ±10/255, c'est-à-dire rien. Ce que l'ancienne note prenait pour un
      voile est l'éclairage de la photo elle-même.
@@ -406,42 +427,43 @@ Planchers de lisibilité (seule entorse à l'homothétie) : **12 px** sur `--fs-
      Conséquence : il est **blanc aux deux tailles**. L'ancienne règle « noir en desktop,
      blanc sous 900 » ne vaut plus — il ne tombe plus sur la table claire mais sur la photo,
      comme le titre. En mobile rien ne bouge : il suivait déjà le titre.
-   - **Photo** : `assets/images/photo-commercants.webp` (4232 × 5948, 539 Ko), posée en
-     `<img>` absolu + `object-fit: cover`. ⚠️ **DEUX cadrages depuis la V3, et deux mécaniques
-     différentes** — trois tokens portés par `.fidelite` :
-     - **≥900** : `--fid-photo-h: 100%`. L'élément fait la bande, `cover` déborde
-       verticalement DANS l'élément, et c'est `object-position: center 74%` qui cadre (74 % =
-       relevé de la maquette desktop). **Inchangé.**
-     - **Sous 900** : `--fid-photo-h: 128.6%`, `--fid-photo-y: .839`. L'élément est **28,6 %
-       plus haut que la bande** ; `cover` le remplit exactement, l'`object-position` vertical
-       n'a donc plus de jeu et ne fait rien — c'est le `top` négatif qui cadre, via
-       `calc((100% - var(--fid-photo-h)) * var(--fid-photo-y))`, qui **reproduit exactement la
-       sémantique d'`object-position`**. Exprimé en %, le cadrage suit la hauteur réelle de la
-       bande quelle qu'elle soit : rien à retoucher si un texte gagne une ligne.
-     - ⚠️ **D'où sortent 1,286 et 0,839.** La V3 ne montre PAS ce que `cover` donnerait sur la
-       bande seule : la photo y est **1,286 × plus grande**. Mesuré sur l'écran jaune du
-       téléphone, en comparant deux sommets bien à l'intérieur du cadre (le sommet HAUT et le
-       sommet GAUCHE du rectangle incliné) : **115 px de diagonale dans la V3 contre 89,4** sur
-       la photo mise à l'échelle cover. Le sommet bas, lui, est coupé par le bord droit —
-       **ne pas s'en servir**, il donne 1,217 et fausse tout. De là : photo affichée
-       1366 × 1920 pour une bande de 390 × 1493, origine (−473,5 ; −358,3), donc
-       **48,5 % horizontal (≈ centre) et 83,9 % vertical**.
-     - ✅ **Vérifié par simulation** : le recadrage calculé, rendu hors navigateur et posé à
-       côté de la bande de la V3, est superposable — mêmes téléphones aux mêmes places, même
-       découpe du téléphone jaune sur le bord droit.
-     - ⚠️ **Le téléphone de droite EST coupé par le bord**, dans la V3 comme sur le site. C'est
-       le cadrage voulu, pas un débordement à corriger.
-   - 🆕 **LES CARTES SONT MAINTENANT EMPILÉES ET STRICTEMENT IDENTIQUES À CELLES DE MOBILITÉ**
-     (maquette V3, 08/09/2026). ⚠️ **C'est l'inverse exact de ce qui tenait jusque-là** : elles
-     étaient **2 par rangée dès 390**, avec une typo réduite pour cette section (numéro 56,
-     titre 14) portée par cinq overrides de tokens sur `.fidelite`. **Les cinq ont été
-     supprimés**, ainsi que le `grid-template-columns: repeat(2, …)` de `.fidelite__cartes` :
-     les cartes suivent l'auto-fit commun, donc 1 par rangée à 390 comme celles de Mobilité.
-     Le bloc ≥900 de `.fidelite` ne restaure donc plus aucun token de carte.
-     - La raison qui justifiait les 2 par rangée (« empiler doublerait la hauteur de la bande
-       et `cover` rognerait la photo à outrance ») **reste vraie** : la bande passe bien de
-       ~1100 à **1391** à 390. Ce qui a changé, c'est la réponse — Sylvain **recadre la photo**
-       au lieu de rapetisser les cartes. Cf. le point suivant.
+   - **Photo** : `assets/images/photo-commercants.webp` (4232 × 5948, 539 Ko). Elle est
+     désormais **enveloppée dans un cadre** — `<div class="fidelite__photo">` — qui porte le
+     retrait, l'arrondi et l'`overflow: clip` ; l'`<img>` vit dedans.
+     ⚠️ **LES MAQUETTES NE MONTRENT PAS UN SIMPLE `cover`** : la photo y est **agrandie de
+     22 % en mobile et de 10,2 % en desktop** par rapport à la taille de couverture. C'est
+     mesuré, pas supposé — repère : la **pastille verte** « points ajoutés » de l'écran
+     jaune, dont le centre et le diamètre retombent au pixel près une fois le cadrage posé
+     (mobile : centre attendu 231,7 ; 447,4 → obtenu 231,6 ; 447,8 · desktop : 831,2 ; 180,6
+     → 831,1 ; 180,6). Confirmé ensuite par recalage NCC sur toute la vignette (0,80 mobile
+     et 0,64 desktop, contre 0,32 pour un `cover` nu).
+     - **Mécanique, une seule pour les deux branches** : l'`<img>` est `--fid-zoom` plus
+       grand que son cadre **dans les deux dimensions**, donc l'échelle peinte vaut
+       `zoom × cover` quelle que soit la largeur ; `--fid-photo-dx/dy` placent cet élément
+       dans le cadre et `--fid-photo-x/y` placent l'image dans l'élément. En donnant à ces
+       deux couples **la même fraction** (`dx = −zoom × x`), le tout revient à « poser
+       l'image peinte à x % / y % du débord total » — ce qui reste juste quand `cover`
+       change d'axe, et il change bel et bien d'axe vers 640 px.
+     - Valeurs : **mobile** zoom 22 %, x 47 %, y 1,87 % ; **desktop** zoom 10,2 %, x 11,7 %,
+       y 71,15 %. `dx`/`dy` en découlent.
+     - ⚠️ **Ces cinq valeurs sont des pourcentages CONSTANTS par branche, pas des
+       interpolations, et il ne faut pas essayer de les interpoler.** Un `clamp()` mélangeant
+       `%` et `vw` n'a aucun sens ici : le `%` d'un `object-position` se rapporte au **débord**
+       et non à la fenêtre. Essayé, mesuré : la valeur se faisait écrêter par le `clamp` et le
+       cadrage sautait complètement. Le cadrage change donc au breakpoint — comme toute la
+       mise en page de la section.
+     - ⚠️ **`max-width: none` sur l'`<img>` est indispensable** : la règle globale
+       `img { max-width: 100% }` l'empêcherait de dépasser son cadre et tout le zoom
+       tomberait à plat, sans la moindre erreur.
+     - ⚠️ **Le téléphone de droite EST coupé par le bord**, sur la maquette comme sur le
+       site. C'est le cadrage voulu, pas un débordement à corriger.
+   - **LES CARTES SONT EMPILÉES ET STRICTEMENT IDENTIQUES À CELLES DE MOBILITÉ**, à 390
+     comme à 1440 : plus un seul override de carte sur `.fidelite`. Sous 900 elles ne
+     rognent plus la photo, elles se posent sur le bleu **sous** elle — c'est ce que le
+     fond bleu a rendu possible.
+     ⚠️ **La bande mobile est donc haute : ~1623 sur le site** (1661 sur la maquette,
+     l'écart venant des descriptions qui tiennent sur moins de lignes en Inter). C'est le
+     prix de l'empilement, et il est assumé depuis la V3.
    - La 1re rangée de la grille desktop a une **hauteur figée** (`643 * var(--px)`) : si le
      paragraphe gagnait une ligne, les cartes ne bougeraient pas de leur y=2493.
    - ⚠️ **AU-DELÀ DE 1440 CETTE BANDE GRANDIT — c'est la seule hauteur du site qui ne se
@@ -492,6 +514,14 @@ Planchers de lisibilité (seule entorse à l'homothétie) : **12 px** sur `--fs-
      `--com-pb` **240,8**. Mobile : 37,3 / 49,6 / 55,3 / 98,3 / 51,7.
    - Le paragraphe tient dans les **colonnes 1-5** (`max-width: 539`) : il retombe sur les
      3 lignes de la maquette (4 en mobile, pleine largeur).
+   - 🆕 **UN `<br>` APRÈS LE POINT D'INTERROGATION** (demande Sylvain, 09/09/2026) :
+     « Commerçant fleurusien ou entreprise locale ?<br>Devenez partenaire… ». C'est un `<br>`
+     nu et non un `.br-lg` — les deux maquettes cassent la ligne au même endroit.
+     ⚠️ **Conséquence mesurée : le paragraphe perd une ligne à 1440** (4 → 3, comme la
+     maquette) et la bande y perdait donc 24 px. Pour la garder à ses **794** relevés,
+     `--com-pb` est passé de **240,8 à 264,8**. À 390 il passe de 5 à 4 lignes et la bande
+     tombe à 776 (783 sur la maquette) — pas de retouche là, c'est la hauteur du visuel qui
+     mène.
    - Sous 900 le bloc de téléchargement est **centré**, comme dans le hero.
    - ⚠️ `.commercants__dl` est en **`display: flex`**, pas en `text-align: center` : le
      bouton est un `inline-block`, il s'asseyait sinon sur la ligne de base et sa boîte
@@ -1024,27 +1054,23 @@ move-in-fleurus/
 
 ### Les fichiers de maquette
 
-⚠️ **Les maquettes V2 (07/09/2026) ne sont PLUS au 1:1** — elles sont exportées à
-**×4,1667 (25/6)**. Toujours diviser par ce facteur pour retomber en pixels de maquette,
-sinon tous les relevés sont faux d'un facteur 4.
+⚠️ **LE DOSSIER A ÉTÉ VIDÉ ET REMPLACÉ LE 09/09/2026.** Il ne contient plus que **deux**
+fichiers, tous deux **au 1:1** — les V1/V2/V3 ont disparu, et avec elles les exports
+×4,1667 dont il fallait se méfier. **Ne plus chercher à diviser quoi que ce soit.**
 
 | Fichier | Pixels | = maquette |
 |---|---|---|
-| `Maquette desktop 1440.png` | 6000 × 22246 | **1440 × 5339** |
-| `V2 Maquette Mobile 390px.png` | 1625 × 22259 | **390 × 5342** |
-| **`V3 Maquette Mobile 390px.png`** (08/09/2026) | **390 × 5342** | **390 × 5342 — au 1:1** |
-| `Maquette Mobile 390px.png` (V1, 03/09) | 390 × 4140 | 390 × 4140 |
+| `Maquette desktop 1440.png` | **1440 × 5339** | 1440 × 5339 — au 1:1 |
+| `Maquette Mobile 390px.png` | **390 × 5679** | 390 × 5679 — au 1:1 |
 
-⚠️ **La V2 mobile a encore l'ANCIEN paragraphe de la section Commerçant** — le
-copier-coller du chapô du hero (« Choisissez une destination… »), 4 lignes. Le site
-utilise le vrai texte de Sylvain, qui en fait **5** à 390. La bande mobile fait donc
-**802,6 sur le site contre 782,2 sur la maquette** : les 20,4 d'écart sont cette ligne
-en trop, c'est **normal et déjà assumé** (cf. question 12). La V2 desktop, elle, a bien
-le vrai texte.
+⚠️ **`maquette/` est dans le `.gitignore`** : un remplacement de fichiers n'apparaît nulle
+part dans `git status`. Le seul réflexe fiable est de **vérifier les dimensions avant de
+mesurer quoi que ce soit** — c'est déjà arrivé (une « V2 mobile » qui était en réalité un
+second export du desktop, 07/09/2026).
 
-⚠️ Sylvain a d'abord livré une « V2 mobile » qui était en réalité **un second export du
-desktop** (6000 × 22246, mise en page desktop). Réexportée le soir même. En cas de doute
-sur un futur export, vérifier les dimensions **avant** de mesurer quoi que ce soit.
+⚠️ **Ces maquettes ont encore l'ancien libellé « FIDÉLISER vos clients »** (infinitif) là
+où le site écrit « Fidélisez ». Le site n'a pas été changé : ce n'est pas l'objet de la
+passe du 09/09.
 
 - **Chemins relatifs** (`assets/…`), jamais de base64 en production.
 - ✅ **Tous les assets ont été renommés** en minuscules kebab-case, sans espaces ni accents.
@@ -1327,6 +1353,44 @@ imposée) à **320 · 390 · 700 · 899 · 901** :
 la capture headless (constaté aussi avec l'ANCIENNE règle, donc ce n'est pas une régression —
 c'est l'iframe + `z-index: -1`). Le cadrage est validé par le calcul et par une simulation hors
 navigateur superposable à la V3, mais **c'est l'écran de Sylvain qui tranche**.
+
+**Point d'arrêt du 09/09/2026 — nouvelles maquettes desktop + mobile.** Sylvain a remplacé
+les deux maquettes (toutes deux au 1:1 : 1440 × 5339 et 390 × 5679). Trois changements
+demandés, tous faits :
+1. **Cartes** : la carte mobile abandonne le dessin V3 et reprend celui du desktop
+   (numéro au-dessus, 1 par rangée). `.carte` redevient une colonne flex partout ;
+   trois tokens supprimés, `--fs-pil-texte` supprimé aussi (le corps de carte repasse à
+   14 px à 390 et redevient partagé avec les piliers).
+2. **Fidélité** : fond **bleu** `#88d0f1`, photo en **vignette arrondie en retrait**
+   (retrait 8 → 15, rayon 10 → 24), cartes **sous** la photo en mobile et **sur** elle en
+   desktop, et un **recadrage plus serré** de la photo (× 1,22 mobile, × 1,102 desktop).
+3. **Commerçant** : `<br>` après le point d'interrogation du paragraphe.
+
+Vérifié dans le navigateur (Chrome headless, page de mesure dans une iframe de largeur
+imposée, polices chargées et animations neutralisées) à **320 · 360 · 390 · 480 · 700 ·
+899 · 901 · 1100 · 1152 · 1440 · 1920 · 2560** :
+- **aucun débordement horizontal** à aucune de ces largeurs ;
+- carte 01 de Mobilité à 390 : **350 × 181**, numéro à y+18,5, titre à y+74,5, description
+  à y+127,3 (relevés 18 / 75,3 / 128,1) ; gouttière 16 ;
+- tokens de carte **continus au breakpoint** (899 → 901) : numéro 79,93 → 80, padding
+  16,01 → 16, gouttière 9,61 → 9,6 ;
+- Fidélité à 390 : vignette **374 × 851** à (8 ; 8), rayon 10, eyebrow +39,3, titre +119,9,
+  paragraphe +275,5, cartes de +886 à +1592,6, bande **1622,6** ;
+- Fidélité à 1440 : vignette **1410 × 1095** à (15 ; 15), rayon 24, cartes de +817 à
+  +1079, bande **1125** (relevé 1133 — l'écart est la hauteur des cartes, qui suit le
+  contenu) ;
+- **cadrage de la photo vérifié au repère** : la pastille verte de l'écran jaune retombe à
+  (231,6 ; 447,8) contre (231,7 ; 447,4) relevés en mobile, et à (831,1 ; 180,6) contre
+  (831,2 ; 180,6) en desktop.
+⚠️ **Ce qui n'a PAS pu être vérifié à l'écran ici** : la photo de Fidélité et le visuel
+Commerçant ne se peignent pas dans la capture headless — les deux sont en `z-index: -1`,
+c'est un artefact connu et déjà constaté avant cette passe, pas une régression. Le cadrage
+est validé par le calcul et par un rendu isolé superposable à la maquette, mais **c'est
+l'écran de Sylvain qui tranche**.
+⚠️ **`commentaires/index.html` a dérivé** : il porte encore une génération de textes
+antérieure (chapô du hero, cartes 01–04, paragraphe « En savoir plus »…). Les deux endroits
+touchés le 09/09 y ont été reportés, le reste est à resynchroniser — c'est `index.html` qui
+fait foi, pas lui.
 
 🎉 **LE SITE STATIQUE EST COMPLET** — les neuf sections y sont, des deux maquettes.
 Il reste la **passe finale** (étape 10) : a11y et contrastes, tenue de 320 à 1920, poids des

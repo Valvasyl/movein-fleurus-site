@@ -5,6 +5,7 @@
   --noir:   #2a292e;
   --creme:  #fffbf0;
   --sable:  #f7dd7e;
+  --bleu:   #88d0f1;
   --blanc:  #ffffff;
 
   --degrade-a:   #ffe330;
@@ -22,10 +23,9 @@
   --fs-scroll:     clamp(26px, 24.51px + 0.381vw, 30px);
 
   --fs-card-title: clamp(16px, 23.06px - 0.7843vw, 20px);
-  --fs-card-text:  clamp(12px, 19.06px - 0.7843vw, 16px);
-  --fs-pil-texte:  clamp(12px, 15.53px - 0.3922vw, 14px);
+  --fs-card-text:  clamp(12px, 15.53px - 0.3922vw, 14px);
   --lh-card-text:  1.1429;
-  --fs-num:        clamp(60px, 44.71px + 3.9216vw, 80px);
+  --fs-num:        clamp(45px, 18.235px + 6.8627vw, 80px);
   --fs-display-s:  clamp(26.3px, 22.737px + 0.9137vw, 30.96px);
   --fs-display-l:  clamp(40px, 24.40px + 4.000vw, 82px);
   --fs-display-xl: clamp(62px, 61.69px + 0.0784vw, 62.4px);
@@ -60,14 +60,11 @@
   --r-card: clamp(16px, 23.0588px - 0.7843vw, 20px);
   --r-pill: 999px;
 
-  --carte-p:         clamp(16px, 17.7647px - 0.1961vw, 17px);
-  --carte-pt:        clamp( 6.3px, -1.118px + 1.902vw, 16px);
-  --carte-pb:        clamp(10.2px, 5.765px + 1.1373vw, 16px);
-  --carte-num-col:   clamp(75px, 55.88px + 4.902vw, 100px);
-  --carte-row-gap:   clamp( 8.5px, 6.336px + 0.5549vw, 11.33px);
-  --cartes-gap:      clamp( 9.6px, 13.835px - 0.4706vw, 12px);
-  --carte-gap-titre: clamp(26.4px, 38.0471px - 1.2941vw, 33px);
-  --carte-gap-texte: clamp(13.6px, 19.6px - 0.6667vw, 17px);
+  --carte-p:         clamp(16px, 23.0588px - 0.7843vw, 20px);
+  --carte-pt:        clamp( 0px, 32.647px - 3.6275vw, 18.5px);
+  --carte-pb:        clamp(16px, 26.412px - 1.1569vw, 21.9px);
+  --carte-gap-titre: clamp(11px, -0.776px + 3.0196vw, 26.4px);
+  --carte-gap-texte: clamp( 8.8px, 5.129px + 0.9412vw, 13.6px);
   --mobilite-pb:     clamp(38px, 30.9647px + 1.8039vw, 47.2px);
 
   --hero-pt:    clamp(52px, 50.1647px + 0.4706vw, 54.4px);
@@ -85,9 +82,17 @@
   --btn-dl-px: clamp(25.6px, 36.8941px - 1.2549vw, 32px);
 
   --fid-pt:        clamp(39.3px, 11.08px + 7.2353vw, 76.2px);
-  --fid-pb:        clamp(40px, 33.88px + 1.5686vw, 48px);
+  --fid-pb:        clamp(30px, 24.8px + 1.3333vw, 36.8px);
   --fid-titre-mt:  clamp(54.6px, 54.08px + 0.1333vw, 55.3px);
-  --fid-cartes-mt: 440px;
+  --fid-cartes-mt: 27px;
+  --fid-inset:     clamp(8px, 4.941px + 0.7843vw, 12px);
+  --fid-media-r:   clamp(10px, 2.965px + 1.8039vw, 19.2px);
+  --fid-media-h:   clamp(851px, 826.99px + 6.1569vw, 882.4px);
+  --fid-zoom:      22%;
+  --fid-photo-x:   47%;
+  --fid-photo-y:   1.87%;
+  --fid-photo-dx:  -10.34%;
+  --fid-photo-dy:  -0.41%;
 
   --fs-titre-section: clamp(37.3px, 18.106px + 4.9216vw, 62.4px);
   --titre-texte-mt:   clamp(50.64px, 58.863px - 0.9137vw, 55.3px);
@@ -718,14 +723,13 @@ button {
 .cartes {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-  gap: var(--cartes-gap);
+  gap: var(--gutter);
 }
 
 .carte {
-  display: grid;
-  grid-template-columns: var(--carte-num-col) minmax(0, 1fr);
-  align-items: center;
-  row-gap: var(--carte-row-gap);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   background: var(--creme);
   border-radius: var(--r-card);
   padding: var(--carte-pt) var(--carte-p) var(--carte-pb);
@@ -737,13 +741,10 @@ button {
   font-size: var(--fs-num);
   line-height: 1;
   color: var(--jaune);
-  grid-row: 1;
-  grid-column: 1;
 }
 
 .carte__titre {
-  grid-row: 1;
-  grid-column: 2;
+  margin-top: var(--carte-gap-titre);
   font-family: var(--ff-text);
   font-weight: 800;
   font-size: var(--fs-card-title);
@@ -752,8 +753,7 @@ button {
 }
 
 .carte__texte {
-  grid-row: 2;
-  grid-column: 1 / -1;
+  margin-top: var(--carte-gap-texte);
   font-size: var(--fs-card-text);
   line-height: var(--lh-card-text);
   color: var(--noir);
@@ -766,6 +766,8 @@ button {
 @media (min-width: 900px) {
   :root {
     --carte-p:         calc(20 * var(--px));
+    --carte-pt:        0px;
+    --carte-pb:        calc(20 * var(--px));
     --r-card:          calc(20 * var(--px));
     --mobilite-pb:     calc(59 * var(--px));
 
@@ -773,7 +775,6 @@ button {
     --fs-card-title:   calc( 20 * var(--px));
 
     --fs-card-text:    max(12px, calc(14 * var(--px)));
-    --fs-pil-texte:    max(12px, calc(14 * var(--px)));
 
     --carte-gap-titre: calc(33 * var(--px));
     --carte-gap-texte: calc(17 * var(--px));
@@ -781,19 +782,8 @@ button {
 
   .cartes {
     grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
-    gap: calc(12 * var(--px));
   }
-  .carte {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    row-gap: 0;
-    grid-column: span 3;
-    padding: var(--carte-p);
-  }
-  .carte__num   { margin-top: calc(-1 * var(--carte-p)); }
-  .carte__titre { margin-top: var(--carte-gap-titre); }
-  .carte__texte { margin-top: var(--carte-gap-texte); }
+  .carte { grid-column: span 3; }
 
   .br-lg { display: inline; }
 }
@@ -804,23 +794,34 @@ button {
   overflow: clip;
   padding-top: var(--fid-pt);
   padding-bottom: var(--fid-pb);
-  background: var(--noir);
+  background: var(--bleu);
   color: var(--blanc);
-
-  --fid-photo-h:  128.6%;
-  --fid-photo-y:  .839;
-  --fid-photo-oy: 50%;
 }
 
 .fidelite__photo {
   position: absolute;
-  left: 0;
-  top: calc((100% - var(--fid-photo-h)) * var(--fid-photo-y));
+  top: var(--fid-inset);
+  left: var(--fid-inset);
   z-index: -1;
-  width: 100%;
-  height: var(--fid-photo-h);
-  object-fit: cover;
-  object-position: center var(--fid-photo-oy);
+  width: calc(100% - 2 * var(--fid-inset));
+  height: var(--fid-media-h);
+  border-radius: var(--fid-media-r);
+  overflow: clip;
+
+  & img {
+    position: absolute;
+    left: var(--fid-photo-dx);
+    top: var(--fid-photo-dy);
+    width: calc(100% + var(--fid-zoom));
+    height: calc(100% + var(--fid-zoom));
+    max-width: none;
+    object-fit: cover;
+    object-position: var(--fid-photo-x) var(--fid-photo-y);
+  }
+}
+
+.fidelite__intro {
+  min-height: calc(var(--fid-inset) + var(--fid-media-h) - var(--fid-pt));
 }
 
 .fidelite__titre {
@@ -840,8 +841,15 @@ button {
 @media (min-width: 900px) {
   :root {
     --fid-pt:       calc(95 * var(--px));
-    --fid-pb:       calc(60 * var(--px));
+    --fid-pb:       calc(46 * var(--px));
     --fid-titre-mt: calc(69 * var(--px));
+    --fid-inset:    calc(15 * var(--px));
+    --fid-media-r:  calc(24 * var(--px));
+    --fid-zoom:     10.2%;
+    --fid-photo-x:  11.7%;
+    --fid-photo-y:  71.15%;
+    --fid-photo-dx: -1.19%;
+    --fid-photo-dy: -7.2%;
 
     --fs-titre-section: calc( 78   * var(--px));
     --titre-texte-mt:   calc( 63.3 * var(--px));
@@ -850,11 +858,9 @@ button {
     --fid-rab: max(0px, calc(100vw * 1133 / 1440 - 1133px));
   }
 
-  .fidelite {
-    --fid-photo-h:  100%;
-    --fid-photo-y:  0;
-    --fid-photo-oy: 74%;
-  }
+  .fidelite { --lead-w: calc(400 * var(--px)); }
+
+  .fidelite__photo { height: calc(100% - 2 * var(--fid-inset)); }
 
   .fidelite__grille {
     display: grid;
@@ -864,14 +870,14 @@ button {
     row-gap: 0;
   }
 
-  .fidelite__intro { grid-column: 1 / 7;  grid-row: 1; }
+  .fidelite__intro { grid-column: 1 / 7;  grid-row: 1; min-height: 0; }
 
   .fidelite__texte { max-width: var(--lead-w); }
 
   .fidelite__cartes {
     grid-column: 1 / -1;
     grid-row: 2;
-    margin-top: calc(115 * var(--px));
+    margin-top: calc(79 * var(--px));
     grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
   }
 }
@@ -924,7 +930,7 @@ button {
     --com-pt:       calc( 62   * var(--px));
     --com-titre-mt: calc( 69   * var(--px));
     --com-dl-mt:    calc( 47.1 * var(--px));
-    --com-pb:       calc(240.8 * var(--px));
+    --com-pb:       calc(264.8 * var(--px));
   }
 
   .commercants__texte { max-width: var(--lead-w); }
@@ -999,7 +1005,7 @@ button {
 
 .pilier__texte {
   margin-top: var(--pil-texte-mt);
-  font-size: var(--fs-pil-texte);
+  font-size: var(--fs-card-text);
   line-height: var(--lh-card-text);
   color: var(--noir);
 }

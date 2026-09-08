@@ -7,9 +7,9 @@ ici ; le reste du dépôt est de la documentation de conception.
 
 ## 1. Ce qu'est ce site
 
-Un **site vitrine one-page, entièrement statique**. Trois fichiers de code, aucune
-dépendance, aucun framework, **aucune étape de compilation** : ce qui est dans le dépôt est
-exactement ce qui doit être servi.
+Un **site vitrine statique** : une page d'accueil one-page, plus une page de déclaration
+d'accessibilité. Aucune dépendance, aucun framework, **aucune étape de compilation** : ce
+qui est dans le dépôt est exactement ce qui doit être servi.
 
 | | |
 |---|---|
@@ -38,6 +38,7 @@ Ville, liens depuis les applications). Le site est prévu pour vivre dans ce sou
 
 ```
 index.html
+accessibilite.html  déclaration d'accessibilité (obligation légale, voir §7)
 styles.css
 script.js
 robots.txt          (voir §5 — il ne sert à rien à cette adresse, mais il ne gêne pas)
@@ -70,18 +71,25 @@ d'un domaine ou dans un sous-dossier, sans rien modifier.
 
 ## 3. Le seul point à vérifier si le chemin change
 
-Quatre valeurs du `<head>` d'`index.html` sont des **URL absolues** — c'est obligatoire pour
-le référencement et les aperçus de partage, qui n'acceptent pas de chemin relatif :
+Quelques valeurs du `<head>` sont des **URL absolues** — c'est obligatoire pour le
+référencement et les aperçus de partage, qui n'acceptent pas de chemin relatif :
 
 ```html
+<!-- index.html -->
 <link rel="canonical" href="https://movein.fleurus.be/app-store/">
 <meta property="og:url"   content="https://movein.fleurus.be/app-store/">
 <meta property="og:image" content="https://movein.fleurus.be/app-store/assets/images/partage-move-in-fleurus.jpg">
+<!-- + les deux URL du bloc application/ld+json juste en dessous -->
+
+<!-- accessibilite.html -->
+<link rel="canonical" href="https://movein.fleurus.be/app-store/accessibilite.html">
 ```
-plus les deux URL du bloc `application/ld+json` juste en dessous.
 
 > **Si l'adresse finale diffère de `https://movein.fleurus.be/app-store/`, ce sont les
 > seules lignes à corriger.** Tout le reste suit automatiquement.
+
+⚠️ **Le corps de `accessibilite.html` cite aussi l'adresse du site** (« La présente
+déclaration s'applique au site movein.fleurus.be/app-store/ ») : à reprendre également.
 
 ---
 
@@ -114,7 +122,7 @@ recompression ne fait que consommer du CPU.
 ### 4.3 Cache
 
 ```
-index.html                      Cache-Control: no-cache          (revalidation à chaque visite)
+index.html, accessibilite.html  Cache-Control: no-cache          (revalidation à chaque visite)
 styles.css, script.js           Cache-Control: max-age=3600      (1 h, le temps d'une mise à jour)
 assets/**                       Cache-Control: max-age=31536000, immutable
 ```
@@ -192,25 +200,44 @@ textes alternatifs sur toutes les images porteuses de sens, aucun lien sans nom 
 focus toujours visible, lien d'évitement, menu mobile inerte quand il est fermé et fermable
 au clavier, `prefers-reduced-motion` respecté partout, cibles tactiles au-dessus du minimum.
 
-**Deux points restent ouverts, et ils relèvent d'une décision de la Ville :**
+**La déclaration d'accessibilité est publiée** : `accessibilite.html`, liée depuis le pied
+de page des deux pages. Elle suit le modèle de la décision d'exécution (UE) 2018/1523 :
+état de conformité, contenus non accessibles, méthode d'évaluation, mécanisme de retour
+d'information, voie de recours.
 
-1. **Cinq contrastes sous le seuil**, tous hérités de la maquette — du blanc et du sable
-   posés sur des fonds clairs, autour de 1,3:1 là où 3:1 ou 4,5:1 sont exigés. Le texte
-   courant, lui, est irréprochable (10:1 à 14:1). Le détail est dans `README.md`.
-2. **La déclaration d'accessibilité est obligatoire** et n'existe pas encore. La directive
-   impose de publier une page décrivant le niveau de conformité, les écarts connus et un
-   moyen de signalement — et d'y renvoyer depuis le site. Un lien reste à ajouter dans le
-   pied de page une fois cette page rédigée par la Ville.
+**Le site est déclaré « partiellement conforme »** — sept combinaisons de couleurs héritées
+de la charte descendent entre **1,22:1 et 1,35:1** là où 3:1 ou 4,5:1 sont exigés (du blanc,
+du jaune et du sable sur fonds clairs). Elles sont listées nommément dans la déclaration,
+avec leur rapport mesuré. Le texte courant, lui, est entre 10,7:1 et 14,4:1.
+
+⚠️ **Trois points restent à la charge de la Ville avant la mise en ligne :**
+
+1. **Remplir les coordonnées de contact** dans `accessibilite.html` — trois placeholders en
+   majuscules (`ADRESSE@fleurus.be`, `NUMÉRO`, `SERVICE`). Le mécanisme de retour
+   d'information est une exigence de la directive : sans lui la déclaration n'est pas valide.
+2. **Faire confirmer par le service juridique** la référence légale wallonne exacte et les
+   coordonnées complètes de la voie de recours (nous n'avons pu vérifier que le nom,
+   l'adresse et le site du Médiateur de la Wallonie et de la Fédération Wallonie-Bruxelles).
+3. **Programmer un audit par un organisme tiers.** La déclaration repose aujourd'hui sur une
+   auto-évaluation, ce qu'elle indique explicitement.
+
+⚠️ **Les deux applications mobiles Move in Fleurus sont soumises à la même obligation** et
+demandent chacune leur propre déclaration. Elles sortent du périmètre de ce site, mais le
+point mérite d'être remonté : la directive couvre les applications mobiles des organismes
+publics depuis le 23 juin 2021.
 
 ---
 
 ## 8. À vérifier avant la mise en ligne
 
-- [ ] ⚠️ **`https://fleurus.be/move-in-fleurus/commercant/` renvoie actuellement un 404.**
-      C'est la cible du bouton « En savoir plus » de la section Commerçant. Soit la page est
-      créée, soit le lien est corrigé — vérifié le 09/09/2026.
-- [ ] **Déclaration d'accessibilité** rédigée et liée depuis le pied de page (§7).
-- [ ] **Contrastes** : arbitrage rendu (§7).
+- [ ] ⚠️ **`https://fleurus.be/move-in-fleurus/commercant/` est protégée par un mot de passe.**
+      La page existe désormais, mais le bouton « En savoir plus » de la section Commerçant
+      mène à un formulaire de mot de passe. **À rendre publique avant la mise en ligne**,
+      sinon le lien est cassé pour le visiteur — vérifié le 09/09/2026.
+- [ ] **Coordonnées de contact** remplies dans `accessibilite.html` (§7) — trois placeholders.
+- [ ] **Référence légale et voie de recours** confirmées par le service juridique (§7).
+- [ ] **Contrastes** : arbitrage rendu — les corriger, ou les assumer tels que la
+      déclaration les documente (§7).
 - [ ] **Types MIME** `.woff2` / `.webp` / `.svg` confirmés sur le serveur cible (§4.1).
 - [ ] **Aperçu de partage** testé sur Facebook et LinkedIn une fois en ligne — l'image
       `assets/images/partage-move-in-fleurus.jpg` (1200 × 630) n'est joignable qu'à l'adresse

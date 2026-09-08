@@ -48,6 +48,11 @@ Objectif du site : présenter le concept et pousser au **téléchargement** des 
     commentaires vers la racine** (`perl -0pe 's{/*.*?*/}{}gs'` pour le CSS, à la main
     pour le JS à cause des `//` dans les URL). L'inverse — éditer la racine puis recommenter —
     fait perdre le raisonnement à chaque passe.
+- ⚠️ **UNE SECONDE PAGE DEPUIS LE 09/09/2026** : `accessibilite.html`, la déclaration
+  d'accessibilité. C'est une **obligation légale** (directive UE 2016/2102), pas un choix
+  éditorial — cf. « Déclaration d'accessibilité » plus bas. Elle réutilise `styles.css` et
+  `script.js` tels quels : la règle des trois fichiers ci-dessous vaut toujours pour le
+  **code**, c'est le nombre de pages HTML qui est passé à deux.
 - **Trois fichiers** : `index.html` + **`styles.css`** + **`script.js`**, tous liés
   (le JS était inline en fin de `<body>` jusqu'au 05/09/2026, Sylvain l'a voulu à part).
   `script.js` est appelé **en `defer` depuis le `<head>`** : il s'exécute une fois le DOM
@@ -1275,6 +1280,58 @@ se rejoindront d'eux-mêmes.
 
 ⚠️ Le mot « chèque » figure encore **dans l'image** `mockup-iphone-hero.webp`, qui est un
 asset livré : rien à faire côté site tant que l'appli n'a pas changé son libellé.
+
+## Déclaration d'accessibilité — `accessibilite.html`
+
+🆕 **09/09/2026.** C'est la **seule seconde page du site**, et elle est là parce que la
+directive UE 2016/2102 l'impose : tout organisme public doit publier une déclaration
+d'accessibilité et y renvoyer depuis son site. **Un site vitrine n'y échappe pas** — le
+critère est l'éditeur, pas la nature du site.
+
+- **Contenu** : le modèle de la décision d'exécution (UE) 2018/1523 — engagement et
+  périmètre, état de conformité, contenus non accessibles, charge disproportionnée,
+  établissement de la déclaration, retour d'information, voie de recours.
+- **Le site est déclaré « partiellement conforme »**, avec les **sept** écarts de contraste
+  listés nommément et leur rapport mesuré. ⚠️ Le décompte de « cinq » qui traînait dans la
+  passe finale était **périmé** : il datait d'avant le bandeau partenaires, qui en apporte
+  deux (titre sable sur crème 1,30:1, logos jaunes au survol 1,30:1). Tous les rapports ont
+  été **recalculés** depuis les tokens de la charte, formule WCAG.
+- ⚠️ **Trois PLACEHOLDERS en majuscules** dans la page (`ADRESSE@fleurus.be`, `NUMÉRO`,
+  `SERVICE`) : les coordonnées du service qui reçoit les signalements. **Tant qu'ils ne sont
+  pas remplis la déclaration n'est pas valide** — le mécanisme de retour d'information est
+  une exigence de la directive.
+- ⚠️ **La voie de recours n'est vérifiée qu'à moitié.** Le Médiateur de la Wallonie et de la
+  Fédération Wallonie-Bruxelles est bien l'organe compétent et son adresse (rue Lucien
+  Namèche 54, 5000 Namur) est confirmée depuis son site ; le téléphone et le courriel n'ont
+  pas pu l'être et ne figurent donc pas. À faire confirmer par le service juridique, avec la
+  référence exacte du texte wallon de transposition.
+- ⚠️ **Les deux applications mobiles sont soumises à la même obligation** et demandent
+  chacune leur déclaration. Hors périmètre de ce site, mais à remonter : la directive couvre
+  les applications mobiles des organismes publics depuis le 23 juin 2021.
+
+### Ce qu'il a fallu ajouter au code
+
+- **Section 15 de la feuille de style** (`.page`, `.prose`, `.fond-creme`) et **4 tokens**
+  (`--page-pt`, `--page-pb`, `--fs-page-titre`, `--fs-page-texte`). ~120 octets pour la page
+  d'accueil, qui ne s'en sert pas — moins cher qu'un second fichier CSS.
+- ⚠️ **Le rythme vertical y est en `em`, pas en tokens interpolés.** C'est l'exception du
+  projet et elle est volontaire : un texte réglementaire n'a **aucun relevé de maquette**
+  derrière lui, il n'y a donc rien à reproduire au pixel. Tout suit `--fs-page-texte`.
+- ⚠️ **`.fond-creme` est sur le `<body>`, pas sur la section.** Le script retire
+  `header--pose` à `scrollY = 0`, le header est donc transparent en haut de page : sans fond
+  crème sur le body, on voyait une couture blanche juste sous lui.
+- ⚠️ **Le sprite SVG est dupliqué** dans la page (~7 Ko). Un `<use href="fichier.svg#id">`
+  externe aurait évité la copie, mais **Safari ne le supporte pas**. Sans étape de
+  compilation, la duplication est la seule option — si le logo ou les icônes changent, il
+  faut le reporter dans les deux pages.
+- **`script.js` fonctionne tel quel** : ses cinq blocs commencent tous par un test de
+  présence, donc le burger, le marquee, les boutons de store et les animations se
+  désactivent d'eux-mêmes sur une page qui ne les contient pas.
+- Le **lien « Accessibilité »** est le 4e des mentions légales du pied de page, sur les deux
+  pages. Sur `accessibilite.html` il porte `aria-current="page"`.
+- Le header n'a **ni nav ni burger** ici, seulement le logo et un lien « Retour au site » :
+  la nav du one-page ne pointe que des ancres, elle n'aurait aucun sens sur une page de
+  texte. ⚠️ Le lien de retour n'est **pas** dans `.nav`, qui est masquée sous 900 px.
 
 ## Dépôt et mise en ligne
 

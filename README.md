@@ -59,7 +59,8 @@ visiteur vers le téléchargement de l'application qui le concerne.
 ```
 move-in-fleurus/
 ├── index.html          Structure — 10 sections, un seul <h1>
-├── styles.css          Toute la mise en forme, organisée en 16 sections numérotées
+├── accessibilite.html  Déclaration d'accessibilité (obligation légale, cf. plus bas)
+├── styles.css          Toute la mise en forme, organisée en 17 sections numérotées
 ├── script.js           5 blocs autonomes, chacun en IIFE
 ├── robots.txt
 │
@@ -207,9 +208,19 @@ images utiles, aucun lien sans nom accessible, focus systématiquement visible, 
 d'évitement, menu mobile `inert` quand il est fermé et fermable au clavier,
 `prefers-reduced-motion` respecté partout.
 
-**Écarts connus, à trancher** : cinq combinaisons de couleurs héritées de la maquette
-descendent à ~1,3:1 là où 3:1 ou 4,5:1 sont exigés — du blanc et du sable posés sur des fonds
-clairs (voir *Étapes à suivre*). Le texte courant, lui, est entre 10:1 et 14:1.
+**Écarts connus** : sept combinaisons de couleurs héritées de la charte descendent entre
+**1,22:1 et 1,35:1** là où 3:1 ou 4,5:1 sont exigés — du blanc, du jaune et du sable posés
+sur des fonds clairs. Le texte courant, lui, est entre **10,7:1 et 14,4:1**.
+
+**La déclaration d'accessibilité est publiée** : `accessibilite.html`, liée depuis le pied de
+page des deux pages du site. Elle est **obligatoire** pour un organisme public et liste
+nommément les sept écarts, avec leur rapport de contraste mesuré. Elle doit être réexaminée
+au moins une fois par an et après toute modification substantielle du site.
+
+> ⚠️ Trois champs y sont laissés en **PLACEHOLDER** (`ADRESSE@fleurus.be`, `NUMÉRO`,
+> `SERVICE`) : ce sont les coordonnées du service qui recevra les signalements. **La
+> déclaration n'est pas valide tant qu'ils ne sont pas remplis** — le mécanisme de retour
+> d'information est une exigence de la directive, pas un ornement.
 
 ---
 
@@ -287,8 +298,10 @@ raisonnement derrière chaque valeur, les pièges, les décisions.
 
 - [ ] ⚠️ **`https://fleurus.be/move-in-fleurus/commercant/` renvoie un 404** — c'est la cible
       du bouton « En savoir plus » de la section Commerçant. Créer la page ou corriger le lien.
-- [ ] **Publier la déclaration d'accessibilité** et la lier depuis le pied de page. Elle est
-      **obligatoire** pour un organisme public (directive UE 2016/2102) et n'existe pas encore.
+- [x] ~~**Publier la déclaration d'accessibilité**~~ — faite : `accessibilite.html`, liée
+      depuis le pied de page. ⚠️ **Reste à y remplir les coordonnées de contact** (trois
+      placeholders) et à faire confirmer la référence légale wallonne par le service
+      juridique.
 - [ ] **Arbitrer les cinq écarts de contraste** hérités de la maquette. Trois options,
       à trancher globalement plutôt qu'au cas par cas :
       *(a)* les assumer et les lister dans la déclaration d'accessibilité,

@@ -12,6 +12,11 @@ décisions prises et leur motif.
 | `script.js`  | 4,3 Ko · 145 lignes    | **8,0 Ko · 194 lignes** |
 | `index.html` | 21,2 Ko · 329 lignes   | identique — il n'a jamais eu de commentaires |
 
+⚠️ **`accessibilite.html` n'est PAS copié ici**, et c'est volontaire : comme `index.html`
+il ne contient aucun commentaire, une copie n'apporterait rien et ferait un fichier de plus
+à tenir synchronisé. Sa mise en forme, elle, est documentée dans la **section 15** de
+`commentaires/styles.css`.
+
 ## Règles d'usage
 
 ⚠️ **Cette copie ne se régénère pas toute seule : il n'y a pas d'étape de compilation.**

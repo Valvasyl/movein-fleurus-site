@@ -90,9 +90,9 @@
   --com-titre-mt: clamp(49.6px, 45.318px + 1.098vw, 55.2px);
   --com-dl-mt:    clamp(37.68px, 144.657px - 11.8863vw, 98.3px);
   --com-pb:       0px;
-  --com-visuel-w:     min(228.12px + 89.765vw, 1036px);
-  --com-visuel-h:     calc(var(--com-visuel-w) * 939 / 1295);
-  --com-visuel-bleed: min(71.365px + 14.4706vw, 201.6px);
+  --com-visuel-w:     min(232.023px + 91.2863vw, 1053.6px);
+  --com-visuel-h:     calc(var(--com-visuel-w) * 923 / 1317);
+  --com-visuel-bleed: min(73.335px + 15.2294vw, 210.4px);
   --com-visuel-mt:    52.3px;
   --com-dl-bas:       calc(var(--com-visuel-h) * 0.076079);
 
@@ -916,8 +916,8 @@ button {
 
   .commercants__visuel > img {
     top: calc(67.8 * var(--px));
-    right: min(0px, calc(100vw - 1692 * var(--px)));
-    width: calc(1295 * var(--px));
+    right: min(0px, calc(100vw - 1703 * var(--px)));
+    width: calc(1317 * var(--px));
   }
 
   .commercants__dl {

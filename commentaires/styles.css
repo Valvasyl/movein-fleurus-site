@@ -194,12 +194,13 @@
   --com-dl-mt:    clamp(37.68px, 144.657px - 11.8863vw, 98.3px); /* paragraphe → bouton : 98,3 (390) · 47,1 (1440) */
   --com-pb:       0px;                                           /* ⚠️ NUL sous 900 depuis la V2 : c'est le VISUEL qui ferme la bande, plus le bouton. 240,8 × --px au-dessus. */
   /* Le visuel commerçant. Largeur et débord droit interpolés 390 → 900, tous deux
-     linéaires en vw ; ils rejoignent à 900 les valeurs de l'homothétie (1295 × 0,80
-     = 1036 et 252 × 0,80 = 201,6), donc le visuel ne change pas de TAILLE au
+     linéaires en vw ; ils rejoignent à 900 les valeurs de l'homothétie (1317 × 0,80
+     = 1053,6 et 263 × 0,80 = 210,4), donc le visuel ne change pas de TAILLE au
      breakpoint — seule sa POSITION saute, avec la mise en page. */
-  --com-visuel-w:     min(228.12px + 89.765vw, 1036px);          /* 578,2 (390) · 1036 (900) — relevé maquette mobile : 1295 × 0,4465 */
-  --com-visuel-h:     calc(var(--com-visuel-w) * 939 / 1295);    /* le ratio de l'asset, une seule source */
-  --com-visuel-bleed: min(71.365px + 14.4706vw, 201.6px);        /* débord à DROITE : 127,8 (390) · 201,6 (900) */
+  --com-visuel-w:     min(232.023px + 91.2863vw, 1053.6px);      /* 588,0 (390) · 1053,6 (900) — 1317 × 0,4465 puis × 0,80 */
+  --com-visuel-h:     calc(var(--com-visuel-w) * 923 / 1317);    /* le ratio de l'asset, une seule source */
+  --com-visuel-bleed: min(73.335px + 15.2294vw, 210.4px);        /* débord à DROITE : 132,73 (390) · 210,4 (900) — calé pour que
+                                                                    le bord gauche de l'ENCRE ne bouge pas, cf. le bloc ≥900 */
   --com-visuel-mt:    52.3px;                                    /* paragraphe → visuel. CONSTANT de 390 à 900 (règle des écarts d'empilement mobile) */
   --com-dl-bas:       calc(var(--com-visuel-h) * 0.076079);      /* bas du visuel → bas du bouton : 31,9 à 390. Exprimé en part de la hauteur pour suivre l'image. */
 
@@ -1390,20 +1391,26 @@ button {
      directs du .container. L'image, en absolu, se cale alors sur .commercants. */
   .commercants__visuel { display: contents; }
 
-  /* Homothétie pure : à 1440 on retombe sur le relevé (x=397, y=67,8, 1295 × 939).
+  /* Homothétie pure. ⚠️ Le calage se fait sur le bord gauche de l'ENCRE, pas sur
+     celui du plan de travail : l'asset a une marge transparente à gauche (174 px
+     dans la version du 07/09, 185 dans celle du 08/09) et c'est l'encre que la
+     maquette positionne, à x=571. D'où 1703 = 386 + 1317, et non 397 + 1317.
+     À 1440 : plan de travail à x=386, encre à 571, y=67,8, 1317 × 923.
      ⚠️ Le `min(0px, …)` est le SEUL écart, et il sert à deux choses opposées :
      · sous 1152, `--px` est bloqué à 0,80 alors que la fenêtre continue de rétrécir ;
-       l'homothétie garde donc l'image à 317,6 du bord gauche au lieu de la laisser
+       l'homothétie garde donc l'encre à 456,8 du bord gauche au lieu de la laisser
        remonter sur la colonne de texte. Sans ça le paragraphe tombait SUR le
-       téléphone de 900 à ~997 (mesuré). Marge la plus serrée aujourd'hui : 136,8 px.
-     · au-delà de 1692, l'homothétie figée laisserait l'image se DÉCOLLER du bord
+       téléphone de 900 à ~997 (mesuré). Marge la plus serrée : 127,8 px (le titre),
+       contre 136,8 avec l'asset du 07/09 — le nouveau dessin déborde 9 px plus à
+       gauche en face du titre, mais son encre commence au même x=571.
+     · au-delà de 1703, l'homothétie figée laisserait l'image se DÉCOLLER du bord
        droit — on verrait une manche coupée flottant dans du jaune. Le `min` la
        plaque alors au bord de l'écran (débord nul mais bord franc).
-     Entre 1152 et 1692, les deux expressions sont égales : aucune cassure. */
+     Entre 1152 et 1703, les deux expressions sont égales : aucune cassure. */
   .commercants__visuel > img {
     top: calc(67.8 * var(--px));
-    right: min(0px, calc(100vw - 1692 * var(--px)));
-    width: calc(1295 * var(--px));
+    right: min(0px, calc(100vw - 1703 * var(--px)));
+    width: calc(1317 * var(--px));
   }
 
   .commercants__dl {

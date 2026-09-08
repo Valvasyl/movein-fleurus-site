@@ -434,10 +434,24 @@ Planchers de lisibilité (seule entorse à l'homothétie) : 12 px sur `--fs-nav`
      prenait 6,4 px de plus — la bande finissait à 777 au lieu de 771.
    - ✅ **LA MOITIÉ DROITE N'EST PLUS VIDE** — c'était bien un mockup qui manquait
      (question 11, désormais résolue). L'asset est **`assets/images/visuel-commercant.webp`**,
-     **1295 × 939 avec canal alpha**, 499 Ko. Livré sous le nom `Visuel Commerçant.webp`,
-     **renommé** en kebab-case comme le reste des assets.
+     **1317 × 923 avec canal alpha**, 432 Ko (le 07/09 : 1295 × 939, 487 Ko). Livré sous
+     le nom `Visuel Commerçant.webp`, **renommé** en kebab-case comme le reste des assets.
+     - ⚠️ **RÉEXPORT DU 08/09/2026, MÊME NOM DE FICHIER, DIMENSIONS DIFFÉRENTES.** Sylvain
+       a refait le visuel parce que **les textes à l'intérieur ont changé** : « Client
+       fidélisé » → **« Achat effectué »** et « Points utilisés » → **« Avantage débloqué »**
+       (« +60 points » est inchangé). L'`alt` de l'`<img>` a été aligné dans la foulée — il
+       cite ces trois messages.
+       ⚠️ **Le nom de fichier étant le même, rien ne signale le changement.** Le seul
+       indice est le `git status` sur un binaire. Toujours vérifier les **dimensions** d'un
+       asset relivré sous le même nom : ici elles ont bougé de 1295 × 939 à 1317 × 923,
+       et ces deux nombres sont écrits en dur dans le HTML **et** dans trois valeurs du CSS.
+       ⚠️ **Les deux maquettes montrent encore l'ANCIEN visuel** — elles ne peuvent donc
+       plus servir à recaler celui-ci. Le nouveau placement est une **continuité raisonnée**
+       (cf. « bord gauche de l'encre » ci-dessous), pas un relevé.
      - ⚠️ **Son encre touche déjà ses bords haut, bas et droit** ; la seule marge
-       transparente est à **gauche (174 px)**. L'image est donc FAITE pour être rognée
+       transparente est à **gauche (185 px depuis le 08/09/2026, 174 avant)**. C'est
+       vérifié à chaque livraison en cherchant la bounding box des pixels non
+       transparents. L'image est donc FAITE pour être rognée
        par les bords — ne jamais la recadrer sur son contenu, et ne jamais l'afficher
        en entier : le bras coupé se mettrait à flotter dans le jaune.
      - **Placement relevé au pixel, identique méthode sur les deux maquettes** : on cale
@@ -445,7 +459,15 @@ Planchers de lisibilité (seule entorse à l'homothétie) : 12 px sur `--fs-nav`
        vérifie sur cinq autres lignes. ⚠️ **La largeur de 6 px à la pointe ne prouve
        RIEN à elle seule** — c'est le plancher de l'antialiasing, elle mesure 6 px aux
        deux échelles. Ce qui tranche, ce sont les longs bras de levier.
-       - **Desktop : ÉCHELLE 1:1**, coin haut-gauche **x=397**, **y=+67,8** sous le haut
+       - ⚠️ **C'EST LE BORD GAUCHE DE L'ENCRE QU'ON CALE, PAS CELUI DU PLAN DE TRAVAIL.**
+         La marge transparente est un accident de l'export ; ce que la maquette positionne,
+         c'est le dessin. L'encre commence à **x=571** en desktop, et c'est ce nombre qui a
+         été reconduit au réexport : `1703 = 386 + 1317` (plan de travail à 386) et non
+         `397 + 1317`. Vérifié à 390 · 500 · 700 · 899 · 901 · 1000 · 1152 · 1300 · 1440 :
+         **le bord gauche de l'encre ne bouge pas de plus d'1 px** par rapport à l'ancien
+         asset. Au-delà de 1703 l'image est plaquée à droite, l'encre y tombe donc 11 px
+         plus à gauche qu'avant — 11 px de jaune, sans conséquence.
+       - **Desktop (asset du 07/09) : ÉCHELLE 1:1**, coin haut-gauche **x=397**, **y=+67,8** sous le haut
          de bande. Vérifié par trois repères indépendants : pointe de la flèche gauche
          prédite à x=571,1 / **mesurée 571,1** ; ligne du bas prédite à 1059,1 / mesurée
          1058,6 ; zone haut-droite prédite vide / **vide des deux côtés**. L'image
@@ -487,7 +509,7 @@ Planchers de lisibilité (seule entorse à l'homothétie) : 12 px sur `--fs-nav`
    ⚠️ **CONSÉQUENCE : la hauteur de bande SAUTE au breakpoint** — ≈**1129 à 899**,
    **635,9 à 901**. C'est le changement de mise en page, au même titre que le hero
    (−395) ou les piliers (−314), **pas** une cassure de typo : le visuel garde la
-   **même taille** de part et d'autre (1036 de large des deux côtés, soit 1295 × 0,80),
+   **même taille** de part et d'autre (1053,6 de large des deux côtés, soit 1317 × 0,80),
    seule sa **position** saute. Ne pas « corriger » ce saut.
 
    **Tokens** (`--com-visuel-*`), interpolés linéairement en `vw` de 390 à 900 et
@@ -495,27 +517,36 @@ Planchers de lisibilité (seule entorse à l'homothétie) : 12 px sur `--fs-nav`
 
    | Token | 390 | 900 | ≥900 |
    |---|---|---|---|
-   | `--com-visuel-w` | 578,2 | 1036 | `1295 × --px` |
-   | `--com-visuel-bleed` (débord droit) | 127,8 | 201,6 | via le `min()` ci-dessous |
-   | `--com-visuel-h` | 419,3 | 751,2 | — (dérivé : `w × 939 / 1295`) |
+   | `--com-visuel-w` | 588,0 | 1053,6 | `1317 × --px` |
+   | `--com-visuel-bleed` (débord droit) | 132,73 | 210,4 | via le `min()` ci-dessous |
+   | `--com-visuel-h` | 412,1 | 738,4 | — (dérivé : `w × 923 / 1317`) |
    | `--com-visuel-mt` (paragraphe → visuel) | 52,3 | 52,3 | — |
-   | `--com-dl-bas` (bas du visuel → bas du bouton) | 31,9 | — | — |
+   | `--com-dl-bas` (bas du visuel → bas du bouton) | 31,35 | — | — |
+
+   ⚠️ **Ces cinq valeurs ont TOUTES bougé au réexport du 08/09/2026** (elles valaient
+   578,2 / 1036 · 127,8 / 201,6 · 419,3 / 751,2 · 52,3 · 31,9). Le `bleed` n'est pas une
+   simple règle de trois : il est recalculé pour que le **bord gauche de l'encre** tombe
+   au même endroit qu'avant, la marge transparente de l'asset ayant changé (174 → 185).
 
    `--com-visuel-h` et `--com-dl-bas` sont **dérivés de la largeur**, pas relevés à part :
    une seule source, et le bouton reste au même endroit de l'image quelle que soit sa taille.
 
-   ⚠️ **La position horizontale en desktop est `right: min(0px, calc(100vw - 1692 * var(--px)))`,
+   ⚠️ **La position horizontale en desktop est `right: min(0px, calc(100vw - 1703 * var(--px)))`,
    et ce `min()` n'est pas une coquetterie — il règle DEUX problèmes opposés :**
    - **Sous 1152**, `--px` est bloqué à 0,80 alors que la fenêtre continue de rétrécir.
      Une image ancrée au bord droit remonte alors sur la colonne de texte : **le
      paragraphe tombait SUR le téléphone de 900 à ~997** (mesuré, chevauchement jusqu'à
-     95,8 px). L'homothétie la maintient à 317,6 du bord gauche. Marge la plus serrée
-     aujourd'hui : **136,8 px** (le titre), vérifiée en testant l'encre réelle du WebP
+     95,8 px). L'homothétie maintient l'encre à 456,4 du bord gauche. Marge la plus serrée
+     aujourd'hui : **127,8 px** (le titre), vérifiée en testant l'encre réelle du WebP
      contre les boîtes de texte, à 901 · 1000 · 1152 · 1300 · 1440 · 1920.
-   - **Au-delà de 1692**, l'homothétie figée laisserait l'image **se décoller du bord
+     ⚠️ Elle valait **136,8** avec l'asset du 07/09 : le nouveau dessin déborde **9 px plus
+     à gauche en face du titre**, alors que son encre commence au même x=571. Comparaison
+     faite profil par profil (min de x de l'encre, ligne par ligne) sur les quatre bandes de
+     texte : eyebrow **0**, titre **−9**, paragraphe **+37**, bouton **0**.
+   - **Au-delà de 1703**, l'homothétie figée laisserait l'image **se décoller du bord
      droit** : on verrait une manche coupée flotter dans du jaune (à 2560 : 308 px de
      jaune après le bras). Le `min()` la plaque au bord de l'écran.
-   - Entre 1152 et 1692 les deux expressions sont **égales** : aucune cassure.
+   - Entre 1152 et 1703 les deux expressions sont **égales** : aucune cassure.
    ⚠️ Pour mesurer l'encre du texte, prendre les **nœuds de texte** (Range) et non la
    boîte des éléments : `.lignes > span` est en `display: block`, sa boîte fait toute
    la largeur du conteneur et fait croire à un chevauchement qui n'existe pas.
@@ -1183,8 +1214,10 @@ du HTML comme de la feuille de style.
 
 **Point d'arrêt du 07/09/2026 (soir).** Le **visuel de la section Commerçant** est posé
 d'après les maquettes V2, et vérifié dans le navigateur (pas seulement sur le papier) :
-- **placement exact aux deux bornes** — à 1440 l'image est à `x 397 → 1692`, `top 67,8`,
-  1295 × 939, soit le relevé au pixel ; à 390 elle est à `x −60,4 → 517,8`, 578,2 × 419,2,
+- **placement exact aux deux bornes** — à 1440 l'image est à `x 386 → 1703`, `top 67,8`,
+  1317 × 923 (au 08/09 ; c'était `x 397 → 1692`, 1295 × 939 avec l'asset de la veille, et
+  l'**encre** commence à x=571 dans les deux cas) ; à 390 elle est à `x −65,3 → 522,7`,
+  588,0 × 412,1,
   soit le relevé également ;
 - **bande** : 794,9 à 1440 (maquette 793,4) et 802,6 à 390 (maquette 782,2, l'écart étant
   la 5e ligne de paragraphe du vrai texte) ;
@@ -1193,7 +1226,8 @@ d'après les maquettes V2, et vérifié dans le navigateur (pas seulement sur le
 - les autres sections sont **inchangées** (hero 1114,8 · fidélité 1132 · piliers 210 ·
   footer 240,3 à 1440), et les deux boutons de store répondent toujours.
 
-⚠️ Ce qui reste ouvert sur cette section : le **poids** de l'asset (487 Ko, cf. la passe
+⚠️ Ce qui reste ouvert sur cette section : le **poids** de l'asset (432 Ko depuis le réexport
+du 08/09, contre 487 la veille, cf. la passe
 finale) et le **saut de hauteur au breakpoint** (≈1129 → 635,9), qui est voulu mais que
 Sylvain n'a pas encore vu.
 
@@ -1253,7 +1287,8 @@ réserve qui n'a pas lieu d'être puisque le header n'est pas sticky et ne recou
 - Piste restante : `photo-commercants.webp` (539 Ko, 4232 × 5948) est deux fois plus grande
   que nécessaire (2560 de large suffirait). Chargement différé, donc moins critique.
 - ⚠️ **`assets/images/` est repassé de 816 Ko à 1290 Ko** le 07/09/2026 avec l'arrivée de
-  `visuel-commercant.webp` (**487 Ko**, 1295 × 939 avec alpha). C'est désormais le
+  `visuel-commercant.webp` (**432 Ko depuis le réexport du 08/09/2026**, 1317 × 923 avec
+  alpha ; 487 Ko et 1295 × 939 la veille). C'est désormais le
   **2e fichier le plus lourd du site**, juste derrière la photo de Fidélité. Il est en
   `loading="lazy"` + `decoding="async"` et sa section est loin sous la ligne de flottaison,
   donc il ne pèse pas sur le premier rendu — mais **les deux gros WebP font maintenant

@@ -206,9 +206,15 @@ de page des deux pages. Elle suit le modèle de la décision d'exécution (UE) 2
 d'information, voie de recours.
 
 **Le site est déclaré « partiellement conforme »** — sept combinaisons de couleurs héritées
-de la charte descendent entre **1,22:1 et 1,35:1** là où 3:1 ou 4,5:1 sont exigés (du blanc,
-du jaune et du sable sur fonds clairs). Elles sont listées nommément dans la déclaration,
-avec leur rapport mesuré. Le texte courant, lui, est entre 10,7:1 et 14,4:1.
+de la charte descendent entre **1,22:1 et 1,35:1** là où **3:1** est exigé (du blanc, du
+jaune et du sable sur fonds clairs). Toutes relèvent du seuil de 3:1 et non de 4,5:1,
+s'agissant de *grand texte* ou de contenu non textuel. Elles sont listées nommément dans la
+déclaration, avec leur rapport mesuré. Le texte courant, lui, est entre 10,7:1 et 14,4:1.
+
+⚠️ **Ces écarts sont un choix assumé de la Ville** (décision du 09/09/2026) : la charte
+graphique n'est pas modifiée, et les écarts sont déclarés — c'est la voie prévue par la
+directive. **Il ne faut donc pas les « corriger » de votre côté** : toute retouche des
+couleurs rendrait la déclaration inexacte.
 
 ⚠️ **Trois points restent à la charge de la Ville avant la mise en ligne :**
 
@@ -236,8 +242,7 @@ publics depuis le 23 juin 2021.
       sinon le lien est cassé pour le visiteur — vérifié le 09/09/2026.
 - [ ] **Coordonnées de contact** remplies dans `accessibilite.html` (§7) — trois placeholders.
 - [ ] **Référence légale et voie de recours** confirmées par le service juridique (§7).
-- [ ] **Contrastes** : arbitrage rendu — les corriger, ou les assumer tels que la
-      déclaration les documente (§7).
+- [x] ~~**Contrastes** : arbitrage rendu~~ — assumés, déclarés, aucune couleur à modifier (§7).
 - [ ] **Types MIME** `.woff2` / `.webp` / `.svg` confirmés sur le serveur cible (§4.1).
 - [ ] **Aperçu de partage** testé sur Facebook et LinkedIn une fois en ligne — l'image
       `assets/images/partage-move-in-fleurus.jpg` (1200 × 630) n'est joignable qu'à l'adresse

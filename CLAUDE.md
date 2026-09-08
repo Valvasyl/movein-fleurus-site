@@ -1621,20 +1621,29 @@ sections sans titre visible, `lang="fr"`, tous les `alt` présents, aucun lien s
 accessible, focus visible (`outline: 3px currentColor`), `prefers-reduced-motion` respecté,
 skip-link, menu mobile `inert` quand fermé.
 
-**Contrastes — ❌ 5 points sous le seuil, TOUS venus de la maquette.** Le texte courant est
-irréprochable (10:1 à 14:1) ; ce sont les jeux blanc/sable/jaune sur fond clair qui tombent :
+**Contrastes — ✅ ARBITRÉS LE 09/09/2026 : LES ÉCARTS SONT ASSUMÉS.** Aucune couleur n'est
+modifiée ; ils sont **déclarés nommément** dans `accessibilite.html`. Le texte courant, lui,
+est irréprochable (10,7:1 à 14,4:1) ; ce sont les jeux blanc/sable/jaune sur fond clair qui
+tombent. **Ils sont SEPT** (le décompte de cinq datait d'avant le bandeau partenaires) et
+**relèvent tous du seuil de 3:1** — grand texte ou contenu non textuel :
 
-| Élément | Contraste | Exigé |
-|---|---|---|
-| « Bougez » / « Profitez » blancs sur le dégradé | **1,29:1** | 3:1 (grand texte) |
-| « Scrollez pour découvrir » blanc sur le dégradé | **1,29:1** | 4,5:1 |
-| Commerçant — eyebrow + « Fidéliser vos clients » blancs sur jaune | **1,35:1** | 4,5 / 3:1 |
-| Piliers — titres sable sur blanc | **1,35:1** | 3:1 |
-| En savoir plus — titre jaune sur crème | **1,30:1** | 3:1 |
+| Élément | Taille · graisse | Contraste | Exigé |
+|---|---|---|---|
+| Bougez / Cumulez / Profitez, blancs sur le dégradé | 62–78 · 800 | **1,22–1,29:1** | 3:1 |
+| « Scrollez pour découvrir » blanc sur le dégradé | 26–30 · 400 | **1,29:1** | 3:1 |
+| Commerçant — eyebrow + titre blancs sur jaune | 20 · 700 / 37–78 · 800 | **1,35:1** | 3:1 |
+| Piliers — titres sable sur blanc | 26–39 · 800 | **1,35:1** | 3:1 |
+| En savoir plus — titre jaune sur crème | 33–118 · 800 | **1,30:1** | 3:1 |
+| Nos partenaires — titre sable sur crème | 20 · 700 | **1,30:1** | 3:1 |
+| Logos partenaires **au survol**, jaune sur crème | non textuel | **1,30:1** | 3:1 (1.4.11) |
 
-⚠️ **Enjeu réglementaire, pas seulement esthétique** : le site d'une administration publique
-wallonne est soumis à la directive UE 2016/2102 (WCAG 2.1 AA). **Décision Sylvain requise**,
-cf. questions 1, 8, 13 et 16.
+Plus un huitième, **variable** : le sur-titre « Fidélité », le titre « Achetez local » et son
+paragraphe, blancs sur la photographie, dont certaines zones sont très claires.
+
+⚠️ **Le seuil est 3:1 partout, jamais 4,5:1** — y compris pour « Scrollez pour découvrir » et
+les eyebrows, qui passent en *grand texte* (≥ 24 px, ou ≥ 18,66 px en gras). C'est vérifié sur
+les tailles et graisses réellement appliquées, pas déduit des tokens. Les anciennes mentions
+de 4,5:1 dans ce fichier étaient fausses.
 
 ## ✅ LE LOGO N'EST PAS AMPUTÉ — diagnostic ERRONÉ, corrigé le 06/09/2026
 
@@ -1677,10 +1686,11 @@ même logo, simplement plus grand.
 
 ## Questions en attente de Sylvain
 
-1. **Contraste de « Scrollez pour découvrir »** : blanc pur sur jaune = **~1,15:1**, très en
-   dessous du 4,5:1 exigé. Sylvain a demandé de **garder la taille de 30 px** (la maquette
-   relève 15). Options restantes : passer en `--noir`, l'assumer comme purement décoratif,
-   ou le retirer.
+1. ✅ **TRANCHÉ (09/09/2026) — ASSUMÉ.** Contraste de « Scrollez pour découvrir » : blanc sur
+   le dégradé, **1,29:1** mesuré. Le texte fait 26 à 30 px en graisse normale, il relève donc
+   du **grand texte** et du seuil de **3:1**, pas de 4,5:1 comme on l'a longtemps écrit ici.
+   Sylvain assume l'écart ; il est déclaré dans `accessibilite.html`. La taille de 30 px est
+   conservée (la maquette relève 15).
 2. ✅ **Sans objet depuis le 08/09/2026** — la note de la carte 01 a été **retirée du site**
    (demande Sylvain). Elle était à 10 px et tenait sur une ligne dans une carte de 318,5 ;
    le rôle `.carte__note` et ses deux tokens n'existent plus.
@@ -1692,10 +1702,11 @@ même logo, simplement plus grand.
    un historique.
 7. **Logo du header en desktop** : il démarre à `x = 78` sur la maquette alors que la grille
    commence à 65. Volontaire ou décalage de la maquette ? Le site l'aligne sur 65.
-8. **Contraste du titre « Achetez local » sur la photo** : le blanc tombe par endroits sur un
-   fond très clair (luminance relevée jusqu'à 230/255 sur la maquette, soit ~1,2:1). C'est le
-   rendu de la maquette, repris tel quel. Options : un voile sombre dégradé depuis la gauche,
-   ou l'assumer. **À trancher avec Sylvain.**
+8. ✅ **TRANCHÉ (09/09/2026) — ASSUMÉ.** Contraste du titre « Achetez local » et du sur-titre
+   « Fidélité » sur la photo : le blanc tombe par endroits sur un fond très clair (luminance
+   jusqu'à 230/255, soit ~1,2:1). Pas de voile sombre, on garde le rendu de la maquette.
+   L'écart est déclaré dans `accessibilite.html` — c'est le seul dont le rapport est
+   **variable**, puisqu'il dépend de la zone de la photographie.
 9. **Coquille de la maquette** : « Les points sont cumulés lors de vos **achat**. » Le site
    écrit « **achats** ». À confirmer.
 11. ✅ **Résolu (07/09/2026)** — c'était bien un mockup qui manquait dans la moitié droite.
@@ -1714,19 +1725,27 @@ même logo, simplement plus grand.
    `--com-pb` (et 19,2 côté mobile), à demander à Sylvain.
    Repère pour un futur texte : **~145 caractères** = 3 lignes à 1440 (boîte de 539,
    Inter 20/24) et 4 à 390.
-13. **Blanc sur jaune, section Commerçant** : l'eyebrow et le titre sont blancs sur `#ffdd0d`,
-   soit **~1,15:1** — même problème que « Scrollez pour découvrir » (question 1), mais cette
-   fois sur un titre de 78 px. C'est la maquette. Options : passer en `--noir`, ou assumer.
+13. ✅ **TRANCHÉ (09/09/2026) — ASSUMÉ.** Blanc sur jaune dans la section Commerçant :
+   **1,35:1** mesuré (et non les ~1,15 estimés ici auparavant). L'eyebrow fait 20 px en gras
+   et le titre 37 à 78 px : **les deux sont du grand texte**, seuil 3:1. Déclaré tel quel.
 14. ✅ **Résolu (07/09/2026)** — les URL manquantes du footer. Facebook et Instagram
    pointaient déjà les pages de la Ville ; Sylvain a renseigné les mentions légales, qui
    sont désormais **trois** liens et non deux (cf. section 9 du footer). Plus aucun `TODO`
    dans le HTML ; les deux `href="#"` restants sont les liens du logo vers le haut de page.
-16. **Les cinq contrastes hors normes** (cf. « Passe finale ») : blanc et sable sur fond clair,
-   1,3:1 là où il en faut 3 à 4,5. Trois pistes, à trancher globalement plutôt qu'au cas par
-   cas — (a) assumer et publier une déclaration d'accessibilité qui liste les écarts,
-   (b) foncer les couleurs concernées (le sable et le jaune des titres passeraient en
-   `--noir`, ce qui change le poster), (c) ne corriger que le texte NON décoratif
-   (« Scrollez pour découvrir », l'eyebrow « COMMERÇANT ») et assumer les gros titres.
+16. ✅ **TRANCHÉ (09/09/2026) — LES ÉCARTS SONT ASSUMÉS.** C'est la piste (a) : on garde la
+   charte telle quelle et on **publie une déclaration d'accessibilité qui les liste
+   nommément** (`accessibilite.html`). Aucune couleur du site n'est modifiée.
+   - ⚠️ Ils sont **SEPT**, pas cinq : le décompte datait d'avant le bandeau partenaires, qui
+     en apporte deux (titre sable sur crème, logos jaunes au survol).
+   - ⚠️ Et ils relèvent **tous du seuil de 3:1**, pas de 4,5:1. Vérifié en relevant la taille
+     et la graisse réellement appliquées : « Scrollez pour découvrir » fait 26–30 px, les
+     eyebrows 20 px en **gras** — au-dessus des 18,66 px qui font basculer un texte gras en
+     *grand texte* au sens des WCAG. Le seul élément non textuel (les logos au survol) relève
+     du 3:1 par le critère 1.4.11. **Ne pas réécrire 4,5:1 dans la déclaration.**
+   - Les rapports mesurés vont de **1,22:1 à 1,35:1**. Le texte courant, lui, est à
+     **10,7:1 – 14,4:1**, très au-dessus du 4,5:1 qui lui est applicable.
+   - Conséquence : le site est déclaré **« partiellement conforme »**, et il le restera tant
+     que la charte ne changera pas. La déclaration est à réexaminer au moins une fois par an.
 18. **Bandeau partenaires — bouton pause ?** Le défilement se met en pause au survol et au
    focus clavier, ce qui couvre l'essentiel de WCAG 2.2.2, mais la lettre de la norme
    demande un **moyen explicite** de l'arrêter pour un contenu qui bouge seul plus de 5 s.

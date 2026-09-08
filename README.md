@@ -208,9 +208,15 @@ images utiles, aucun lien sans nom accessible, focus systématiquement visible, 
 d'évitement, menu mobile `inert` quand il est fermé et fermable au clavier,
 `prefers-reduced-motion` respecté partout.
 
-**Écarts connus** : sept combinaisons de couleurs héritées de la charte descendent entre
-**1,22:1 et 1,35:1** là où 3:1 ou 4,5:1 sont exigés — du blanc, du jaune et du sable posés
-sur des fonds clairs. Le texte courant, lui, est entre **10,7:1 et 14,4:1**.
+**Écarts connus, et assumés** (décision du 09/09/2026) : sept combinaisons de couleurs
+héritées de la charte descendent entre **1,22:1 et 1,35:1** là où **3:1** est exigé — du
+blanc, du jaune et du sable posés sur des fonds clairs. Tous relèvent du seuil de 3:1 et non
+de 4,5:1, s'agissant de *grand texte* (≥ 24 px, ou ≥ 18,66 px en gras) ou de contenu non
+textuel. Le texte courant, lui, est entre **10,7:1 et 14,4:1**.
+
+Aucune couleur n'est modifiée : les écarts sont **déclarés nommément** dans la déclaration
+d'accessibilité, ce qui est la voie prévue par la directive. Le site est donc
+**« partiellement conforme »**, et le restera tant que la charte ne changera pas.
 
 **La déclaration d'accessibilité est publiée** : `accessibilite.html`, liée depuis le pied de
 page des deux pages du site. Elle est **obligatoire** pour un organisme public et liste
@@ -302,11 +308,8 @@ raisonnement derrière chaque valeur, les pièges, les décisions.
       depuis le pied de page. ⚠️ **Reste à y remplir les coordonnées de contact** (trois
       placeholders) et à faire confirmer la référence légale wallonne par le service
       juridique.
-- [ ] **Arbitrer les cinq écarts de contraste** hérités de la maquette. Trois options,
-      à trancher globalement plutôt qu'au cas par cas :
-      *(a)* les assumer et les lister dans la déclaration d'accessibilité,
-      *(b)* foncer les couleurs concernées — ce qui modifie l'identité visuelle,
-      *(c)* ne corriger que le texte non décoratif et assumer les grands titres.
+- [x] ~~**Arbitrer les écarts de contraste**~~ — tranché le 09/09/2026 : ils sont **assumés**
+      et listés dans la déclaration d'accessibilité. Aucune couleur n'est modifiée.
 
 ### 2. Performance
 

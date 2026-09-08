@@ -1,0 +1,60 @@
+MOVE IN FLEURUS — SITE VITRINE
+Livraison du 9 septembre 2026 · Ville de Fleurus
+===============================================================================
+
+  >>>  COMMENCEZ PAR  :  LIVRAISON.md  <<<
+
+Tout ce qu'il faut pour mettre le site en ligne y est, dans l'ordre :
+ce qu'il faut déployer, la configuration serveur, et une checklist finale.
+
+
+CE QUE VOUS AVEZ SOUS LA MAIN
+-------------------------------------------------------------------------------
+
+  À DÉPLOYER
+    index.html            la page d'accueil
+    accessibilite.html    la déclaration d'accessibilité (obligation légale)
+    styles.css
+    script.js
+    robots.txt
+    assets/               polices, images, logos, pictogrammes
+
+  À NE PAS DÉPLOYER — documentation
+    LIVRAISON.md          ← le document à lire
+    README.md             présentation du projet et partis pris techniques
+    CLAUDE.md             mémoire technique : l'origine de chaque valeur du CSS
+    commentaires/         copie intégralement commentée des fichiers de code
+    archive/              fichiers graphiques inutilisés, conservés pour mémoire
+    .editorconfig, .gitignore
+
+
+L'ESSENTIEL EN QUATRE LIGNES
+-------------------------------------------------------------------------------
+
+  1. Site 100 % statique. Aucun build, aucune dépendance, aucune base de
+     données. Ce que vous recevez est exactement ce qui doit être servi.
+
+  2. Il remplace la page https://movein.fleurus.be/app-store/
+     ⚠️ Cette URL ne doit pas changer : elle est déjà diffusée.
+
+  3. Le seul réglage serveur réellement bloquant, ce sont les types MIME
+     de .woff2, .webp et .svg. Détail au §4.1 de LIVRAISON.md.
+
+  4. Aucune requête vers un tiers, aucun cookie. Les polices sont
+     auto-hébergées : le site n'a pas besoin de bandeau de consentement.
+
+
+DEUX POINTS À RÉGLER CÔTÉ VILLE AVANT LA MISE EN LIGNE
+-------------------------------------------------------------------------------
+
+  - La page https://fleurus.be/move-in-fleurus/commercant/ est protégée par
+    mot de passe. Le bouton « En savoir plus » de la section Commerçant y
+    mène : à rendre publique, sinon le lien est cassé pour le visiteur.
+
+  - Un audit d'accessibilité par un organisme tiers reste à programmer.
+    Non bloquant : la déclaration indique explicitement qu'elle repose sur
+    une auto-évaluation.
+
+
+===============================================================================
+Ville de Fleurus — communication@fleurus.be — 071/820.242

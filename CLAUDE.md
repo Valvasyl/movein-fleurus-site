@@ -1303,6 +1303,32 @@ développeurs. Reportée dans `commentaires/`.
 | Carte 02 (Fidélité) | « QR **C**ode unique » | « QR **c**ode unique » |
 | Titre lecteur d'écran des piliers | « Ce que **Move in** apporte » | « Ce que **Move in Fleurus** apporte » |
 | Pied de page | 4 liens légaux | **3** — « Politique de confidentialité » retirée (cf. section 9) |
+| Piliers | « la mobilité douce des **f**leurusiens » | « des **F**leurusiens » (cf. ci-dessous) |
+
+### ⚠️ « Fleurusiens » avec une majuscule — et seulement là
+
+Le gentilé prend une **majuscule quand c'est un NOM** (les habitants) et reste en
+**minuscule quand c'est un ADJECTIF**. Le site a les deux, et une seule occurrence sur
+quatre devait changer :
+
+| Où | Texte | Nature | Casse |
+|---|---|---|---|
+| Chapô du hero | « le territoire **f**leurusien » | adjectif | minuscule |
+| Chapô du hero | « les commerçants **f**leurusiens » | adjectif | minuscule |
+| Commerçant | « Commerçant **f**leurusien ou entreprise locale » | adjectif | minuscule |
+| **Piliers** | « la mobilité douce des **F**leurusiens » | **nom** | **majuscule** |
+
+⚠️ **Ne pas faire un rechercher-remplacer global** : il capitaliserait les trois adjectifs,
+ce qui serait une faute. C'est la seule ligne à toucher.
+
+⚠️ **La maquette écrit « fleurusiens » en minuscule** à cet endroit — vérifié au pixel sur
+la planche desktop. C'est une coquille de la maquette, pas une consigne : le site s'en
+écarte volontairement. Ne pas « corriger » le site en relisant la maquette.
+
+✅ Géométrie vérifiée après coup à 320 · 390 · 700 · 899 · 901 · 1152 · 1440 · 1920 · 2560 :
+les **trois** textes de pilier tiennent toujours sur 2 lignes, la bande fait toujours
+**210** à 1440 et 441,8 à 390, aucun débordement. La majuscule est plus large d'environ
+1 px, ce qui aurait pu faire passer la 2e ligne à trois — ce n'est pas le cas.
 
 ⚠️ **La géométrie est intacte** : vérifié aux dix largeurs, aucune carte ne change de
 hauteur (« saisissez » et « rentrez » font la même longueur à un caractère près) et le

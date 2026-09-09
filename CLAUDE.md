@@ -958,20 +958,46 @@ Planchers de lisibilité (seule entorse à l'homothétie) : **12 px** sur `--fs-
        Pour retrouver la hauteur d'avant, il suffirait de garder `--lh-foot: 1.3` en mobile.
      - Testé aussi : ajouter `flex-wrap` sur `.footer__legal` (le levier que suggérait la
        note ci-dessous). **Rejeté** — les liens passent alors sur deux rangées pleines et le
-       bloc monte à **84**, c'est pire que les deux lignes internes. ⚠️ **Ils sont TROIS depuis le 07/09/2026** (Sylvain), et non deux —
-     « Politique de confidentialité » (`fleurus.be/move-in-fleurus/politique-de-confidentialite`),
-     « Politique de vie privée » (`movein.fleurus.be/app/user/vie_privee.html`) et
-     « Conditions générales » (`movein.fleurus.be/app/user/conditions.html`). Les deux
-     premiers **ne font pas doublon** : ce sont deux documents distincts, l'un côté Ville,
-     l'autre côté application (confirmé par Sylvain).
-     ⚠️ **Conséquence mesurée : la rangée est saturée de 900 à ~1090 px.** « Politique de
-     confidentialité » y casse en deux lignes dans son `<li>` (rangée à 31,2 au lieu de
-     15,6), et à 700 comme à 901 le dernier lien finit à **moins de 3 px du bord** du
-     `.footer__inner`. Aucun débordement horizontal à aucune largeur (vérifié de 390 à
-     1920), mais il n'y a plus de gras : **tout lien légal supplémentaire, ou tout libellé
-     plus long, débordera**. Au-dessus de 1100 tout retombe sur une ligne. Si la double
-     ligne gêne, les leviers sont un libellé plus court (« Confidentialité ») ou un
-     `flex-wrap` assumé sur `.footer__legal`.
+       bloc monte à **84**, c'est pire que les deux lignes internes.
+
+   ### ⚠️ « POLITIQUE DE CONFIDENTIALITÉ » A ÉTÉ RETIRÉE DU PIED DE PAGE (09/09/2026)
+
+   Il y a eu jusqu'à **quatre** liens légaux ; il en reste **trois** :
+   « Politique de vie privée » (`movein.fleurus.be/app/user/vie_privee.html`),
+   « Conditions générales » (`movein.fleurus.be/app/user/conditions.html`) et
+   « Accessibilité » (`accessibilite.html`).
+
+   **Ce qui a été retiré** : « Politique de confidentialité »
+   (`fleurus.be/move-in-fleurus/politique-de-confidentialite/`). ⚠️ **Et l'ancienne note de
+   ce fichier, qui affirmait que les deux textes « ne font pas doublon », était trompeuse.**
+   Ce sont bien deux documents distincts — mais ils se **contredisent** :
+
+   | | fleurus.be | movein.fleurus.be |
+   |---|---|---|
+   | Données de compte | « nom et prénom » | pseudonyme, sans nom ni prénom |
+   | Base légale | consentement, « principalement » | quatre bases combinées |
+   | Durées de conservation | chiffrées mais **incomplètes** | absentes |
+   | DPO | nommé (Nathalie Honnay) | non nommé |
+
+   🚨 **Le texte de fleurus.be contient encore trois `[à compléter]` EN PRODUCTION**
+   (vérifié le 09/09/2026 : conservation des trajets, un champ libre, logs techniques).
+   Un placeholder dans une politique RGPD publiée est un défaut en soi ; pointer dessus
+   depuis le site l'aurait aggravé. Le texte de l'éditeur, lui, est complet et aligné sur
+   ce que l'application fait réellement — c'est donc **lui seul** que le site référence.
+
+   ⏳ **Ce n'est qu'un contournement.** Le fond reste à régler par la Ville : reprendre le
+   texte de l'éditeur comme base, y injecter ce qui lui manque (DPO, durées chiffrées,
+   adresse de l'APD), trancher la contradiction sur les données de compte, et publier **un
+   texte unique** vers lequel l'app et le site pointeront tous les deux. Le jour où il
+   existe, c'est cette URL qu'il faudra remettre ici.
+
+   ✅ **Effet de bord mesuré, et bienvenu : la saturation de la rangée a disparu.** Elle
+   était documentée ici comme « saturée de 900 à ~1090 px », le dernier lien finissant à
+   moins de 3 px du bord. Avec un libellé long en moins, la rangée tient sur **une seule
+   ligne dès 1000 px**, et il reste **43,5 px** de marge à 899. Elle repasse à deux lignes
+   à 901 (le traitement desktop remet capitales, gras et interlettrage) et à 320 — c'était
+   déjà le cas. Vérifié à 320 · 390 · 700 · 899 · 901 · 1000 · 1090 · 1440 · 1920 · 2560,
+   sur les deux pages.
      **« Politique de vie privée » et « Conditions générales » ont le
      MÊME soulignement animé que la nav** (demande Sylvain, 05/09/2026) : l'effet a été
      sorti dans un rôle partagé **`.souligne`** (section 03 de la feuille de style), que
@@ -1046,10 +1072,12 @@ Décision Sylvain : plus de label « Téléchargez maintenant », plus de deux p
 
 ⚠️ **TOUS LES LIENS EXTERNES OUVRENT UN NOUVEL ONGLET depuis le 08/09/2026** (demande
 Sylvain). C'est l'inverse de la convention qui tenait jusque-là — le site n'avait **pas un
-seul** `target="_blank"`. Les **12** `<a>` en `http(s)://` d'`index.html` portent maintenant
+seul** `target="_blank"`. Les `<a>` en `http(s)://` d'`index.html` portent maintenant
 `target="_blank" rel="noopener"` : les 3 logos partenaires, les 3 `.btn-dl` (store du hero,
-« En savoir plus » Commerçant, pastille fleurus.be), les 3 bulles du footer et les 3 liens
-légaux.
+« En savoir plus » Commerçant, pastille fleurus.be), les 3 bulles du footer et les liens
+légaux. ⚠️ Ils étaient **12** ; depuis le retrait de « Politique de confidentialité »
+(09/09/2026) il y en a **11**. Le lien « Accessibilité » du pied de page, lui, est **interne**
+et n'ouvre donc pas d'onglet — c'est la règle ci-dessous.
 - ⚠️ **La règle est « le lien sort du site », pas « le lien est en https »** : les **11**
   ancres internes (skip-link, 8 liens de nav + menu, 2 liens du logo) n'en ont pas et ne
   doivent pas en avoir. Pour en ajouter un, la question à se poser est celle-là.
@@ -1263,6 +1291,28 @@ touché, avait gardé la bonne version et a servi de référence.
 corrections déjà indexées, avec une mtime du fichier postérieure à celle de `.git/index`.
 En cas de doute, `commentaires/index.html` fait foi pour le contenu — comparer en
 neutralisant les blancs, les deux fichiers n'ayant pas le même formatage.
+
+## Textes modifiés par Sylvain le 09/09/2026
+
+Deuxième passe de relecture, faite directement dans l'éditeur, avant l'envoi aux
+développeurs. Reportée dans `commentaires/`.
+
+| Où | Avant | Après |
+|---|---|---|
+| Carte 02 (Mobilité) | « ou **rentrez** le nom d'un commerce » | « ou **saisissez** le nom d'un commerce » |
+| Carte 02 (Fidélité) | « QR **C**ode unique » | « QR **c**ode unique » |
+| Titre lecteur d'écran des piliers | « Ce que **Move in** apporte » | « Ce que **Move in Fleurus** apporte » |
+| Pied de page | 4 liens légaux | **3** — « Politique de confidentialité » retirée (cf. section 9) |
+
+⚠️ **La géométrie est intacte** : vérifié aux dix largeurs, aucune carte ne change de
+hauteur (« saisissez » et « rentrez » font la même longueur à un caractère près) et le
+titre des piliers n'est pas visible — c'est un `.sr-only`.
+
+⚠️ **Deux espaces en fin de ligne sont apparus** dans le titre « Achetez local / et
+cumulez / des points » (`<span>Achetez local </span>`), effet de bord de la saisie. **Sans
+aucune conséquence** : `.lignes > span > span` est en `display: block`, l'espace de fin de
+ligne est donc supprimé au rendu — vérifié, les trois lignes font exactement 649 px comme
+avant. Laissés tels quels pour ne pas retoucher une édition manuelle sans raison.
 
 ## ⚠️ Le mot officiel est « BON D'ACHAT », pas « chèque »
 
@@ -1771,7 +1821,7 @@ même logo, simplement plus grand.
    et pour cause : la section non plus.)
 19. **Versions foncées des logos partenaires** : Ville de Fleurus, Wallonie et Shop In
    n'existent qu'en blanc. Tant qu'il en est ainsi, le bandeau doit rester sur fond sombre.
-20. **Prévenir de l'ouverture en nouvel onglet ?** Les 12 liens externes ouvrent maintenant
+20. **Prévenir de l'ouverture en nouvel onglet ?** Les 11 liens externes ouvrent maintenant
    un onglet (08/09/2026). Le signaler aux lecteurs d'écran est un critère **WCAG 3.2.5,
    niveau AAA** : le site vise AA, il n'est donc pas en défaut. Si Sylvain le veut quand
    même, ce serait un suffixe « — nouvel onglet » dans l'`aria-label` des liens icônes

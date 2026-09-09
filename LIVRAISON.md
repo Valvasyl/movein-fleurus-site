@@ -49,20 +49,22 @@ assets/
     logos/          7 fichiers
 ```
 
-**À NE PAS déployer** — documentation et archives, sans effet sur le rendu :
+**À NE PAS déployer** — documentation, sans effet sur le rendu :
 
 ```
-README.md           présentation du projet
-LIVRAISON.md        ce document
-CLAUDE.md           mémoire technique détaillée (l'origine de chaque valeur du CSS)
-commentaires/       copie intégralement commentée des 3 fichiers de code
-archive/            fichiers graphiques inutilisés, conservés pour mémoire
-.editorconfig
-.gitignore
+LISEZ-MOI-DABORD.txt  la première page de ce dossier
+LIVRAISON.md          ce document
+README.md             présentation du projet et partis pris techniques
+commentaires/         copie commentée de styles.css et script.js (voir §10)
 ```
 
 Rien n'empêche de tout copier — ce sont des fichiers texte inertes — mais un déploiement
 propre s'arrête à la première liste.
+
+> **Ce dossier est un paquet de livraison, pas le dépôt complet.** Le projet contient par
+> ailleurs une mémoire technique détaillée, les planches Illustrator de référence et les
+> fichiers graphiques mis de côté ; rien de tout cela n'est utile à la mise en ligne, et
+> tout reste disponible auprès de la Ville sur demande.
 
 **Tous les chemins internes sont relatifs.** Le site fonctionne indifféremment à la racine
 d'un domaine ou dans un sous-dossier, sans rien modifier.
@@ -275,13 +277,24 @@ immobiles au lieu de défiler.
 | Fichier | Contenu |
 |---|---|
 | `README.md` | Présentation du projet, partis pris techniques, développement local |
-| `CLAUDE.md` | **La mémoire du projet** — l'origine et la justification de chaque valeur du CSS, les pièges rencontrés, les décisions et leur pourquoi |
-| `commentaires/` | Copie intégralement commentée des trois fichiers de code |
+| `commentaires/` | Copie **intégralement commentée** de `styles.css` et de `script.js` |
 
-> Les fichiers déployés sont **volontairement sans commentaires** : ceux-ci représentaient
-> 57 % de la feuille de style. Le raisonnement vit dans `commentaires/`, qui est une copie
-> maintenue à la main — **toute modification de fond doit y être reportée**, il n'y a pas de
-> génération automatique.
+Les fichiers déployés sont **volontairement sans commentaires** : ceux-ci représentaient
+57 % de la feuille de style, soit ~17 Ko téléchargés à chaque première visite pour rien.
+
+⚠️ **C'est pour cela que `styles.css` et `script.js` commencent tous deux par une ligne qui
+renvoie à `commentaires/`.** C'est le seul commentaire qui subsiste dans le code déployé, et
+il est là exprès : si vous devez toucher une valeur, **c'est là que se trouve la raison
+d'être de ce chiffre** — chaque nombre du CSS est un relevé sur maquette, aucun n'est
+arbitraire.
+
+⚠️ Cette copie **ne se régénère pas toute seule** : il n'y a pas d'étape de compilation.
+Toute modification de fond doit y être reportée à la main, faute de quoi la documentation
+ment.
+
+> La **mémoire complète du projet** — l'historique de chaque décision, les pièges rencontrés,
+> les arbitrages — n'est pas dans ce paquet. Elle est conservée par la Ville et peut vous
+> être transmise si vous êtes amenés à reprendre le code au-delà de la mise en ligne.
 
 ---
 

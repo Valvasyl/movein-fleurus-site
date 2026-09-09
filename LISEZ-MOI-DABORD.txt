@@ -22,10 +22,10 @@ CE QUE VOUS AVEZ SOUS LA MAIN
   À NE PAS DÉPLOYER — documentation
     LIVRAISON.md          ← le document à lire
     README.md             présentation du projet et partis pris techniques
-    CLAUDE.md             mémoire technique : l'origine de chaque valeur du CSS
-    commentaires/         copie intégralement commentée des fichiers de code
-    archive/              fichiers graphiques inutilisés, conservés pour mémoire
-    .editorconfig, .gitignore
+    commentaires/         copie commentée de styles.css et script.js — c'est là
+                          que se trouve la raison d'être de chaque valeur du CSS,
+                          et c'est vers là que renvoie la 1re ligne de ces deux
+                          fichiers
 
 
 L'ESSENTIEL EN QUATRE LIGNES

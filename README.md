@@ -66,8 +66,10 @@ move-in-fleurus/
 │
 ├── LIVRAISON.md        ★ Tout ce qu'il faut pour mettre le site en ligne
 ├── README.md           Ce fichier
+├── commentaires/       Copie intégralement commentée de styles.css et script.js
+│
+│   ── présents dans le dépôt, absents du paquet de livraison ──
 ├── CLAUDE.md           Mémoire technique du projet (voir « Documentation »)
-├── commentaires/       Copie intégralement commentée des 3 fichiers de code
 ├── archive/            Fichiers graphiques inutilisés, conservés pour mémoire
 ├── maquette/           Planches Illustrator de référence (hors dépôt, non déployées)
 │
